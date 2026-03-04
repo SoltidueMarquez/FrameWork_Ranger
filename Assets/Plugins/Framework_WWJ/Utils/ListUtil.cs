@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ActFramework_ByHZR.BasicUtil
+namespace Plugins.Framework_WWJ.Utils
 {
     public static class ListUtil
     {

@@ -39,6 +39,11 @@ namespace Plugins.Framework_WWJ
         /// </summary>
         [OdinSerialize, LabelText("是否启用")] public bool on;
 
+        /// <summary>
+        /// 初始化优先级，数值越小越先初始化。用于 MainLoader 对模块列表排序。
+        /// </summary>
+        [OdinSerialize, LabelText("初始化优先级")] public int initPriority;
+
 #if UNITY_EDITOR
         /// <summary>
         /// 仅编辑器使用的预览标记，用于工具或自定义 Inspector 展示。

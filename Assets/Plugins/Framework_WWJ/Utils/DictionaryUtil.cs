@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace ActFramework_ByHZR.BasicUtil
+namespace Plugins.Framework_WWJ.Utils
 {
     public static class DictionaryUtil
     {
@@ -14,7 +13,7 @@ namespace ActFramework_ByHZR.BasicUtil
         
         public static void SafeAddRange<IKey, IValue>(this Dictionary<IKey, IValue> dictionary, Dictionary<IKey, IValue> addDic)
         {
-            if (addDic.IsEmpty())
+            if (addDic == null || addDic.IsEmpty())
             {
                 return;
             }
@@ -75,7 +74,7 @@ namespace ActFramework_ByHZR.BasicUtil
             {
                 return default;
             }
-            if (dictionary.TryGetValue(key, value: out var get))
+            if (dictionary.TryGetValue(key, out var get))
             {
                 return get;
             }

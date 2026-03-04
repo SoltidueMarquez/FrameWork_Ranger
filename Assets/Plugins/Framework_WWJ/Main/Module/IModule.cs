@@ -52,6 +52,10 @@ namespace Plugins.Framework_WWJ
         
         public void UpdateHandle();
         public void FixedUpdateHandle();
+        /// <summary>
+        /// 每帧 LateUpdate 派发；模块可空实现，或转发给实现了 IModuleHandlerLateUpdateSupport 的 Handler。
+        /// </summary>
+        public void LateUpdateHandle();
         
         public void Pause();
         public void Run();

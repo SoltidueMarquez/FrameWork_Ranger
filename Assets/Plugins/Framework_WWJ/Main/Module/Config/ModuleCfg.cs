@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using ActFramework_ByHZR;
-using ActFramework_ByHZR.BasicUtil;
 using Plugins.Framework_WWJ.Main.Base;
+using Plugins.Framework_WWJ.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -73,6 +72,8 @@ namespace Plugins.Framework_WWJ
         /// </summary>
         [SerializeField,LabelText("动态配置数据")] public List<HotCfgData> hotCfgDatas;
 
+
+        #region 静态配置
         
         /// <summary>
         /// 按类型从静态配置中查找第一个匹配的 T 类型配置（不按 key，仅按类型）。
@@ -179,8 +180,11 @@ namespace Plugins.Framework_WWJ
             if (m_staticCfgDatas == null)
             {
                 m_staticCfgDatas = new Dictionary<string, CfgData>();
-                m_staticCfgDatas.SafeAddRange(cfgDatas);
-                m_staticCfgDatas.SafeAddRange(GetExtraStaticCfgData());
+                if (cfgDatas != null)
+                    m_staticCfgDatas.SafeAddRange(cfgDatas);
+                var extra = GetExtraStaticCfgData();
+                if (extra != null)
+                    m_staticCfgDatas.SafeAddRange(extra);
             }
             return m_staticCfgDatas;
         }
@@ -192,8 +196,9 @@ namespace Plugins.Framework_WWJ
         /// </summary>
         public Dictionary<string,HotRuntimeData> HotRuntimeDatas { get; private set; }
 
-        
+        #endregion
 
+        
         #region 动态配置加载
 //         
 //         /// <summary>
