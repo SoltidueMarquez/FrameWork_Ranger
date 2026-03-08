@@ -5,7 +5,6 @@ namespace Plugins.Framework_WWJ.Main.Base
 {
     public interface IGeneralSo
     {
-        
     }
 
     public class GeneralSO : SerializedScriptableObject, IGeneralSo
