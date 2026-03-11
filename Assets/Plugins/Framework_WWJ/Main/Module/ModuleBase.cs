@@ -1,3 +1,5 @@
+using Sirenix.OdinInspector;
+
 namespace Plugins.Framework_WWJ
 {
     /// <summary>
@@ -9,6 +11,8 @@ namespace Plugins.Framework_WWJ
         public InitState currentInitState { get; private set; } = InitState.Sleep;
         public bool isRunning { get; private set; }
 
+        [LabelText("初始化后直接运行")] public bool autoRun;
+        
         public void Born()
         {
             OnVaildBorn();
@@ -41,6 +45,7 @@ namespace Plugins.Framework_WWJ
             currentInitState = InitState.Success;
             isLoading = false;
             OnVaildEndInit();
+            if(autoRun) Run();
         }
 
         public void BeginUnInit()

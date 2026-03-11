@@ -49,6 +49,9 @@ MonoBehaviour:
     - Name: module
       Entry: 7
       Data: 2|AudioModule, Assembly-CSharp-firstpass
+    - Name: autoRun
+      Entry: 5
+      Data: true
     - Name: a
       Entry: 3
       Data: 0

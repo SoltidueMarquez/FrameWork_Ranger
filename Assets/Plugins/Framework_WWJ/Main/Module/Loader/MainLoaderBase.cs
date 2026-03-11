@@ -309,6 +309,19 @@ namespace Plugins.Framework_WWJ
                 Debug.LogWarning($"[MainLoaderBase] 添加模块: key 已经存在 '{key}', replacing.");
                 RemoveModule(key);
             }
+
+            // 先执行模块的 Born 生命周期，再注册到列表中。
+            // 与参考框架保持一致：实例被加入系统时立即完成一次性的构建/接线工作。
+            try
+            {
+                module.Born();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[MainLoaderBase] Module Born error: {module.GetType().Name}, {ex.Message}");
+                return;
+            }
+
             var runtimeItem = new ModuleRuntimeItem
             {
                 key = key,
