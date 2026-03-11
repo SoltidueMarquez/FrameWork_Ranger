@@ -45,6 +45,7 @@ namespace Plugins.Framework_WWJ
     /// - cfgDatas / hotCfgDatas 及相关方法属于“配置扩展系统”，可以按需启用或暂时忽略。
     /// 子类如 MainRuntimeCfg 会重写 modules，把多个配置包（mainRuntimeCfgPackages）合并在一起。
     /// </summary>
+    [Plugins.Framework_WWJ.Main.Base.HideInFrameworkSOCreator]
     public partial class ModuleCfg : GeneralSO
     {
         /// <summary>

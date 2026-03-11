@@ -30,11 +30,6 @@ namespace Plugins.Framework_WWJ
         public InitState currentInitState { get; }
         
         /// <summary>
-        /// 初始化优先级
-        /// </summary>
-        public int initPriority { get; }
-        
-        /// <summary>
         /// 是否正在运行
         /// </summary>
         public bool isRunning { get; }

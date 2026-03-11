@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97de7e1cec354b4f87c1e7eb157b8b8f, type: 3}
+  m_Name: "\u9ED8\u8BA4\u901A\u7528\u914D\u7F6E"
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: cfgDatas
+      Entry: 6
+      Data: 
+    - Name: isInternal
+      Entry: 5
+      Data: false
+    - Name: isGlobal
+      Entry: 5
+      Data: false
+    - Name: globalCfgName
+      Entry: 6
+      Data: 
+    - Name: moduleItemCfgs
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Plugins.Framework_WWJ.ModuleItemCfg,
+        Assembly-CSharp-firstpass]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|Plugins.Framework_WWJ.ModuleItemCfg, Assembly-CSharp-firstpass
+    - Name: moduleKey
+      Entry: 1
+      Data: Audio
+    - Name: module
+      Entry: 7
+      Data: 2|AudioModule, Assembly-CSharp-firstpass
+    - Name: a
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: on
+      Entry: 5
+      Data: true
+    - Name: initPriority
+      Entry: 3
+      Data: 0
+    - Name: preview
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: mainRuntimeCfgPackages
+      Entry: 6
+      Data: 
+  soTag:
+    soTag: []
+  hotCfgDatas: []

@@ -11,12 +11,12 @@ namespace Plugins.Framework_WWJ
     // ============================================================================
 
     /// <summary>
-    /// 按 IModule.initPriority 升序排序的比较器，用于 MainLoaderBase 决定模块的初始化顺序。
+    /// 按配置中的初始化优先级升序排序，用于 MainLoaderBase 决定模块初始化顺序。
     /// 数值越小越先初始化（例如：-100 比 0 先，0 比 100 先）。
     /// </summary>
-    public class ModuleComparer : IComparer<IModule>
+    public class ModuleComparer : IComparer<MainLoaderBase.ModuleRuntimeItem>
     {
-        public int Compare(IModule x, IModule y)
+        public int Compare(MainLoaderBase.ModuleRuntimeItem x, MainLoaderBase.ModuleRuntimeItem y)
         {
             if (x == null && y == null) return 0;
             if (x == null) return 1;
@@ -48,6 +48,13 @@ namespace Plugins.Framework_WWJ
     /// </summary>
     public abstract class MainLoaderBase : MonoBehaviour, IMainLoader, IMainLoading
     {
+        public sealed class ModuleRuntimeItem
+        {
+            public string key;
+            public IModule module;
+            public int initPriority;
+        }
+
         /// <summary>
         /// 可选：指向“持有本 Loader 的宿主”（如 FrameworkEntry），用于部分扩展逻辑。
         /// </summary>
@@ -58,13 +65,13 @@ namespace Plugins.Framework_WWJ
         /// </summary>
         protected ModuleCfg m_cfg;
         /// <summary>
-        /// 按顺序存放所有已注册模块，用于遍历、排序和 Init/UnInit 顺序派发。
+        /// 按顺序存放所有已注册模块运行项（含配置优先级），用于遍历、排序和 Init/UnInit 顺序派发。
         /// </summary>
-        protected List<IModule> m_modules = new List<IModule>();
+        protected List<ModuleRuntimeItem> m_modules = new List<ModuleRuntimeItem>();
         /// <summary>
-        /// 模块 key → IModule，用于按字符串快速查找（GetModule(key)）。
+        /// 模块 key → 运行项，用于按字符串快速查找（GetModule(key)）。
         /// </summary>
-        protected Dictionary<string, IModule> m_moduleDict = new Dictionary<string, IModule>();
+        protected Dictionary<string, ModuleRuntimeItem> m_moduleDict = new Dictionary<string, ModuleRuntimeItem>();
         /// <summary>
         /// 是否已完成一轮 Init 协程；为 true 时，后续 AddModule 会对新模块单独执行 Init。
         /// </summary>
@@ -123,7 +130,7 @@ namespace Plugins.Framework_WWJ
                     string key = !string.IsNullOrEmpty(item.moduleKey) ? item.moduleKey : item.module.GetType().Name;
                     if (string.IsNullOrEmpty(key))
                         key = System.Guid.NewGuid().ToString();
-                    AddModule(key, item.module);
+                    AddModule(key, item.module, item.initPriority);
                 }
             }
 
@@ -167,7 +174,8 @@ namespace Plugins.Framework_WWJ
             int count = m_modules.Count;
             for (int i = 0; i < count; i++)
             {
-                var m = m_modules[i];
+                var runtimeItem = m_modules[i];
+                var m = runtimeItem?.module;
                 m_Progress = (float)i / count;
                 m_CurrentContent = m?.GetType().Name ?? "?";
                 onUpdateInitLife?.Invoke();
@@ -204,7 +212,7 @@ namespace Plugins.Framework_WWJ
             if (m_modules.IsEmpty()) return;
             for (int i = m_modules.Count - 1; i >= 0; i--)
             {
-                var m = m_modules[i];
+                var m = m_modules[i]?.module;
                 try
                 {
                     m?.BeginUnInit();
@@ -238,7 +246,7 @@ namespace Plugins.Framework_WWJ
             if (m_isPaused) return;
             for (int i = 0; i < m_modules.Count; i++)
             {
-                var m = m_modules[i];
+                var m = m_modules[i]?.module;
                 if (m is { isRunning: true }) m.UpdateHandle();
             }
         }
@@ -251,7 +259,7 @@ namespace Plugins.Framework_WWJ
             if (m_isPaused) return;
             for (int i = 0; i < m_modules.Count; i++)
             {
-                var m = m_modules[i];
+                var m = m_modules[i]?.module;
                 if (m is { isRunning: true }) m.FixedUpdateHandle();
             }
         }
@@ -264,7 +272,7 @@ namespace Plugins.Framework_WWJ
             if (m_isPaused) return;
             for (int i = 0; i < m_modules.Count; i++)
             {
-                var m = m_modules[i];
+                var m = m_modules[i]?.module;
                 if (m is { isRunning: true }) m.LateUpdateHandle();
             }
         }
@@ -275,7 +283,7 @@ namespace Plugins.Framework_WWJ
         public void Pause()
         {
             m_isPaused = true;
-            for (int i = 0; i < m_modules.Count; i++) m_modules[i]?.Pause();
+            for (int i = 0; i < m_modules.Count; i++) m_modules[i]?.module?.Pause();
         }
 
         /// <summary>
@@ -284,14 +292,14 @@ namespace Plugins.Framework_WWJ
         public void Run()
         {
             m_isPaused = false;
-            for (int i = 0; i < m_modules.Count; i++) m_modules[i]?.Run();
+            for (int i = 0; i < m_modules.Count; i++) m_modules[i]?.module?.Run();
         }
 
         /// <summary>
         /// 注册一个模块。key 为空时自动生成 Guid；若 key 已存在则先移除旧模块再添加。
         /// 若此时已完成初始化（m_hasInit），会对新模块单独启动协程执行 BeginInit → Init → EndInit。
         /// </summary>
-        public void AddModule(string key, IModule module)
+        public void AddModule(string key, IModule module, int initPriority = 0)
         {
             if (module == null) return;
             if (string.IsNullOrEmpty(key))
@@ -301,8 +309,14 @@ namespace Plugins.Framework_WWJ
                 Debug.LogWarning($"[MainLoaderBase] 添加模块: key 已经存在 '{key}', replacing.");
                 RemoveModule(key);
             }
-            m_moduleDict[key] = module;
-            m_modules.Add(module);
+            var runtimeItem = new ModuleRuntimeItem
+            {
+                key = key,
+                module = module,
+                initPriority = initPriority
+            };
+            m_moduleDict[key] = runtimeItem;
+            m_modules.Add(runtimeItem);
             if (m_hasInit && m_coroutineHost != null)
                 m_coroutineHost.StartCoroutine(InitSingleModule(module));
         }
@@ -330,9 +344,9 @@ namespace Plugins.Framework_WWJ
         /// </summary>
         public bool RemoveModule(string key)
         {
-            if (!m_moduleDict.TryGetValue(key, out var module)) return false;
+            if (!m_moduleDict.TryGetValue(key, out var runtimeItem)) return false;
             m_moduleDict.Remove(key);
-            int idx = m_modules.IndexOf(module);
+            int idx = m_modules.IndexOf(runtimeItem);
             if (idx >= 0) m_modules.RemoveAt(idx);
             return true;
         }
@@ -342,7 +356,7 @@ namespace Plugins.Framework_WWJ
         /// </summary>
         public IModule GetModule(string key)
         {
-            return m_moduleDict.TryGetValue(key, out var m) ? m : null;
+            return m_moduleDict.TryGetValue(key, out var item) ? item.module : null;
         }
 
         /// <summary>
@@ -350,7 +364,12 @@ namespace Plugins.Framework_WWJ
         /// </summary>
         public IReadOnlyList<IModule> GetModules()
         {
-            return m_modules;
+            var modules = new List<IModule>(m_modules.Count);
+            for (int i = 0; i < m_modules.Count; i++)
+            {
+                modules.Add(m_modules[i]?.module);
+            }
+            return modules;
         }
 
         // ---------- IMainLoader 继承 IModuleHandler / IModuleHandlerLateUpdateSupport ----------

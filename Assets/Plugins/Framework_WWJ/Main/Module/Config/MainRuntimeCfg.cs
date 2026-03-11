@@ -100,7 +100,10 @@ namespace Plugins.Framework_WWJ
         /// - modules 属性会自动把这些包里的模块平铺合并到一个总列表中。
         /// </summary>
         [Title("引用的模块化")]
-        [OdinSerialize, NonSerialized, ListDrawerSettings(ShowItemCount = true, ShowIndexLabels = true, ListElementLabelName = "name"), LabelText("运行模块包体")]
+        [OdinSerialize, NonSerialized,
+         InlineEditor(InlineEditorModes.GUIAndHeader, InlineEditorObjectFieldModes.Foldout),
+         ListDrawerSettings(ShowItemCount = true, ShowIndexLabels = true, ListElementLabelName = "name"),
+         LabelText("运行模块包体")]
         public List<MainRuntimeCfg> mainRuntimeCfgPackages;
         
         /// <summary>

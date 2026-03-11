@@ -333,7 +333,8 @@ namespace Plugins.Framework_WWJ.Main.EditorUtils
             var types = AssemblyUtilities.GetTypes(AssemblyCategory.All)
                 .Where(t => !t.IsAbstract &&
                             !t.ContainsGenericParameters &&
-                            typeof(GeneralSO).IsAssignableFrom(t))
+                            typeof(GeneralSO).IsAssignableFrom(t) &&
+                            !Attribute.IsDefined(t, typeof(HideInFrameworkSOCreatorAttribute), inherit: false))
                 .OrderBy(t => t.FullName)
                 .ToList();
 

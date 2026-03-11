@@ -7,6 +7,7 @@ namespace Plugins.Framework_WWJ.Main.Base
     {
     }
 
+    [HideInFrameworkSOCreator]
     public class GeneralSO : SerializedScriptableObject, IGeneralSo
     {
 #if UNITY_EDITOR
