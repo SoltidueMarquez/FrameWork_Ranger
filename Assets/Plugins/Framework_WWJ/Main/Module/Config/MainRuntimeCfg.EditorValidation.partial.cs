@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace Plugins.Framework_WWJ
 {
-    [InfoBox("@GetDuplicateModulesWarning()", InfoMessageType.Warning, VisibleIf = "@HasDuplicateModulesWarning()")]
     public partial class MainRuntimeCfg
     {
 #if UNITY_EDITOR

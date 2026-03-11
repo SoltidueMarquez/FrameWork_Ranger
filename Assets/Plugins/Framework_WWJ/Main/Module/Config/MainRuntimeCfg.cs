@@ -91,7 +91,10 @@ namespace Plugins.Framework_WWJ
         /// - 这是你在 Inspector 中最常编辑的一份 List；
         /// - 每个元素是一个 ModuleItemCfg：包含 moduleKey / module / on。
         /// </summary>
-        [OdinSerialize, NonSerialized, ListDrawerSettings(ShowItemCount = true, ShowIndexLabels = true, ListElementLabelName = "moduleKey"), LabelText("运行模块")]
+        [OdinSerialize, NonSerialized,
+         ListDrawerSettings(ShowItemCount = true, ShowIndexLabels = true, ListElementLabelName = "moduleKey"),
+         LabelText("运行模块"),
+         InfoBox("@GetDuplicateModulesWarning()", InfoMessageType.Warning, VisibleIf = "@HasDuplicateModulesWarning()")]
         public List<ModuleItemCfg> moduleItemCfgs;
 
         /// <summary>

@@ -232,6 +232,24 @@ namespace Plugins.Framework_WWJ
         /// </summary>
         public virtual void Die()
         {
+            // 先让所有模块各自完成 Die 生命周期，再卸载配置与清空列表。
+            if (!m_modules.IsEmpty())
+            {
+                for (int i = m_modules.Count - 1; i >= 0; i--)
+                {
+                    var module = m_modules[i]?.module;
+                    if (module == null) continue;
+                    try
+                    {
+                        module.Die();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"[MainLoaderBase] Module Die error: {module.GetType().Name}, {ex.Message}");
+                    }
+                }
+            }
+
             m_cfg?.StaticCfgUnInit();
             m_modules.Clear();
             m_moduleDict.Clear();
@@ -358,6 +376,21 @@ namespace Plugins.Framework_WWJ
         public bool RemoveModule(string key)
         {
             if (!m_moduleDict.TryGetValue(key, out var runtimeItem)) return false;
+
+            // 在真正移除前，先触发该模块的 Die 生命周期。
+            var module = runtimeItem?.module;
+            if (module != null)
+            {
+                try
+                {
+                    module.Die();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[MainLoaderBase] RemoveModule Die error: {module.GetType().Name}, {ex.Message}");
+                }
+            }
+
             m_moduleDict.Remove(key);
             int idx = m_modules.IndexOf(runtimeItem);
             if (idx >= 0) m_modules.RemoveAt(idx);
