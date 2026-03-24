@@ -15,7 +15,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 9ef10ba5217f08a499b799667870ffb8, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -39,7 +40,7 @@ MonoBehaviour:
         Assembly-CSharp-firstpass]], mscorlib
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
       Data: 1|Plugins.Framework_WWJ.ModuleItemCfg, Assembly-CSharp-firstpass
@@ -55,6 +56,51 @@ MonoBehaviour:
     - Name: a
       Entry: 3
       Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: on
+      Entry: 5
+      Data: true
+    - Name: initPriority
+      Entry: 3
+      Data: 0
+    - Name: preview
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|Plugins.Framework_WWJ.ModuleItemCfg, Assembly-CSharp-firstpass
+    - Name: moduleKey
+      Entry: 1
+      Data: Pool
+    - Name: module
+      Entry: 7
+      Data: 4|Plugins.Framework_WWJ.PoolModule, Assembly-CSharp-firstpass
+    - Name: autoRun
+      Entry: 5
+      Data: true
+    - Name: handler
+      Entry: 7
+      Data: 5|Plugins.Framework_WWJ.PoolHandler, Assembly-CSharp-firstpass
+    - Name: m_poolCfg
+      Entry: 10
+      Data: 0
+    - Name: m_enableSlowPrepare
+      Entry: 5
+      Data: true
+    - Name: m_maxSpawnPerFrame
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: enableDebug
+      Entry: 5
+      Data: true
     - Name: 
       Entry: 8
       Data: 

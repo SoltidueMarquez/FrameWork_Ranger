@@ -41,6 +41,14 @@ namespace Plugins.Framework_WWJ.Main.EditorUtils
         private string m_targetFolder = "Assets";
         private string m_assetName = string.Empty;
 
+        // Pool Manager state
+        private List<ObjectPoolCfg> m_allPoolConfigs = new List<ObjectPoolCfg>();
+        private string m_poolConfigSearch = string.Empty;
+        private Vector2 m_poolConfigScroll;
+        private ObjectPoolCfg m_selectedPoolConfig;
+        private Editor m_poolConfigEditor;
+        private string m_newPoolConfigName = "ObjectPoolCfg";
+
         [MenuItem("Framework/Tool App", priority = -1000)]
         public static void OpenWindow()
         {
@@ -54,12 +62,14 @@ namespace Plugins.Framework_WWJ.Main.EditorUtils
         {
             BuildAppRegistry();
             RefreshSOTypes();
+            RefreshPoolConfigs();
             m_targetFolder = FrameworkEditorUtility.GetCurrentDirectory();
         }
 
         private void OnDisable()
         {
             CleanupPreview();
+            CleanupPoolManager();
         }
 
         private void OnGUI()
@@ -208,6 +218,15 @@ namespace Plugins.Framework_WWJ.Main.EditorUtils
                 Category = "Asset Tools",
                 Keywords = new[] { "so", "scriptableobject", "asset", "creator", "generalso" },
                 DrawContent = DrawSOCreatorTool
+            });
+
+            m_apps.Add(new ToolAppDefinition
+            {
+                Id = "pool-manager",
+                Name = "Pool Manager",
+                Category = "Module Tools",
+                Keywords = new[] { "pool", "objectpool", "manager", "config" },
+                DrawContent = DrawObjectPoolManagerTool
             });
         }
 
@@ -437,5 +456,140 @@ namespace Plugins.Framework_WWJ.Main.EditorUtils
 
             return fileName;
         }
+
+        #region Pool Manager Tool
+
+        private void RefreshPoolConfigs()
+        {
+            m_allPoolConfigs.Clear();
+            var guids = AssetDatabase.FindAssets("t:ObjectPoolCfg");
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var cfg = AssetDatabase.LoadAssetAtPath<ObjectPoolCfg>(path);
+                if (cfg != null) m_allPoolConfigs.Add(cfg);
+            }
+        }
+
+        private void SelectPoolConfig(ObjectPoolCfg cfg)
+        {
+            if (m_poolConfigEditor != null)
+            {
+                DestroyImmediate(m_poolConfigEditor);
+                m_poolConfigEditor = null;
+            }
+
+            m_selectedPoolConfig = cfg;
+            if (m_selectedPoolConfig != null)
+            {
+                m_poolConfigEditor = Editor.CreateEditor(m_selectedPoolConfig);
+            }
+        }
+
+        private void CleanupPoolManager()
+        {
+            if (m_poolConfigEditor != null)
+            {
+                DestroyImmediate(m_poolConfigEditor);
+                m_poolConfigEditor = null;
+            }
+        }
+
+        private void DrawObjectPoolManagerTool()
+        {
+            GUILayout.Space(4f);
+            
+            // 1. Create New Config Section
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            GUILayout.Label("Create New ObjectPoolCfg", EditorStyles.boldLabel);
+            GUILayout.BeginHorizontal();
+            m_newPoolConfigName = EditorGUILayout.TextField("Config Name", m_newPoolConfigName);
+            if (GUILayout.Button("Create", GUILayout.Width(70f)))
+            {
+                CreateNewPoolConfig();
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+
+            GUILayout.Space(10f);
+
+            // 2. Select Existing Config Section
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Config Search", GUILayout.Width(100f));
+            string oldSearch = m_poolConfigSearch;
+            m_poolConfigSearch = EditorGUILayout.TextField(m_poolConfigSearch);
+            if (GUILayout.Button("Refresh", GUILayout.Width(70f)))
+            {
+                RefreshPoolConfigs();
+            }
+            GUILayout.EndHorizontal();
+
+            var filteredConfigs = m_allPoolConfigs
+                .Where(c => string.IsNullOrWhiteSpace(m_poolConfigSearch) || 
+                            c.name.IndexOf(m_poolConfigSearch.Trim(), StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            EditorGUILayout.LabelField($"Available Configs: {filteredConfigs.Count}", EditorStyles.miniBoldLabel);
+
+            GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Height(150f));
+            m_poolConfigScroll = GUILayout.BeginScrollView(m_poolConfigScroll);
+            foreach (var cfg in filteredConfigs)
+            {
+                bool selected = m_selectedPoolConfig == cfg;
+                var oldColor = GUI.backgroundColor;
+                GUI.backgroundColor = selected ? new Color(0.65f, 0.85f, 1f) : oldColor;
+                if (GUILayout.Button(cfg.name, GUILayout.Height(24f)))
+                {
+                    SelectPoolConfig(cfg);
+                }
+                GUI.backgroundColor = oldColor;
+            }
+            GUILayout.EndScrollView();
+            GUILayout.EndVertical();
+
+            GUILayout.Space(10f);
+
+            // 3. Editor Section
+            if (m_selectedPoolConfig != null && m_poolConfigEditor != null)
+            {
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+                GUILayout.BeginHorizontal(EditorStyles.toolbar);
+                GUILayout.Label($"Editing: {m_selectedPoolConfig.name}", EditorStyles.boldLabel);
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Ping", EditorStyles.toolbarButton, GUILayout.Width(40f)))
+                {
+                    EditorGUIUtility.PingObject(m_selectedPoolConfig);
+                }
+                GUILayout.EndHorizontal();
+
+                m_poolConfigEditor.OnInspectorGUI();
+                GUILayout.EndVertical();
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Select a config to edit.", MessageType.Info);
+            }
+        }
+
+        private void CreateNewPoolConfig()
+        {
+            string folder = FrameworkEditorUtility.GetCurrentDirectory();
+            string name = string.IsNullOrWhiteSpace(m_newPoolConfigName) ? "ObjectPoolCfg" : m_newPoolConfigName.Trim();
+            name = SanitizeFileName(name);
+            
+            string path = AssetDatabase.GenerateUniqueAssetPath($"{folder}/{name}.asset");
+            
+            var asset = CreateInstance<ObjectPoolCfg>();
+            AssetDatabase.CreateAsset(asset, path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            
+            RefreshPoolConfigs();
+            SelectPoolConfig(asset);
+            
+            Debug.Log($"[PoolManager] Created new config at {path}");
+        }
+
+        #endregion
     }
 }
