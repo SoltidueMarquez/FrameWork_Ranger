@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Plugins/Framework_WWJ/Samples/CoreSkeleton/Scenes/CoreSkeleton_A.unity
+    guid: 042fb59698d65cb4eb6602fcdedb5933
+  - enabled: 1
+    path: Assets/Plugins/Framework_WWJ/Samples/CoreSkeleton/Scenes/CoreSkeleton_B.unity
+    guid: edd3c2e039203d5478204d059068c5ba
   m_configObjects: {}

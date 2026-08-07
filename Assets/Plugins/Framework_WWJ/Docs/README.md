@@ -1,31 +1,65 @@
-# Framework_WWJ 文档索引
+# Framework_WWJ 文档与 Skill 索引
 
-本目录是 Framework_WWJ 从旧实现转向全量重建时的资料基线。文档整理日期为 2026-08-06。
+本目录是 Framework_WWJ 的项目事实、历史、参考研究、架构设计、开发规范和 Skill 路由的默认存放地。根索引保留稳定；其余资料按功能与层次分目录管理。
 
-这里刻意区分四类信息：
+## 信息状态
 
-- **事实**：已经在旧代码、Unity 资产或 Git 历史中验证过的内容。
-- **历史方案**：曾经计划或实现过，但不再自动成为新框架约束的内容。
-- **暂定方向**：开始新设计时值得讨论的候选方案，必须结合后续参考项目重新确认。
-- **已确认决策**：针对某个正式阶段明确接受，并通过 ADR 与验收标准记录的约束。
+- **事实**：已从代码、资产、版本历史或测试验证。
+- **历史方案**：曾经计划或实现过，不自动成为新框架约束。
+- **候选**：用户倾向或值得讨论的方向，仍需补齐精确语义。
+- **已确认决策**：针对正式阶段接受，并通过 ADR 与验收标准记录。
 
-## 阅读顺序
+## 目录结构
 
-1. [当前项目状态](./01_Current_Project_Status.md)：环境、工作区状态、代码规模和重构是否已经开始。
-2. [旧框架架构](./02_Legacy_Architecture.md)：旧入口、Loader、模块、配置、对象池、工具层的完整说明。
-3. [历史计划与设计演进](./03_Previous_Plans_And_Design_Evolution.md)：从参考框架复刻到轻量 SO 架构的几代方案。
-4. [全量重建基线](./04_Rebuild_Baseline.md)：本次从零设计的边界和历史占位路线。
-5. [旧代码清理记录](./05_Cleanup_Log.md)：旧代码删除清单、保留范围和恢复说明。
-6. [HTY / ActFramework 参考架构](./06_HTY_Reference_Architecture.md)：参考项目的宿主、模块、配置、生命周期与复杂度事实。
-7. [HTY 轻量化提炼矩阵](./07_HTY_Lightweight_Extraction_Matrix.md)：保留思想、简化验证、延后和默认舍弃项。
-8. [HTY 参考源码索引](./08_HTY_Reference_Source_Map.md)：后续按主题继续研究 LyingBottle 的最小阅读路径。
-9. [重建设计待办](./09_Rebuild_Decision_Backlog.md)：阶段输入、待决策问题、ADR 与验收门禁。
-10. [旧对象池设计归档](./Legacy_Object_Pool_Design.md)：旧对象池中值得保留和需要修正的思想。
-11. [旧 Loader 原始设计](./LoaderDesign.md)：2026-03 的原始计划，原文保留用于追溯。
+```text
+Docs/
+├─ 00_Project/              当前状态、重建基线、清理记录、总决策待办
+├─ 01_History/              旧框架、历代计划、Loader 与对象池历史原文
+├─ 02_References/HTY/       HTY / ActFramework 架构、提炼矩阵、源码索引
+├─ 03_Architecture/Core/    模块骨架设计、阶段计划、ADR 与验收复盘
+├─ 03_Architecture/EditorCenter/ 中央启动、统一编辑器中心与代码架构图
+├─ 04_Standards/            代码、注释、目录和实现规范
+└─ 05_Skills/               项目内 Skill 路由与自动发现 Skill 的同步入口
+```
 
-## 文档约定
+未来新增基础模块时，在 `03_Architecture/<ModuleName>/` 建立对应设计资料，不把所有模块混入 Core 文档。
 
-- 新架构开始实现后，优先更新本目录，而不是把关键设计只留在聊天或代码注释中。
-- 历史文档不代表新实现必须兼容旧 API。
-- 参考项目文档中的“事实、推断、候选、决策”必须分开标记；候选不能直接变成实现约束。
-- 第三方依赖（例如 Sirenix Odin、DOTween）不属于 Framework_WWJ 核心源码；是否继续使用，要在新设计阶段单独决策。
+## 当前设计入口
+
+1. [Editor Center 与中央启动入口](./03_Architecture/EditorCenter/README.md)
+2. [Phase 1.1 实现计划](./03_Architecture/EditorCenter/00_Phase1_1_Implementation_Plan.md)
+3. [Phase 1.1 验收与复盘](./03_Architecture/EditorCenter/03_Phase1_1_Acceptance_And_Review.md)
+4. [Phase 1.2 Editor Center UX 实现计划](./03_Architecture/EditorCenter/04_Phase1_2_Editor_Center_UX_Implementation_Plan.md)
+5. [Phase 1.2 验收与复盘](./03_Architecture/EditorCenter/05_Phase1_2_Editor_Center_UX_Acceptance_And_Review.md)
+6. [Core 架构设计入口](./03_Architecture/Core/README.md)
+7. [第一阶段实现计划（历史启动模型）](./03_Architecture/Core/03_Phase1_Core_Skeleton_Implementation_Plan.md)
+8. [第一阶段验收与复盘（历史基线）](./03_Architecture/Core/04_Phase1_Core_Skeleton_Acceptance_And_Review.md)
+9. [Core ADR](./03_Architecture/Core/ADR/README.md)
+10. [代码、注释与分区规范](./04_Standards/Code_Style_And_Comments.md)
+11. [Skill 路由](./05_Skills/README.md)
+
+## 项目与历史
+
+- [当前项目状态](./00_Project/01_Current_Project_Status.md)
+- [全量重建基线](./00_Project/04_Rebuild_Baseline.md)
+- [旧代码清理记录](./00_Project/05_Cleanup_Log.md)
+- [重建设计待办](./00_Project/09_Rebuild_Decision_Backlog.md)
+- [旧框架架构](./01_History/02_Legacy_Architecture.md)
+- [历史计划与设计演进](./01_History/03_Previous_Plans_And_Design_Evolution.md)
+- [旧对象池设计归档](./01_History/Legacy_Object_Pool_Design.md)
+- [旧 Loader 原始设计](./01_History/LoaderDesign.md)
+
+## HTY 参考
+
+- [HTY / ActFramework 参考架构](./02_References/HTY/06_HTY_Reference_Architecture.md)
+- [HTY 轻量化提炼矩阵](./02_References/HTY/07_HTY_Lightweight_Extraction_Matrix.md)
+- [HTY 参考源码索引](./02_References/HTY/08_HTY_Reference_Source_Map.md)
+
+## 维护约定
+
+- 关键设计优先写入本目录，不只保留在聊天或代码注释中。
+- 历史文档保留原意；用状态说明和新文档链接替代篡改历史。
+- 候选方向不能直接变成代码约束，正式实现前必须进入阶段决策。
+- 新建或移动 Unity 资产时同步维护 `.meta` 与 GUID。
+- 文档路径改变后同步更新个人 Skills 和本目录 `05_Skills` 路由。
+- 第三方依赖是否进入核心必须单独决策。

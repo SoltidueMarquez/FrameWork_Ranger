@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd5bb6d88cbd734e8e6afcce0c1f2c0, type: 3}
+  m_Name: FrameworkGlobalConfig
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: a4feab0addeaf444ba14be5badf5f23f, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: m_modules
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Framework_WWJ.ModuleConfigEntry,
+        Framework_WWJ.Runtime]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|Framework_WWJ.ModuleConfigEntry, Framework_WWJ.Runtime
+    - Name: m_enabled
+      Entry: 5
+      Data: true
+    - Name: m_module
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: m_driverHandler
+      Entry: 7
+      Data: 2|Framework_WWJ.DefaultFrameworkDriverHandler, Framework_WWJ.Runtime
+    - Name: 
+      Entry: 8
+      Data: 

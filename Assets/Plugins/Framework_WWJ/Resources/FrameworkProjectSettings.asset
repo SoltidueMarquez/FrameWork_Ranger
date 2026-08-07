@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb6fddfca4f44429b4756c8404b61ce, type: 3}
+  m_Name: FrameworkProjectSettings
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 7c6813e85f03d5d4f978080425503561, type: 2}
+    - {fileID: 11400000, guid: 3740cac543849d14f83fb9baf892d3ef, type: 2}
+    - {fileID: 11400000, guid: ae81f12c77a0e944daf1dda59a5ca675, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: m_globalConfig
+      Entry: 10
+      Data: 0
+    - Name: m_defaultSceneConfig
+      Entry: 6
+      Data: 
+    - Name: m_sceneBindings
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Framework_WWJ.FrameworkSceneBinding,
+        Framework_WWJ.Runtime]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 1|Framework_WWJ.FrameworkSceneBinding, Framework_WWJ.Runtime
+    - Name: m_sceneGuid
+      Entry: 1
+      Data: 042fb59698d65cb4eb6602fcdedb5933
+    - Name: m_scenePath
+      Entry: 1
+      Data: Assets/Plugins/Framework_WWJ/Samples/CoreSkeleton/Scenes/CoreSkeleton_A.unity
+    - Name: m_sceneConfig
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|Framework_WWJ.FrameworkSceneBinding, Framework_WWJ.Runtime
+    - Name: m_sceneGuid
+      Entry: 1
+      Data: edd3c2e039203d5478204d059068c5ba
+    - Name: m_scenePath
+      Entry: 1
+      Data: Assets/Plugins/Framework_WWJ/Samples/CoreSkeleton/Scenes/CoreSkeleton_B.unity
+    - Name: m_sceneConfig
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
