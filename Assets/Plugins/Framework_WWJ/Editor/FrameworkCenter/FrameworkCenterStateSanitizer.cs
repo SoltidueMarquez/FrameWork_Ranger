@@ -3,12 +3,12 @@ using System.Collections.Generic;
 namespace Framework_WWJ.Editor
 {
     /// <summary>
-    /// 清理 Framework Center 本地状态中的失效、重复页面 ID，并保证存在可激活页面。
-    /// 独立于窗口后，测试可以直接验证旧测试标签不会再次恢复。
+    /// 清理 Framework Center 固定页签中的失效或重复页面 ID。
+    /// 预览页不持久化，因此回退首页由运行时页签模型负责。
     /// </summary>
     [FrameworkArchitecture(
         "Center 状态清理器",
-        "移除失效和重复 PageId，并为标签与当前页建立稳定回退。",
+        "清理固定 PageId，并为最后活动固定页建立稳定回退。",
         FrameworkArchitectureLayer.EditorIntegration,
         138,
         typeof(FrameworkCenterStateData),
@@ -17,25 +17,16 @@ namespace Framework_WWJ.Editor
     {
         internal static void Sanitize(
             FrameworkCenterStateData state,
-            FrameworkCenterPageRegistry registry,
-            string fallbackPageId)
+            FrameworkCenterPageRegistry registry)
         {
-            state.openTabs = SanitizeList(state.openTabs, registry);
-            state.recentPageIds = SanitizeList(state.recentPageIds, registry);
+            state.stateVersion = FrameworkCenterStateData.CurrentVersion;
+            state.pinnedPageIds = SanitizeList(state.pinnedPageIds, registry);
 
-            if (state.openTabs.Count == 0 && registry.TryGetPage(fallbackPageId, out _))
+            if (!state.pinnedPageIds.Contains(state.lastActivePinnedPageId))
             {
-                state.openTabs.Add(fallbackPageId);
-            }
-
-            if (!registry.TryGetPage(state.activePageId, out _))
-            {
-                state.activePageId = state.openTabs.Count > 0 ? state.openTabs[0] : string.Empty;
-            }
-
-            if (!string.IsNullOrEmpty(state.activePageId) && !state.openTabs.Contains(state.activePageId))
-            {
-                state.openTabs.Add(state.activePageId);
+                state.lastActivePinnedPageId = state.pinnedPageIds.Count > 0
+                    ? state.pinnedPageIds[0]
+                    : string.Empty;
             }
         }
 

@@ -1,12 +1,12 @@
 # Framework_WWJ 当前项目状态
 
-> 盘点时间：2026-08-07  
+> 盘点时间：2026-08-18<br>
 > Unity 项目：`D:\unityhub\UnityProjects\Framework_Test`  
 > 框架目录：`Assets/Plugins/Framework_WWJ`
 
 ## 1. 当前结论
 
-Framework_WWJ 已完成第一阶段“模块模型与驱动骨架”、Phase 1.1“中央启动、统一编辑器中心与架构类图”和 Phase 1.2“Editor Center 视觉与节点图交互优化”。当前代码可以通过固定项目设置自动装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、可导航节点图和 A/B 示例场景。
+Framework_WWJ 已完成第一阶段“模块模型与驱动骨架”、Phase 1.1“中央启动、统一编辑器中心与架构类图”、Phase 1.2“Editor Center 视觉与节点图交互优化”和 Phase 1.3“预览页签与固定快捷页签”。当前代码可以通过固定项目设置自动装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、可导航节点图和 A/B 示例场景。
 
 当前仍是**骨架阶段**：资源管理、对象池、音频、输入、UI、存档等正式功能模块均未实现，下一阶段也尚未选定。
 
@@ -27,13 +27,13 @@ Framework_WWJ 已完成第一阶段“模块模型与驱动骨架”、Phase 1.1
 
 ## 3. 代码与程序集快照
 
-按 2026-08-07 工作区中的 `.cs` 文件与物理行统计：
+按 2026-08-18 工作区中的 `.cs` 文件与物理行统计：
 
 | 区域 | C# 文件 | 代码行 | 主要职责 |
 | --- | ---: | ---: | --- |
 | `Runtime` | 41 | 3,479 | 抽象、中央配置、Module/Handler、Graph、Scope、Bootstrap 与 Runtime |
-| `Editor` | 29 | 3,650 | Framework Center、显式页面发现、共享图视口、设置工具、依赖图、代码架构图与源码定位 |
-| `Tests/EditMode` | 8 | 825 | 图解析、克隆、中央设置、架构目录、中心发现边界与图视口数学 |
+| `Editor` | 30 | 4,200 | Framework Center、预览/固定页签、显式页面发现、共享图视口、设置工具、依赖图、代码架构图与源码定位 |
+| `Tests/EditMode` | 9 | 1,037 | 图解析、克隆、中央设置、架构目录、Center 页签状态/持久化与图视口数学 |
 | `Tests/PlayMode` | 7 | 707 | 自动启动、场景、失败、Tick、Shutdown 与示例集成 |
 | `Samples/CoreSkeleton/Runtime` | 6 | 275 | 全局时钟、场景 Module、两种 Handler 与 IMGUI View |
 | `Samples/CoreSkeleton/Editor` | 2 | 263 | 示例资产构建器与显式标记的 Framework Center 扩展页 |
@@ -67,8 +67,8 @@ Runtime 不引用 `UnityEditor`；Editor、Tests 和 Sample 单向依赖 Runtime
 ## 5. 编辑器中心与代码架构图
 
 - 菜单 `Framework_WWJ/Framework Center` 是项目配置、架构图、帮助和示例验收的统一入口。
-- 页面通过 `FrameworkCenterPage`、`[FrameworkCenterPageExtension]` 和 `TypeCache` 显式发现，支持搜索、最近访问、持久标签和页面级错误隔离；测试替身不会进入生产目录。
-- Runtime/Editor 顶层类及关键接口通过 `FrameworkArchitectureAttribute` 维护名称、中文职责、层级与关键协作关系；当前共有 64 个声明。
+- 页面通过 `FrameworkCenterPage`、`[FrameworkCenterPageExtension]` 和 `TypeCache` 显式发现，支持搜索、单预览页、可排序持久固定页和页面级错误隔离；测试替身不会进入生产目录。
+- Runtime/Editor 顶层类及关键接口通过 `FrameworkArchitectureAttribute` 维护名称、中文职责、层级与关键协作关系；当前共有 65 个声明。
 - Center 使用 42px 顶部栏、30px 标签栏、208px 扁平导航、动态页面标题卡片和深浅主题自适应样式。
 - 代码架构图与模块依赖图共用 35%–200% 的可缩放、可平移视口，提供适配和 100% 重置；节点仍使用固定自动布局。
 - 固定项目设置的 Inspector、Framework Center 和构建前校验共享同一套设置诊断和模块图结果；项目配置页可按任意 SceneAsset 预览真实 Global + Scene 组合。
@@ -87,12 +87,12 @@ Runtime 不引用 `UnityEditor`；Editor、Tests 和 Sample 单向依赖 Runtime
 
 | 测试集 | 结果 | 用例 | NUnit 时长 |
 | --- | --- | ---: | ---: |
-| EditMode | Passed | 24/24 | 0.232 s |
-| PlayMode | Passed | 13/13 | 0.348 s |
+| EditMode | Passed | 33/33 | 0.305 s |
+| PlayMode | Passed | 13/13 | 0.295 s |
 
-最终编译和测试日志无 C# 编译诊断。EditMode 已验证正式页面发现、失效状态清理、共享视口数学和既有图解析；PlayMode 已验证无 Entry 自动启动、A/B 真实场景切换、Global Module 克隆保持不变、Scene Handler 切换、空 SceneScope、失败前零克隆和完整 Shutdown。
+最终编译和测试日志无 C# 编译诊断。EditMode 已验证正式页面发现、v2 状态清理/往返、单预览、固定/取消固定、关闭回退、顺序调整、共享视口数学和既有图解析；PlayMode 已验证无 Entry 自动启动、A/B 真实场景切换、Global Module 克隆保持不变、Scene Handler 切换、空 SceneScope、失败前零克隆和完整 Shutdown。
 
-完整证据、计划偏差和人工步骤见 [Phase 1.2 验收与复盘](../03_Architecture/EditorCenter/05_Phase1_2_Editor_Center_UX_Acceptance_And_Review.md)。
+完整证据、计划偏差和人工步骤见 [Phase 1.3 验收与复盘](../03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)。
 
 ## 8. 当前未决范围
 

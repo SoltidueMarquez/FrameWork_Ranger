@@ -1,5 +1,7 @@
 # Framework_WWJ Phase 1.2：Editor Center UX 验收与复盘
 
+> 历史说明：本文记录 Phase 1.2 当时的多标签/最近访问验收基线；该交互已在 Phase 1.3 被[预览页签与固定快捷页签](./07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)取代。
+
 > 状态：已实现并通过自动化验收  
 > 验收日期：2026-08-07  
 > Unity：2022.3.62f3  

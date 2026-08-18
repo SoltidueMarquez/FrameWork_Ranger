@@ -68,6 +68,7 @@ namespace Framework_WWJ.Editor
         private static GUIStyle s_cardTitle;
         private static GUIStyle s_description;
         private static GUIStyle s_tab;
+        private static GUIStyle s_previewTab;
         private static GUIStyle s_navigationLabel;
         private static GUIStyle s_navigationCategory;
         private static GUIStyle s_statusBadge;
@@ -110,6 +111,12 @@ namespace Framework_WWJ.Editor
             alignment = TextAnchor.MiddleLeft,
             padding = new RectOffset(10, 6, 2, 2),
             clipping = TextClipping.Clip,
+        });
+
+        internal static GUIStyle PreviewTab => GetStyle(ref s_previewTab, () => new GUIStyle(Tab)
+        {
+            fontStyle = FontStyle.Italic,
+            normal = { textColor = MutedTextColor },
         });
 
         internal static GUIStyle NavigationLabel => GetStyle(ref s_navigationLabel, () => new GUIStyle(EditorStyles.label)
@@ -172,6 +179,34 @@ namespace Framework_WWJ.Editor
             EditorGUI.DrawRect(new Rect(rect.xMax - thickness, rect.y, thickness, rect.height), color);
         }
 
+        internal static bool DrawPinButton(Rect rect, bool pinned)
+        {
+            var tooltip = pinned ? "取消固定" : "固定为快捷页签";
+            var hovered = rect.Contains(Event.current.mousePosition);
+            if (hovered)
+            {
+                EditorGUI.DrawRect(rect, HoverColor);
+            }
+
+            var clicked = GUI.Button(rect, new GUIContent(string.Empty, tooltip), GUIStyle.none);
+            var color = pinned ? AccentColor : MutedTextColor;
+            var centerX = Mathf.Round(rect.center.x);
+            var head = new Rect(centerX - 4f, rect.y + 4f, 8f, 5f);
+            if (pinned)
+            {
+                EditorGUI.DrawRect(head, color);
+            }
+            else
+            {
+                DrawBorder(head, color);
+            }
+
+            EditorGUI.DrawRect(new Rect(centerX - 1f, head.yMax, 2f, 6f), color);
+            EditorGUI.DrawRect(new Rect(centerX - 2f, head.yMax + 6f, 4f, 1f), color);
+            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
+            return clicked;
+        }
+
         internal static GUIStyle CreateGraphNodeStyle(float zoom)
         {
             return new GUIStyle(EditorStyles.helpBox)
@@ -213,6 +248,7 @@ namespace Framework_WWJ.Editor
             s_cardTitle = null;
             s_description = null;
             s_tab = null;
+            s_previewTab = null;
             s_navigationLabel = null;
             s_navigationCategory = null;
             s_statusBadge = null;

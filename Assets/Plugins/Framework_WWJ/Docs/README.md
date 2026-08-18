@@ -31,12 +31,14 @@ Docs/
 3. [Phase 1.1 验收与复盘](./03_Architecture/EditorCenter/03_Phase1_1_Acceptance_And_Review.md)
 4. [Phase 1.2 Editor Center UX 实现计划](./03_Architecture/EditorCenter/04_Phase1_2_Editor_Center_UX_Implementation_Plan.md)
 5. [Phase 1.2 验收与复盘](./03_Architecture/EditorCenter/05_Phase1_2_Editor_Center_UX_Acceptance_And_Review.md)
-6. [Core 架构设计入口](./03_Architecture/Core/README.md)
-7. [第一阶段实现计划（历史启动模型）](./03_Architecture/Core/03_Phase1_Core_Skeleton_Implementation_Plan.md)
-8. [第一阶段验收与复盘（历史基线）](./03_Architecture/Core/04_Phase1_Core_Skeleton_Acceptance_And_Review.md)
-9. [Core ADR](./03_Architecture/Core/ADR/README.md)
-10. [代码、注释与分区规范](./04_Standards/Code_Style_And_Comments.md)
-11. [Skill 路由](./05_Skills/README.md)
+6. [Phase 1.3 预览与固定页签实施计划](./03_Architecture/EditorCenter/06_Phase1_3_Preview_And_Pinned_Tabs_Implementation_Plan.md)
+7. [Phase 1.3 验收与复盘](./03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)
+8. [Core 架构设计入口](./03_Architecture/Core/README.md)
+9. [第一阶段实现计划（历史启动模型）](./03_Architecture/Core/03_Phase1_Core_Skeleton_Implementation_Plan.md)
+10. [第一阶段验收与复盘（历史基线）](./03_Architecture/Core/04_Phase1_Core_Skeleton_Acceptance_And_Review.md)
+11. [Core ADR](./03_Architecture/Core/ADR/README.md)
+12. [代码、注释与分区规范](./04_Standards/Code_Style_And_Comments.md)
+13. [Skill 路由](./05_Skills/README.md)
 
 ## 项目与历史
 

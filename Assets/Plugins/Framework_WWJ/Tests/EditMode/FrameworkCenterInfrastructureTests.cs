@@ -55,45 +55,66 @@ namespace Framework_WWJ.Tests
         }
 
         [Test]
-        public void StateSanitizer_RemovesLegacyTestTabs_AndFallsBackToOverview()
+        public void StateSanitizer_RemovesInvalidAndDuplicatePinnedPages()
         {
-            var registry = new FrameworkCenterPageRegistry();
+            var registry = new FrameworkCenterPageRegistry(new[]
+            {
+                typeof(FirstTestPage),
+                typeof(SecondTestPage),
+            });
             var state = new FrameworkCenterStateData
             {
-                activePageId = "test.first",
+                lastActivePinnedPageId = "test.missing",
             };
-            state.openTabs.Add("test.first");
-            state.openTabs.Add("test.second");
-            state.recentPageIds.Add("test.first");
+            state.pinnedPageIds.Add("test.first");
+            state.pinnedPageIds.Add("test.missing");
+            state.pinnedPageIds.Add("test.first");
+            state.pinnedPageIds.Add("test.second");
 
-            FrameworkCenterStateSanitizer.Sanitize(state, registry, "framework.overview");
+            FrameworkCenterStateSanitizer.Sanitize(state, registry);
 
-            CollectionAssert.AreEqual(new[] { "framework.overview" }, state.openTabs);
-            Assert.That(state.recentPageIds, Is.Empty);
-            Assert.That(state.activePageId, Is.EqualTo("framework.overview"));
+            CollectionAssert.AreEqual(new[] { "test.first", "test.second" }, state.pinnedPageIds);
+            Assert.That(state.lastActivePinnedPageId, Is.EqualTo("test.first"));
         }
 
         [Test]
-        public void StateStore_RoundTrips_AndMalformedJsonFallsBack()
+        public void StateStore_RoundTripsVersionTwoState()
         {
             var path = Path.Combine(m_tempDirectory, "state.json");
             var store = new FrameworkCenterStateStore(path);
             var state = new FrameworkCenterStateData
             {
-                activePageId = "test.first",
+                lastActivePinnedPageId = "test.second",
             };
-            state.openTabs.Add("test.first");
-            state.recentPageIds.Add("test.second");
+            state.pinnedPageIds.Add("test.first");
+            state.pinnedPageIds.Add("test.second");
             store.Save(state);
 
             var loaded = store.Load();
-            Assert.That(loaded.activePageId, Is.EqualTo("test.first"));
-            CollectionAssert.AreEqual(new[] { "test.first" }, loaded.openTabs);
+            Assert.That(loaded.stateVersion, Is.EqualTo(FrameworkCenterStateData.CurrentVersion));
+            Assert.That(loaded.lastActivePinnedPageId, Is.EqualTo("test.second"));
+            CollectionAssert.AreEqual(new[] { "test.first", "test.second" }, loaded.pinnedPageIds);
+        }
+
+        [Test]
+        public void StateStore_LegacyAndMalformedJsonFallBackToCleanVersionTwoState()
+        {
+            var path = Path.Combine(m_tempDirectory, "state.json");
+            var store = new FrameworkCenterStateStore(path);
+
+            File.WriteAllText(
+                path,
+                "{\"activePageId\":\"test.first\",\"openTabs\":[\"test.first\"],\"recentPageIds\":[\"test.second\"]}");
+            var legacyFallback = store.Load();
+            Assert.That(legacyFallback.stateVersion, Is.EqualTo(FrameworkCenterStateData.CurrentVersion));
+            Assert.That(legacyFallback.pinnedPageIds, Is.Empty);
+            Assert.That(legacyFallback.lastActivePinnedPageId, Is.Empty);
 
             File.WriteAllText(path, "{not-json");
             var fallback = store.Load();
-            Assert.That(fallback.activePageId, Is.Empty);
-            Assert.That(fallback.openTabs, Is.Empty);
+            Assert.That(fallback.stateVersion, Is.EqualTo(FrameworkCenterStateData.CurrentVersion));
+            Assert.That(fallback.pinnedPageIds, Is.Empty);
+            Assert.That(fallback.lastActivePinnedPageId, Is.Empty);
         }
 
         public sealed class FirstTestPage : FrameworkCenterPage

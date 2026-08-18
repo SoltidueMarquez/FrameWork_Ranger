@@ -8,31 +8,39 @@ using UnityEngine;
 namespace Framework_WWJ.Editor
 {
     /// <summary>
-    /// Framework_WWJ 所有核心编辑器工具的统一窗口宿主。
+    /// Framework_WWJ 所有核心编辑器工具的统一窗口与页签宿主。
     /// </summary>
     [FrameworkArchitecture(
         "Framework Center",
-        "承载可发现页面、搜索、最近访问、多标签和页面级异常隔离。",
+        "承载可发现页面、搜索、预览/固定页签和页面级异常隔离。",
         FrameworkArchitectureLayer.EditorIntegration,
         150,
         typeof(FrameworkCenterPageRegistry),
-        typeof(FrameworkCenterStateStore))]
+        typeof(FrameworkCenterStateStore),
+        typeof(FrameworkCenterTabModel))]
     internal sealed class FrameworkCenterWindow : OdinEditorWindow
     {
         private const string OverviewPageId = "framework.overview";
         private const string HelpPageId = "framework.help";
         private const string SearchControlName = "FrameworkCenterSearch";
+
         private const float TopBarHeight = 42f;
         private const float NavigationWidth = 208f;
         private const float TabBarHeight = 30f;
+        private const float TabHeight = 26f;
+        private const float TabGap = 2f;
         private const float NavigationItemHeight = 30f;
-        private const int RecentLimit = 8;
+        private const float DragThreshold = 4f;
+        private const float DragEdgeWidth = 22f;
+        private const float DragEdgeScrollStep = 14f;
+        private const int PinnedTabDragControlHash = 0x57AA13;
 
         #region 运行时状态
 
         private FrameworkCenterPageRegistry m_registry;
         private FrameworkCenterStateStore m_stateStore;
         private FrameworkCenterStateData m_state;
+        private FrameworkCenterTabModel m_tabModel;
         private FrameworkCenterPageContext m_context;
         private FrameworkCenterPage m_activePage;
         private readonly Dictionary<string, Exception> m_pageErrors =
@@ -41,7 +49,12 @@ namespace Framework_WWJ.Editor
         private string m_searchText = string.Empty;
         private Vector2 m_navigationScroll;
         private Vector2 m_contentScroll;
-        private Vector2 m_tabScroll;
+        private float m_pinnedTabScrollX;
+
+        private string m_dragCandidatePageId = string.Empty;
+        private Vector2 m_dragStartPosition;
+        private bool m_isDraggingPinnedTab;
+        private int m_dragInsertionIndex = -1;
 
         #endregion
 
@@ -63,19 +76,21 @@ namespace Framework_WWJ.Editor
             titleContent = new GUIContent("Framework Center");
             minSize = new Vector2(1040f, 620f);
             wantsMouseMove = true;
+
             m_registry = new FrameworkCenterPageRegistry();
             m_stateStore = new FrameworkCenterStateStore();
             m_state = m_stateStore.Load();
             m_context = new FrameworkCenterPageContext(this);
-            SanitizeState();
-            ActivatePage(m_state.activePageId);
-            // 旧版本可能已经把测试 PageId 写入 Library；启用窗口时立即落盘清理结果，
-            // 避免异常关闭窗口后下次会话又从旧 JSON 恢复这些无效标签。
+            m_tabModel = new FrameworkCenterTabModel(m_state, m_registry, OverviewPageId);
+
+            TransitionActivePage(m_tabModel.ActivePageId);
+            // 状态加载时会清理失效或重复的固定页；立即保存，避免异常退出后重复迁移。
             SaveState();
         }
 
         protected override void OnDestroy()
         {
+            CancelPinnedTabDrag();
             m_activePage?.OnDeactivated(m_context);
             SaveState();
             base.OnDestroy();
@@ -110,19 +125,7 @@ namespace Framework_WWJ.Editor
 
         internal void OpenPage(string pageId)
         {
-            if (!m_registry.TryGetPage(pageId, out _))
-            {
-                return;
-            }
-
-            if (!m_state.openTabs.Contains(pageId))
-            {
-                m_state.openTabs.Add(pageId);
-            }
-
-            RememberRecent(pageId);
-            ActivatePage(pageId);
-            SaveState();
+            ApplyTabMutation(() => m_tabModel.OpenPage(pageId));
         }
 
         internal void OpenHelp(string assetPath)
@@ -134,58 +137,40 @@ namespace Framework_WWJ.Editor
             }
         }
 
-        private void ActivatePage(string pageId)
+        private void ApplyTabMutation(Func<bool> mutation)
         {
-            if (!m_registry.TryGetPage(pageId, out var nextPage))
+            var previousActivePageId = m_tabModel.ActivePageId;
+            if (!mutation())
             {
-                m_registry.TryGetPage(OverviewPageId, out nextPage);
+                return;
             }
 
-            if (nextPage == null || ReferenceEquals(m_activePage, nextPage))
+            if (!string.Equals(previousActivePageId, m_tabModel.ActivePageId, StringComparison.Ordinal))
+            {
+                TransitionActivePage(m_tabModel.ActivePageId);
+            }
+
+            SaveState();
+            Repaint();
+        }
+
+        private void TransitionActivePage(string pageId)
+        {
+            if (m_activePage != null && m_activePage.PageId == pageId)
             {
                 return;
             }
 
             m_activePage?.OnDeactivated(m_context);
-            m_activePage = nextPage;
-            m_state.activePageId = nextPage.PageId;
-            if (!m_state.openTabs.Contains(nextPage.PageId))
-            {
-                m_state.openTabs.Add(nextPage.PageId);
-            }
-
-            nextPage.OnActivated(m_context);
-            m_contentScroll = Vector2.zero;
-        }
-
-        private void ClosePage(string pageId)
-        {
-            var index = m_state.openTabs.IndexOf(pageId);
-            if (index < 0)
+            m_activePage = null;
+            if (!m_registry.TryGetPage(pageId, out var nextPage))
             {
                 return;
             }
 
-            var closingActive = m_activePage != null && m_activePage.PageId == pageId;
-            if (closingActive)
-            {
-                m_activePage.OnDeactivated(m_context);
-                m_activePage = null;
-            }
-
-            m_state.openTabs.RemoveAt(index);
-            m_pageErrors.Remove(pageId);
-            if (m_state.openTabs.Count == 0)
-            {
-                m_state.openTabs.Add(OverviewPageId);
-            }
-
-            if (closingActive)
-            {
-                ActivatePage(m_state.openTabs[Mathf.Clamp(index - 1, 0, m_state.openTabs.Count - 1)]);
-            }
-
-            SaveState();
+            m_activePage = nextPage;
+            nextPage.OnActivated(m_context);
+            m_contentScroll = Vector2.zero;
         }
 
         #endregion
@@ -255,7 +240,6 @@ namespace Framework_WWJ.Editor
             }
             else
             {
-                DrawRecentPages();
                 foreach (var group in pages.GroupBy(page => page.Category))
                 {
                     GUILayout.Space(8f);
@@ -291,6 +275,10 @@ namespace Framework_WWJ.Editor
             GUILayout.EndArea();
         }
 
+        #endregion
+
+        #region 页签绘制
+
         private void DrawTabs()
         {
             var barRect = GUILayoutUtility.GetRect(
@@ -301,38 +289,21 @@ namespace Framework_WWJ.Editor
             FrameworkCenterStyles.DrawPanel(barRect, FrameworkCenterStyles.PanelColor);
 
             GUI.BeginGroup(barRect);
-            var helpWidth = 34f;
-            var scrollRect = new Rect(4f, 2f, Mathf.Max(1f, barRect.width - helpWidth - 8f), TabBarHeight - 4f);
-            GUILayout.BeginArea(scrollRect);
-            m_tabScroll = EditorGUILayout.BeginScrollView(
-                m_tabScroll,
-                true,
-                false,
-                GUIStyle.none,
-                GUIStyle.none,
-                GUIStyle.none,
-                GUILayout.Height(scrollRect.height));
-            EditorGUILayout.BeginHorizontal();
-            for (var i = 0; i < m_state.openTabs.Count; i++)
-            {
-                var pageId = m_state.openTabs[i];
-                if (!m_registry.TryGetPage(pageId, out var page))
-                {
-                    continue;
-                }
+            var helpRect = new Rect(barRect.width - 32f, 3f, 28f, TabHeight - 2f);
+            var hasPreview = m_registry.TryGetPage(m_tabModel.PreviewPageId, out var previewPage);
+            var previewWidth = hasPreview ? CalculateTabWidth(previewPage) : 0f;
+            var previewRect = hasPreview
+                ? new Rect(helpRect.x - previewWidth - 4f, 2f, previewWidth, TabHeight)
+                : Rect.zero;
+            var pinnedRight = hasPreview ? previewRect.x - 4f : helpRect.x - 4f;
+            var pinnedViewport = new Rect(4f, 2f, Mathf.Max(1f, pinnedRight - 4f), TabHeight);
 
-                if (DrawTab(page, pageId))
-                {
-                    break;
-                }
+            DrawPinnedTabs(pinnedViewport);
+            if (hasPreview)
+            {
+                DrawPreviewTab(previewPage, previewRect);
             }
 
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndScrollView();
-            GUILayout.EndArea();
-
-            var helpRect = new Rect(barRect.width - helpWidth + 2f, 3f, 28f, TabBarHeight - 6f);
             using (new EditorGUI.DisabledScope(
                        m_activePage == null || string.IsNullOrWhiteSpace(m_activePage.HelpDocumentPath)))
             {
@@ -346,41 +317,263 @@ namespace Framework_WWJ.Editor
             GUI.EndGroup();
         }
 
-        private bool DrawTab(FrameworkCenterPage page, string pageId)
+        private void DrawPinnedTabs(Rect viewport)
         {
-            var selected = m_activePage != null && m_activePage.PageId == pageId;
-            var labelWidth = FrameworkCenterStyles.Tab.CalcSize(new GUIContent(page.DisplayName)).x;
-            var width = Mathf.Clamp(labelWidth + 38f, 96f, 200f);
-            var rect = GUILayoutUtility.GetRect(width, 26f, GUILayout.Width(width), GUILayout.Height(26f));
+            var layouts = BuildPinnedTabLayouts();
+            var contentWidth = layouts.Count == 0 ? 0f : layouts[layouts.Count - 1].Rect.xMax;
+            var maxScroll = Mathf.Max(0f, contentWidth - viewport.width);
+            m_pinnedTabScrollX = Mathf.Clamp(m_pinnedTabScrollX, 0f, maxScroll);
+            HandlePinnedAreaWheel(viewport, maxScroll);
+
+            GUI.BeginGroup(viewport);
+            var stateChanged = false;
+            for (var i = 0; i < layouts.Count; i++)
+            {
+                var layout = layouts[i];
+                var drawRect = OffsetForPinnedScroll(layout.Rect);
+                if (drawRect.xMax < 0f || drawRect.xMin > viewport.width)
+                {
+                    continue;
+                }
+
+                var selected = m_tabModel.ActivePageId == layout.PageId;
+                var hovered = drawRect.Contains(Event.current.mousePosition);
+                var dragging = m_isDraggingPinnedTab && m_dragCandidatePageId == layout.PageId;
+                DrawTabBackground(drawRect, selected, hovered || dragging);
+
+                var labelRect = GetTabLabelRect(drawRect);
+                GUI.Label(
+                    labelRect,
+                    new GUIContent(layout.Page.DisplayName, layout.Page.Description),
+                    FrameworkCenterStyles.Tab);
+                EditorGUIUtility.AddCursorRect(labelRect, MouseCursor.Link);
+
+                if (FrameworkCenterStyles.DrawPinButton(GetPinRect(drawRect), true))
+                {
+                    CancelPinnedTabDrag();
+                    ApplyTabMutation(() => m_tabModel.Unpin(layout.PageId));
+                    stateChanged = true;
+                    break;
+                }
+
+                if (GUI.Button(
+                        GetCloseRect(drawRect),
+                        new GUIContent("×", "关闭并取消固定"),
+                        EditorStyles.miniButton))
+                {
+                    CancelPinnedTabDrag();
+                    ApplyTabMutation(() => m_tabModel.Close(layout.PageId));
+                    stateChanged = true;
+                    break;
+                }
+            }
+
+            if (!stateChanged)
+            {
+                HandlePinnedTabInput(new Rect(Vector2.zero, viewport.size), layouts, maxScroll);
+                DrawPinnedDropIndicator(new Rect(Vector2.zero, viewport.size), layouts);
+            }
+
+            GUI.EndGroup();
+        }
+
+        private void DrawPreviewTab(FrameworkCenterPage page, Rect rect)
+        {
+            var selected = m_tabModel.ActivePageId == page.PageId;
             var hovered = rect.Contains(Event.current.mousePosition);
+            DrawTabBackground(rect, selected, hovered);
+
+            var labelRect = GetTabLabelRect(rect);
+            GUI.Label(
+                labelRect,
+                new GUIContent(page.DisplayName, $"预览页签 · {page.Description}"),
+                FrameworkCenterStyles.PreviewTab);
+            EditorGUIUtility.AddCursorRect(labelRect, MouseCursor.Link);
+            if (GUI.Button(labelRect, GUIContent.none, GUIStyle.none))
+            {
+                OpenPage(page.PageId);
+            }
+
+            if (FrameworkCenterStyles.DrawPinButton(GetPinRect(rect), false))
+            {
+                ApplyTabMutation(m_tabModel.PinPreview);
+            }
+
+            if (GUI.Button(
+                    GetCloseRect(rect),
+                    new GUIContent("×", "关闭预览页签"),
+                    EditorStyles.miniButton))
+            {
+                ApplyTabMutation(() => m_tabModel.Close(page.PageId));
+            }
+        }
+
+        private List<PinnedTabLayout> BuildPinnedTabLayouts()
+        {
+            var layouts = new List<PinnedTabLayout>();
+            var x = 0f;
+            for (var i = 0; i < m_tabModel.PinnedPageIds.Count; i++)
+            {
+                var pageId = m_tabModel.PinnedPageIds[i];
+                if (!m_registry.TryGetPage(pageId, out var page))
+                {
+                    continue;
+                }
+
+                var width = CalculateTabWidth(page);
+                layouts.Add(new PinnedTabLayout(pageId, page, new Rect(x, 0f, width, TabHeight)));
+                x += width + TabGap;
+            }
+
+            return layouts;
+        }
+
+        private void HandlePinnedTabInput(
+            Rect viewport,
+            IReadOnlyList<PinnedTabLayout> layouts,
+            float maxScroll)
+        {
+            var currentEvent = Event.current;
+            var controlId = GUIUtility.GetControlID(PinnedTabDragControlHash, FocusType.Passive, viewport);
+
+            if (currentEvent.type == EventType.MouseDown && currentEvent.button == 0)
+            {
+                var layout = FindLayoutAtPointer(layouts, currentEvent.mousePosition);
+                if (layout != null && GetTabLabelRect(OffsetForPinnedScroll(layout.Rect)).Contains(currentEvent.mousePosition))
+                {
+                    m_dragCandidatePageId = layout.PageId;
+                    m_dragStartPosition = currentEvent.mousePosition;
+                    m_isDraggingPinnedTab = false;
+                    m_dragInsertionIndex = -1;
+                    GUIUtility.hotControl = controlId;
+                    currentEvent.Use();
+                }
+
+                return;
+            }
+
+            if (GUIUtility.hotControl != controlId || string.IsNullOrEmpty(m_dragCandidatePageId))
+            {
+                return;
+            }
+
+            if (currentEvent.type == EventType.MouseDrag)
+            {
+                if (!m_isDraggingPinnedTab &&
+                    Vector2.Distance(m_dragStartPosition, currentEvent.mousePosition) >= DragThreshold)
+                {
+                    m_isDraggingPinnedTab = true;
+                }
+
+                if (m_isDraggingPinnedTab)
+                {
+                    ScrollPinnedTabsNearDragEdge(currentEvent.mousePosition.x, viewport.width, maxScroll);
+                    m_dragInsertionIndex = CalculateInsertionIndex(
+                        currentEvent.mousePosition.x + m_pinnedTabScrollX,
+                        layouts);
+                    Repaint();
+                }
+
+                currentEvent.Use();
+                return;
+            }
+
+            if (currentEvent.type != EventType.MouseUp || currentEvent.button != 0)
+            {
+                return;
+            }
+
+            var candidatePageId = m_dragCandidatePageId;
+            var wasDragging = m_isDraggingPinnedTab;
+            var insertionIndex = m_dragInsertionIndex;
+            var droppedInside = viewport.Contains(currentEvent.mousePosition);
+            var clickedLayout = FindLayout(candidatePageId, layouts);
+            var clickedInside = clickedLayout != null &&
+                                GetTabLabelRect(OffsetForPinnedScroll(clickedLayout.Rect))
+                                    .Contains(currentEvent.mousePosition);
+            CancelPinnedTabDrag();
+            currentEvent.Use();
+
+            if (wasDragging && droppedInside && insertionIndex >= 0)
+            {
+                ApplyTabMutation(() =>
+                    m_tabModel.MovePinnedToInsertionIndex(candidatePageId, insertionIndex));
+            }
+            else if (!wasDragging && clickedInside)
+            {
+                OpenPage(candidatePageId);
+            }
+        }
+
+        private void HandlePinnedAreaWheel(Rect viewport, float maxScroll)
+        {
+            var currentEvent = Event.current;
+            if (currentEvent.type != EventType.ScrollWheel || !viewport.Contains(currentEvent.mousePosition))
+            {
+                return;
+            }
+
+            var delta = Mathf.Abs(currentEvent.delta.x) > Mathf.Abs(currentEvent.delta.y)
+                ? currentEvent.delta.x
+                : currentEvent.delta.y;
+            m_pinnedTabScrollX = Mathf.Clamp(m_pinnedTabScrollX + delta * 24f, 0f, maxScroll);
+            currentEvent.Use();
+            Repaint();
+        }
+
+        private void ScrollPinnedTabsNearDragEdge(float pointerX, float viewportWidth, float maxScroll)
+        {
+            if (pointerX < DragEdgeWidth)
+            {
+                m_pinnedTabScrollX = Mathf.Max(0f, m_pinnedTabScrollX - DragEdgeScrollStep);
+            }
+            else if (pointerX > viewportWidth - DragEdgeWidth)
+            {
+                m_pinnedTabScrollX = Mathf.Min(maxScroll, m_pinnedTabScrollX + DragEdgeScrollStep);
+            }
+        }
+
+        private void DrawPinnedDropIndicator(Rect viewport, IReadOnlyList<PinnedTabLayout> layouts)
+        {
+            if (!m_isDraggingPinnedTab || m_dragInsertionIndex < 0 || layouts.Count == 0)
+            {
+                return;
+            }
+
+            var insertionIndex = Mathf.Clamp(m_dragInsertionIndex, 0, layouts.Count);
+            var contentX = insertionIndex == layouts.Count
+                ? layouts[layouts.Count - 1].Rect.xMax + TabGap * 0.5f
+                : layouts[insertionIndex].Rect.xMin - TabGap * 0.5f;
+            var drawX = contentX - m_pinnedTabScrollX;
+            if (drawX < 0f || drawX > viewport.width)
+            {
+                return;
+            }
 
             EditorGUI.DrawRect(
+                new Rect(drawX - 1f, 2f, 2f, viewport.height - 4f),
+                FrameworkCenterStyles.AccentColor);
+        }
+
+        private void DrawTabBackground(Rect rect, bool selected, bool hovered)
+        {
+            EditorGUI.DrawRect(
                 rect,
-                selected ? FrameworkCenterStyles.SelectedColor :
-                hovered ? FrameworkCenterStyles.HoverColor : FrameworkCenterStyles.CardColor);
+                selected
+                    ? FrameworkCenterStyles.SelectedColor
+                    : hovered ? FrameworkCenterStyles.HoverColor : FrameworkCenterStyles.CardColor);
             FrameworkCenterStyles.DrawBorder(rect, FrameworkCenterStyles.BorderColor);
             if (selected)
             {
-                EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - 3f, rect.width, 3f), FrameworkCenterStyles.AccentColor);
+                EditorGUI.DrawRect(
+                    new Rect(rect.x, rect.yMax - 3f, rect.width, 3f),
+                    FrameworkCenterStyles.AccentColor);
             }
-
-            var labelRect = new Rect(rect.x + 2f, rect.y, rect.width - 24f, rect.height);
-            GUI.Label(labelRect, new GUIContent(page.DisplayName, page.Description), FrameworkCenterStyles.Tab);
-            if (GUI.Button(labelRect, GUIContent.none, GUIStyle.none))
-            {
-                ActivatePage(pageId);
-                SaveState();
-            }
-
-            var closeRect = new Rect(rect.xMax - 22f, rect.y + 3f, 18f, rect.height - 6f);
-            if (GUI.Button(closeRect, new GUIContent("×", "关闭标签"), EditorStyles.miniButton))
-            {
-                ClosePage(pageId);
-                return true;
-            }
-
-            return false;
         }
+
+        #endregion
+
+        #region 页面内容
 
         private void DrawActivePage()
         {
@@ -440,24 +633,6 @@ namespace Framework_WWJ.Editor
         #endregion
 
         #region 导航绘制
-
-        private void DrawRecentPages()
-        {
-            if (m_state.recentPageIds.Count == 0)
-            {
-                return;
-            }
-
-            DrawNavigationHeading("最近访问");
-            for (var i = 0; i < m_state.recentPageIds.Count; i++)
-            {
-                var pageId = m_state.recentPageIds[i];
-                if (m_registry.TryGetPage(pageId, out var page))
-                {
-                    DrawNavigationItem(page);
-                }
-            }
-        }
 
         private void DrawPageButtons(IEnumerable<FrameworkCenterPage> pages)
         {
@@ -538,31 +713,19 @@ namespace Framework_WWJ.Editor
                  page.Keywords.Any(keyword => Contains(keyword, search))));
         }
 
-        private void RememberRecent(string pageId)
-        {
-            if (pageId == HelpPageId)
-            {
-                return;
-            }
-
-            m_state.recentPageIds.Remove(pageId);
-            m_state.recentPageIds.Insert(0, pageId);
-            if (m_state.recentPageIds.Count > RecentLimit)
-            {
-                m_state.recentPageIds.RemoveRange(RecentLimit, m_state.recentPageIds.Count - RecentLimit);
-            }
-        }
-
-        private void SanitizeState()
-        {
-            FrameworkCenterStateSanitizer.Sanitize(m_state, m_registry, OverviewPageId);
-        }
-
         private void HandleKeyboardShortcuts()
         {
             var currentEvent = Event.current;
             if (currentEvent.type != EventType.KeyDown)
             {
+                return;
+            }
+
+            if (currentEvent.keyCode == KeyCode.Escape && !string.IsNullOrEmpty(m_dragCandidatePageId))
+            {
+                CancelPinnedTabDrag();
+                currentEvent.Use();
+                Repaint();
                 return;
             }
 
@@ -574,7 +737,7 @@ namespace Framework_WWJ.Editor
             }
             else if (command && currentEvent.keyCode == KeyCode.W && m_activePage != null)
             {
-                ClosePage(m_activePage.PageId);
+                ApplyTabMutation(() => m_tabModel.Close(m_activePage.PageId));
                 currentEvent.Use();
             }
             else if (currentEvent.keyCode == KeyCode.Escape && !string.IsNullOrEmpty(m_searchText))
@@ -583,6 +746,90 @@ namespace Framework_WWJ.Editor
                 GUI.FocusControl(null);
                 currentEvent.Use();
             }
+        }
+
+        private void CancelPinnedTabDrag()
+        {
+            if (!string.IsNullOrEmpty(m_dragCandidatePageId))
+            {
+                GUIUtility.hotControl = 0;
+            }
+
+            m_dragCandidatePageId = string.Empty;
+            m_isDraggingPinnedTab = false;
+            m_dragInsertionIndex = -1;
+        }
+
+        private PinnedTabLayout FindLayoutAtPointer(
+            IReadOnlyList<PinnedTabLayout> layouts,
+            Vector2 pointer)
+        {
+            for (var i = 0; i < layouts.Count; i++)
+            {
+                if (OffsetForPinnedScroll(layouts[i].Rect).Contains(pointer))
+                {
+                    return layouts[i];
+                }
+            }
+
+            return null;
+        }
+
+        private static PinnedTabLayout FindLayout(
+            string pageId,
+            IReadOnlyList<PinnedTabLayout> layouts)
+        {
+            for (var i = 0; i < layouts.Count; i++)
+            {
+                if (layouts[i].PageId == pageId)
+                {
+                    return layouts[i];
+                }
+            }
+
+            return null;
+        }
+
+        private static int CalculateInsertionIndex(
+            float contentPointerX,
+            IReadOnlyList<PinnedTabLayout> layouts)
+        {
+            for (var i = 0; i < layouts.Count; i++)
+            {
+                if (contentPointerX < layouts[i].Rect.center.x)
+                {
+                    return i;
+                }
+            }
+
+            return layouts.Count;
+        }
+
+        private Rect OffsetForPinnedScroll(Rect rect)
+        {
+            rect.x -= m_pinnedTabScrollX;
+            return rect;
+        }
+
+        private static Rect GetTabLabelRect(Rect rect)
+        {
+            return new Rect(rect.x + 2f, rect.y, Mathf.Max(1f, rect.width - 44f), rect.height);
+        }
+
+        private static Rect GetPinRect(Rect rect)
+        {
+            return new Rect(rect.xMax - 42f, rect.y + 3f, 18f, rect.height - 6f);
+        }
+
+        private static Rect GetCloseRect(Rect rect)
+        {
+            return new Rect(rect.xMax - 22f, rect.y + 3f, 18f, rect.height - 6f);
+        }
+
+        private static float CalculateTabWidth(FrameworkCenterPage page)
+        {
+            var labelWidth = FrameworkCenterStyles.Tab.CalcSize(new GUIContent(page.DisplayName)).x;
+            return Mathf.Clamp(labelWidth + 58f, 112f, 200f);
         }
 
         private void SaveState()
@@ -597,5 +844,19 @@ namespace Framework_WWJ.Editor
         }
 
         #endregion
+
+        private sealed class PinnedTabLayout
+        {
+            internal string PageId { get; }
+            internal FrameworkCenterPage Page { get; }
+            internal Rect Rect { get; }
+
+            internal PinnedTabLayout(string pageId, FrameworkCenterPage page, Rect rect)
+            {
+                PageId = pageId;
+                Page = page;
+                Rect = rect;
+            }
+        }
     }
 }

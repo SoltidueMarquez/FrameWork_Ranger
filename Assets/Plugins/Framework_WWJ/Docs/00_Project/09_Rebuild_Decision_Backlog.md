@@ -1,12 +1,13 @@
 # Framework_WWJ 重建设计待办
 
-> 状态：第一阶段骨架、Phase 1.1 中央启动/编辑器中心与 Phase 1.2 编辑器 UX 已完成；等待用户补充下一阶段需求和第一个游戏目标。<br>
+> 状态：第一阶段骨架、Phase 1.1 中央启动/编辑器中心、Phase 1.2 编辑器 UX 与 Phase 1.3 预览/固定页签已完成；等待用户补充下一阶段需求和第一个游戏目标。<br>
 > 本文是决策入口，不是已经批准的阶段路线。
 
 当前骨架设计的用户输入、问题清单和计划格式已拆分到 [Core 架构设计入口](../03_Architecture/Core/README.md)。
 第一阶段的实际结果见[验收与复盘](../03_Architecture/Core/04_Phase1_Core_Skeleton_Acceptance_And_Review.md)。
 Phase 1.1 的当前结果见[中央启动与 Editor Center 验收](../03_Architecture/EditorCenter/03_Phase1_1_Acceptance_And_Review.md)。
 Phase 1.2 的当前结果见[Editor Center UX 验收](../03_Architecture/EditorCenter/05_Phase1_2_Editor_Center_UX_Acceptance_And_Review.md)。
+Phase 1.3 的当前结果见[预览与固定页签验收](../03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)。
 
 ## 1. 已确认边界
 
@@ -54,14 +55,26 @@ Phase 1.2 的当前结果见[Editor Center UX 验收](../03_Architecture/EditorC
 
 | 主题 | 已确认决定 | 依据 | 状态 |
 | --- | --- | --- | --- |
-| Center 视觉 | 保留多标签与最近访问，采用紧凑顶部栏、扁平导航、动态标题卡片和深浅主题样式 | [Phase 1.2 计划](../03_Architecture/EditorCenter/04_Phase1_2_Editor_Center_UX_Implementation_Plan.md) | 已验证 |
+| Center 视觉 | 采用紧凑顶部栏、扁平导航、动态标题卡片和深浅主题样式；Phase 1.2 的最近访问/多标签交互已由 Phase 1.3 取代 | [Phase 1.2 计划](../03_Architecture/EditorCenter/04_Phase1_2_Editor_Center_UX_Implementation_Plan.md) | 视觉已验证，页签部分已取代 |
 | 页面发现边界 | 只有显式标记的正式页面参与生产自动发现；测试替身仅用于显式候选测试 | [ADR-EC-001](../03_Architecture/EditorCenter/ADR/ADR-EC-001_Discoverable_Framework_Center_Pages.md) | 已验证 |
 | 图视口 | 架构图与模块图共享 35%–200% 缩放、平移、适配与 100% 重置，节点仍固定自动布局 | [ADR-EC-003](../03_Architecture/EditorCenter/ADR/ADR-EC-003_Shared_Navigable_Graph_Viewport.md) | 已验证 |
 | 场景组合预览 | 任意 SceneAsset 按 Runtime 精确覆盖、默认、空 Scope 顺序解析；选择只写 SessionState | [Phase 1.2 验收](../03_Architecture/EditorCenter/05_Phase1_2_Editor_Center_UX_Acceptance_And_Review.md) | 已验证 |
 
 这些决定只影响 Editor 发现、呈现和只读预览，不改变 Runtime 生命周期、中央设置序列化格式或场景解析优先级。
 
-## 5. 基础模块候选待办
+## 5. Phase 1.3 已经关闭的决定
+
+| 主题 | 已确认决定 | 依据 | 状态 |
+| --- | --- | --- | --- |
+| 页签模型 | 多个固定页 + 一个临时预览页；未固定页共用预览槽位 | [ADR-EC-004](../03_Architecture/EditorCenter/ADR/ADR-EC-004_Preview_And_Pinned_Page_Tabs.md) | 已验证 |
+| 持久化 | v2 只保存固定 PageId 顺序和最后活动固定页；预览页不持久化 | [Phase 1.3 验收](../03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md) | 已验证 |
+| 旧状态 | 不把旧 `openTabs` / `recentPageIds` 迁移为固定页，首次回到概览预览 | [ADR-EC-004](../03_Architecture/EditorCenter/ADR/ADR-EC-004_Preview_And_Pinned_Page_Tabs.md) | 已验证 |
+| 固定顺序 | 固定页可拖拽重排并跨会话保存；预览页不参与拖拽 | [Phase 1.3 计划](../03_Architecture/EditorCenter/06_Phase1_3_Preview_And_Pinned_Tabs_Implementation_Plan.md) | 状态逻辑已验证，GUI 手感待人工复核 |
+| 帮助页 | 使用普通预览/固定规则，不持久化阅读位置或临时文档状态 | [ADR-EC-004](../03_Architecture/EditorCenter/ADR/ADR-EC-004_Preview_And_Pinned_Page_Tabs.md) | 已验证 |
+
+这些决定只改变 Framework Center 的 Editor 交互和 Library 本地状态，不改变页面扩展公开签名或 Runtime 行为。
+
+## 6. 基础模块候选待办
 
 以下不是首批实现清单。每个模块都必须由游戏目标触发后单独定义契约：
 
@@ -77,7 +90,7 @@ Phase 1.2 的当前结果见[Editor Center UX 验收](../03_Architecture/EditorC
 
 为每个候选补齐：使用者、公开 API、所有权、依赖、同步/异步语义、失败行为、资源释放、EditMode/PlayMode 验收和明确非目标。
 
-## 6. 阶段需求输入模板
+## 7. 阶段需求输入模板
 
 用户提出下一阶段时，先记录以下内容；缺失且会改变架构的部分必须补齐后再实施。
 
@@ -111,7 +124,7 @@ Phase 1.2 的当前结果见[Editor Center UX 验收](../03_Architecture/EditorC
 - 性能或内存指标：
 ```
 
-## 7. 架构决策记录模板
+## 8. 架构决策记录模板
 
 每项影响核心契约的决定都在 Docs 中留下 ADR：
 
@@ -135,7 +148,7 @@ Phase 1.2 的当前结果见[Editor Center UX 验收](../03_Architecture/EditorC
 
 一个 ADR 只解决一个主要选择。被替代时保留原文并链接新 ADR，避免历史原因再次丢失。
 
-## 8. 单阶段门禁
+## 9. 单阶段门禁
 
 ### 设计就绪
 
@@ -151,11 +164,11 @@ Phase 1.2 的当前结果见[Editor Center UX 验收](../03_Architecture/EditorC
 - [x] 只实现本阶段批准范围
 - [x] Runtime、Editor、Tests 依赖方向正确
 - [x] Unity 编译通过
-- [x] 最新 EditMode 24/24、PlayMode 13/13 与无 Entry 的 A/B 示例切换通过
+- [x] 最新 EditMode 33/33、PlayMode 13/13 与无 Entry 的 A/B 示例切换通过
 - [x] 文档、ADR 和索引已回写
 - [x] 已记录未观察就绪失败等真实摩擦点，没有扩张到业务模块
 
-## 9. 下一步需要用户提供
+## 10. 下一步需要用户提供
 
 1. 第一个可验证游戏目标；
 2. 该目标必须使用的最少模块；
