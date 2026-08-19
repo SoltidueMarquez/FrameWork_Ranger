@@ -24,7 +24,19 @@ namespace Framework_WWJ.Samples.Editor
         /// </summary>
         public static void Build()
         {
-            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            Build(true);
+        }
+
+        internal static void BuildWithoutPrompt()
+        {
+            Build(false);
+        }
+
+        private static void Build(bool confirmOpenSceneSave)
+        {
+            if (confirmOpenSceneSave &&
+                !Application.isBatchMode &&
+                !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
                 return;
             }
@@ -41,10 +53,11 @@ namespace Framework_WWJ.Samples.Editor
 
             var globalConfig = LoadOrCreate<FrameworkGlobalConfig>(
                 ConfigDirectory + "/FrameworkGlobalConfig.asset");
-            globalConfig.SetModules(new List<ModuleConfigEntry>
-            {
-                new ModuleConfigEntry(true, globalModule),
-            });
+            var globalEntries = globalConfig.Modules
+                .Where(entry => entry?.Module != null && !(entry.Module is SampleGlobalClockModule))
+                .ToList();
+            globalEntries.Insert(0, new ModuleConfigEntry(true, globalModule));
+            globalConfig.SetModules(globalEntries);
 
             var sceneConfigA = LoadOrCreate<FrameworkSceneConfig>(
                 ConfigDirectory + "/FrameworkSceneAConfig.asset");
@@ -142,7 +155,14 @@ namespace Framework_WWJ.Samples.Editor
 
             settings.SetGlobalConfig(globalConfig);
             settings.SetDefaultSceneConfig(null);
-            settings.SetSceneBindings(new[] { bindingA, bindingB });
+            var bindings = settings.SceneBindings
+                .Where(binding => binding != null &&
+                                  binding.ScenePath != SceneAPath &&
+                                  binding.ScenePath != SceneBPath)
+                .ToList();
+            bindings.Insert(0, bindingB);
+            bindings.Insert(0, bindingA);
+            settings.SetSceneBindings(bindings);
             EditorUtility.SetDirty(settings);
         }
 

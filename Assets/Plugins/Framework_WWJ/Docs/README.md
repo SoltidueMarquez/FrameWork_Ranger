@@ -16,13 +16,16 @@ Docs/
 ├─ 00_Project/              当前状态、重建基线、清理记录、总决策待办
 ├─ 01_History/              旧框架、历代计划、Loader 与对象池历史原文
 ├─ 02_References/HTY/       HTY / ActFramework 架构、提炼矩阵、源码索引
+├─ 02_References/YokiFrame/ Kit 架构、基础能力与工具链参考
 ├─ 03_Architecture/Core/    模块骨架设计、阶段计划、ADR 与验收复盘
 ├─ 03_Architecture/EditorCenter/ 中央启动、统一编辑器中心与代码架构图
+├─ 03_Architecture/FoundationModules/ 基础模块纲领、AI 流水线与模块交付契约
+├─ 03_Architecture/Distribution/ 框架仓库、模块分发与管理 App 探索
 ├─ 04_Standards/            代码、注释、目录和实现规范
 └─ 05_Skills/               项目内 Skill 路由与自动发现 Skill 的同步入口
 ```
 
-未来新增基础模块时，在 `03_Architecture/<ModuleName>/` 建立对应设计资料，不把所有模块混入 Core 文档。
+未来新增基础模块时，在 `03_Architecture/FoundationModules/<ModuleName>/` 建立对应设计资料，不把所有模块混入 Core 文档。
 
 ## 当前设计入口
 
@@ -39,6 +42,10 @@ Docs/
 11. [Core ADR](./03_Architecture/Core/ADR/README.md)
 12. [代码、注释与分区规范](./04_Standards/Code_Style_And_Comments.md)
 13. [Skill 路由](./05_Skills/README.md)
+14. [基础模块建设入口](./03_Architecture/FoundationModules/README.md)
+15. [AI 模块开发流水线](./03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)
+16. [框架仓库、分发与管理 App 探索](./03_Architecture/Distribution/README.md)
+17. [Resource Management 模块入口](./03_Architecture/FoundationModules/ResourceManagement/README.md)
 
 ## 项目与历史
 
@@ -56,6 +63,7 @@ Docs/
 - [HTY / ActFramework 参考架构](./02_References/HTY/06_HTY_Reference_Architecture.md)
 - [HTY 轻量化提炼矩阵](./02_References/HTY/07_HTY_Lightweight_Extraction_Matrix.md)
 - [HTY 参考源码索引](./02_References/HTY/08_HTY_Reference_Source_Map.md)
+- [YokiFrame Kit 架构与源码索引](./02_References/YokiFrame/00_YokiFrame_Kit_Architecture_And_Source_Map.md)
 
 ## 维护约定
 

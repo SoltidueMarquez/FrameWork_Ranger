@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: a4feab0addeaf444ba14be5badf5f23f, type: 2}
+    - {fileID: 11400000, guid: 9fa205e95fe4f3e4a9b1952c095fd61a, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -28,7 +29,7 @@ MonoBehaviour:
         Framework_WWJ.Runtime]], mscorlib
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
       Data: 1|Framework_WWJ.ModuleConfigEntry, Framework_WWJ.Runtime
@@ -42,6 +43,18 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 7
+      Data: 2|Framework_WWJ.ModuleConfigEntry, Framework_WWJ.Runtime
+    - Name: m_enabled
+      Entry: 5
+      Data: true
+    - Name: m_module
+      Entry: 10
+      Data: 1
+    - Name:
+      Entry: 8
+      Data:
+    - Name:
       Entry: 13
       Data: 
     - Name: 
@@ -49,7 +62,7 @@ MonoBehaviour:
       Data: 
     - Name: m_driverHandler
       Entry: 7
-      Data: 2|Framework_WWJ.DefaultFrameworkDriverHandler, Framework_WWJ.Runtime
+      Data: 3|Framework_WWJ.DefaultFrameworkDriverHandler, Framework_WWJ.Runtime
     - Name: 
       Entry: 8
       Data: 

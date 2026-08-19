@@ -1,6 +1,6 @@
 # Framework_WWJ 重建设计待办
 
-> 状态：第一阶段骨架、Phase 1.1 中央启动/编辑器中心、Phase 1.2 编辑器 UX 与 Phase 1.3 预览/固定页签已完成；等待用户补充下一阶段需求和第一个游戏目标。<br>
+> 状态：核心与 Editor 阶段已完成；Resource Management 已验收关闭，Pooling 与 Event Center 等待逐模块需求确认与批准。<br>
 > 本文是决策入口，不是已经批准的阶段路线。
 
 当前骨架设计的用户输入、问题清单和计划格式已拆分到 [Core 架构设计入口](../03_Architecture/Core/README.md)。
@@ -74,23 +74,38 @@ Phase 1.3 的当前结果见[预览与固定页签验收](../03_Architecture/Edi
 
 这些决定只改变 Framework Center 的 Editor 交互和 Library 本地状态，不改变页面扩展公开签名或 Runtime 行为。
 
-## 6. 基础模块候选待办
+## 6. 基础模块程序已确认方向与待办
 
-以下不是首批实现清单。每个模块都必须由游戏目标触发后单独定义契约：
+2026-08-19 已建立基础模块流水线，并按该流程关闭首个 [Resource Management](../03_Architecture/FoundationModules/ResourceManagement/README.md) 阶段。Pooling 与 Event 仍必须各自经过需求、研究、计划和批准。
 
-- 日志与诊断
-- 时间与 Tick
-- 场景流程
-- 资源访问
-- 对象池
-- 音频
-- 输入
-- UI
-- 存档
+| 主题 | 当前状态 | 下一项决策 |
+| --- | --- | --- |
+| Resource Management | 已实现并验收 | Global；Resources + Addressables 1.22.3；显式 Key；Lease；single-flight；详细见模块 ADR |
+| Object/Reference Pooling | 用户选定的首批基础模块 | 引用池与 GameObject 池是否同一 Module；配置、预热、容量和 Resource 依赖 |
+| Event Center | 用户选定的首批基础模块 | 用户确认其依赖池化系统；仍需把依赖收缩到最小引用复用契约，并决定 Token/订阅所有权 |
+| 正式实施顺序 | Resource → Pooling → Event | Resource 已关闭；下一步只允许 Pooling 需求设计 |
+| 模块物理边界 | Resource 已验证 `BaseModules/<ModuleName>` 垂直胶囊 | Pooling 复用原则但重新确认具体 asmdef 与依赖 |
 
-为每个候选补齐：使用者、公开 API、所有权、依赖、同步/异步语义、失败行为、资源释放、EditMode/PlayMode 验收和明确非目标。
+其他日志、时间、场景、音频、输入、UI、存档等继续保留为后续候选，不进入当前三模块程序。
 
-## 7. 阶段需求输入模板
+每个模块都必须补齐：使用者、公开 API、所有权、依赖、同步/异步语义、失败行为、资源释放、EditMode/PlayMode 验收、明确非目标与可分发边界。
+
+## 7. 仓库、模块分发与管理 App 待办
+
+用户已提出未来专用 App 的需求方向，用于管理 Framework_WWJ 源码仓库、选择模块、向游戏项目安装/更新，并支持在游戏开发期间继续维护框架代码。当前研究入口见[分发 App 探索](../03_Architecture/Distribution/00_Framework_Repository_Distribution_App_Exploration.md)。
+
+尚未决定：
+
+- 源仓库是单仓多包还是模块多仓；
+- 安装使用 UPM、Assets 投影、本地开发链接或可编辑快照；
+- 模块清单、版本和依赖 schema；
+- 游戏项目改动如何检测、隔离并回流到框架仓库；
+- CLI、Unity Editor 和桌面 App 的职责边界；
+- GUID、用户配置、Packages/ProjectSettings 和冲突回滚规则。
+
+用户提供参考软件后，先做只读研究和用户旅程，不直接开始 App 实现。
+
+## 8. 阶段需求输入模板
 
 用户提出下一阶段时，先记录以下内容；缺失且会改变架构的部分必须补齐后再实施。
 
@@ -124,7 +139,7 @@ Phase 1.3 的当前结果见[预览与固定页签验收](../03_Architecture/Edi
 - 性能或内存指标：
 ```
 
-## 8. 架构决策记录模板
+## 9. 架构决策记录模板
 
 每项影响核心契约的决定都在 Docs 中留下 ADR：
 
@@ -148,7 +163,7 @@ Phase 1.3 的当前结果见[预览与固定页签验收](../03_Architecture/Edi
 
 一个 ADR 只解决一个主要选择。被替代时保留原文并链接新 ADR，避免历史原因再次丢失。
 
-## 9. 单阶段门禁
+## 10. 单阶段门禁
 
 ### 设计就绪
 
@@ -164,16 +179,16 @@ Phase 1.3 的当前结果见[预览与固定页签验收](../03_Architecture/Edi
 - [x] 只实现本阶段批准范围
 - [x] Runtime、Editor、Tests 依赖方向正确
 - [x] Unity 编译通过
-- [x] 最新 EditMode 33/33、PlayMode 13/13 与无 Entry 的 A/B 示例切换通过
+- [x] 最新全框架 EditMode 55/55、PlayMode 18/18；Resource Player 双后端冒烟通过
 - [x] 文档、ADR 和索引已回写
 - [x] 已记录未观察就绪失败等真实摩擦点，没有扩张到业务模块
 
-## 10. 下一步需要用户提供
+## 11. 下一步需要用户提供
 
-1. 第一个可验证游戏目标；
-2. 该目标必须使用的最少模块；
-3. 场景与跨场景状态模型；
-4. 对异步加载、取消和错误恢复的最低要求；
-5. 希望优先借鉴或明确避免的 HTY 设计。
+1. 确认 Pooling 是对象池与引用池的一个 Module 还是两个能力边界；
+2. Pooling 首批真实调用方和必须解决的游戏/开发工作流；
+3. 必须实现与明确不实现的能力；
+4. 所有权、异步、取消、失败、性能和内存的最低要求；
+5. 希望优先借鉴或明确避免的 HTY/YokiFrame 机制。
 
-收到这些信息后，再形成下一阶段的正式设计与验收计划。第一阶段骨架本身不预设必须先实现资源、对象池或音频中的哪一个。
+收到这些信息后，按[模块交付契约](../03_Architecture/FoundationModules/02_Module_Delivery_Contract_And_Templates.md)形成 Pooling 的详细设计与验收计划。计划批准前不创建 Pooling Runtime 代码。

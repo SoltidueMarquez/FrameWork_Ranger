@@ -1,0 +1,24 @@
+{
+  "name": "Framework_WWJ.BaseModules.ResourceManagement.Editor",
+  "rootNamespace": "Framework_WWJ.ResourceManagement.Editor",
+  "references": [
+    "Framework_WWJ.Runtime",
+    "Framework_WWJ.Editor",
+    "Framework_WWJ.BaseModules.ResourceManagement.Runtime",
+    "Framework_WWJ.BaseModules.ResourceManagement.UnityResources",
+    "Framework_WWJ.BaseModules.ResourceManagement.Addressables",
+    "Unity.Addressables",
+    "Unity.Addressables.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

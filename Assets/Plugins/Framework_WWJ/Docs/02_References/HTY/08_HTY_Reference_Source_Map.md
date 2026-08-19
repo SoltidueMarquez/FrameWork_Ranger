@@ -1,6 +1,7 @@
 # HTY 参考源码索引
 
 > 参考项目根目录：`D:\unityhub\UnityProjects\LyingBottle`<br>
+> 参考定位：LyingBottle 是 HTY / ActFramework 的实际使用项目，不是另一个平级框架。<br>
 > 默认规则：只读。除非用户明确改变范围，不修改 LyingBottle 的代码、资产、文档或 Skills。
 
 ## 1. 进入参考项目
@@ -69,14 +70,28 @@
 
 ## 5. 基础模块参考路线
 
+### 事件
+
+1. `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Event/README.md`
+2. `.../Packages/Main/Event/EventManager.cs`
+3. `.../Packages/Main/Event/Handler/DefaultEventHelper.cs`
+4. `.../Packages/Main/Event/Base/EventHandlerBase.cs`
+5. `.../Packages/Main/Event/StaticEvent/EventHub.cs`
+
+重点区分：`EventHub` 只服务框架启动阶段和模块系统尚未就绪时；业务事件使用 `EventManager` 模块。HTY 的事件对象继承 `EventHandlerBase`，可以配合 `ReferencePoolManager` 复用；这证明池化可行，但不自动证明 Framework_WWJ 的事件公共契约必须依赖整个池模块。
+
 ### 对象池
 
 1. `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Pool/README.md`
 2. `.../Packages/Main/Pool/Base/Core/GeneralPool.cs`
 3. `.../Packages/Main/Pool/Base/Core/ObjectPool.cs`
 4. `.../Packages/Main/Pool/Base/Core/ReferencePool.cs`
+5. `.../Packages/Main/Pool/ObjectPool/ObjectPoolManager.cs`
+6. `.../Packages/Main/Pool/ReferencePool/ReferencePoolManager.cs`
+7. `.../Packages/Main/Pool/ObjectPool/Handler/ObjectPoolHandler.cs`
+8. `.../Packages/Main/Pool/ReferencePool/Handler/ReferencePoolHandler.cs`
 
-重点观察纯 C# 池、GameObject 池和引用池的职责分层，同时核对 `FRAMEWORK_REVIEW.md` 记录的缓存释放风险。
+重点观察通用池、GameObject 池和引用池的职责分层，以及 Manager + Handler + Config 的接线；同时核对 `FRAMEWORK_REVIEW.md` 记录的缓存释放风险。HTY 的对象池与引用池是不同 Manager，不应仅凭“Pool”目录就合并成一个公共接口。
 
 ### 音频
 
@@ -91,9 +106,10 @@
 
 1. `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Resource/README.md`
 2. `.../Packages/Main/Resource/ResourceManager.cs`
-3. `Assets/Plugins/ActFramework_ByHZR/Packages/RuntimeModule/Resources/README.md`
+3. `.../Packages/Main/Resource/Handler/DefaultResourceHelper.cs`
+4. `Assets/Plugins/ActFramework_ByHZR/Packages/RuntimeModule/Resources/README.md`
 
-重点观察 Resources、Addressables 和业务资源描述的边界。参考项目并不存在一个天然适合轻量复制的单一资源 Handler。
+重点观察 Resources、AssetBundle、Addressables 和业务资源描述的边界。`IResourceHandler` 当前组合 LoaderConfig、AssetLoader、Unloader 与 BundleManager 四类接口，但实现仍很宽；参考项目并不存在一个天然适合轻量复制的单一资源 Handler。
 
 ## 6. 程序集与依赖
 
@@ -114,6 +130,7 @@
 | 研究全局/场景作用域 | `Global`、`Main`、两个 Loader、三个配置类型 |
 | 研究配置复杂度 | `ModuleCfg`、`MainRuntimeCfg`、三个配置资产 |
 | 研究对象池 | Pool README、三个 Pool Core 文件、框架体检对应章节 |
+| 研究事件 | Event README、EventManager、DefaultEventHelper、EventHandlerBase、EventHub、ReferencePoolManager |
 | 研究音频或资源 | 对应 README、Manager/配置、asmdef 和 LyingBottle 实际调用点 |
 
 形成结论后，把摘要写入 Framework_WWJ Docs；不要依赖未来会话重新扫描整个 LyingBottle。

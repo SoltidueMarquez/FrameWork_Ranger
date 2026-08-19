@@ -2,6 +2,7 @@
 
 > 参考项目：`D:\unityhub\UnityProjects\LyingBottle`<br>
 > 检查日期：2026-08-06<br>
+> 参考定位：LyingBottle 是使用 HTY / ActFramework 的真实游戏项目；框架源码与游戏装配、调用点可以交叉验证。<br>
 > 用途：为 Framework_WWJ 从零重建设立事实基线，不代表目标框架必须兼容或复刻 HTY API。
 
 ## 1. 信息标记
