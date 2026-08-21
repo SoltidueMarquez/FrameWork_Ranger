@@ -1,0 +1,17 @@
+{
+  "name": "Framework_WWJ.Samples.CoreSkeleton",
+  "rootNamespace": "Framework_WWJ.Samples",
+  "references": [
+    "Framework_WWJ.Runtime",
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

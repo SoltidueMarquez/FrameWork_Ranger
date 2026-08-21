@@ -1,0 +1,25 @@
+{
+  "name": "Framework_WWJ.Tests.PlayMode",
+  "rootNamespace": "Framework_WWJ.Tests",
+  "references": [
+    "Framework_WWJ.Runtime",
+    "Framework_WWJ.Samples.CoreSkeleton",
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.Serialization.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
