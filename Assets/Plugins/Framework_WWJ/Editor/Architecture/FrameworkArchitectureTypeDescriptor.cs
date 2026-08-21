@@ -16,25 +16,46 @@ namespace Framework_WWJ.Editor
     {
         internal Type Type { get; }
         internal FrameworkArchitectureAttribute Metadata { get; }
+        internal FrameworkArchitectureGroupDescriptor Group { get; }
         internal string AssemblyName { get; }
         internal Type BaseType { get; }
         internal IReadOnlyList<Type> DirectInterfaces { get; }
         internal MonoScript Script { get; }
 
-        internal bool IsInterface => Type.IsInterface;
+        internal FrameworkArchitectureTypeKind Kind { get; }
 
         internal FrameworkArchitectureTypeDescriptor(
             Type type,
             FrameworkArchitectureAttribute metadata,
+            FrameworkArchitectureGroupDescriptor group,
             IReadOnlyList<Type> directInterfaces,
             MonoScript script)
         {
             Type = type;
             Metadata = metadata;
+            Group = group;
             AssemblyName = type.Assembly.GetName().Name;
             BaseType = type.BaseType;
             DirectInterfaces = directInterfaces;
             Script = script;
+            Kind = ResolveKind(type);
+        }
+
+        private static FrameworkArchitectureTypeKind ResolveKind(Type type)
+        {
+            if (type.IsInterface)
+            {
+                return FrameworkArchitectureTypeKind.Interface;
+            }
+
+            if (type.IsEnum)
+            {
+                return FrameworkArchitectureTypeKind.Enum;
+            }
+
+            return type.IsValueType
+                ? FrameworkArchitectureTypeKind.Struct
+                : FrameworkArchitectureTypeKind.Class;
         }
     }
 }

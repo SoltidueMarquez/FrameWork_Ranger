@@ -3,6 +3,11 @@ namespace Framework_WWJ.Editor
     /// <summary>
     /// 架构图关系类型。
     /// </summary>
+    [FrameworkArchitecture(
+        "架构关系种类",
+        "区分继承、接口实现与显式协作三种架构关系。",
+        FrameworkArchitectureLayer.EditorIntegration,
+        305)]
     internal enum FrameworkArchitectureRelationKind
     {
         Inheritance,

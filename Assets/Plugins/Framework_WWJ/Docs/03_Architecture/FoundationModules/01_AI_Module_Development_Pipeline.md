@@ -76,6 +76,8 @@ flowchart LR
 8. EditMode、PlayMode、示例场景和性能验收；
 9. 实施门禁、迁移影响、文档回写和明确不做的扩展。
 
+计划中的每个生产程序集必须同时声明其 `FrameworkArchitectureAssemblyAttribute` 分组路径；逐脚本表中的顶层类、接口、结构体和枚举必须给出中文职责与关键协作关系。Tests、Samples 和第三方程序集不为满足架构图而接入生产目录。
+
 影响多个模块或未来分发边界的选择必须写 ADR。计划经过用户批准前不创建 Runtime 模块代码。
 
 ## 6. 阶段 4：Skill 与交付物准备
@@ -90,13 +92,15 @@ flowchart LR
 
 按计划逐门禁实施：
 
-1. 建立程序集与空类型，先确认依赖方向可编译；
+1. 建立程序集与空类型，声明生产程序集架构分组，先确认依赖方向可编译；
 2. 实现纯契约和纯算法，优先通过 EditMode；
 3. 接入 Module/Handler、Scope 生命周期、失败回滚与 Shutdown；
 4. 创建 SO 模板和配置资产，使用既有中央设置与依赖图完成装配；
 5. 添加必要 Inspector、Framework Center 页面或运行时诊断；
 6. 建立最小示例，证明模块在真实 Unity 生命周期中可用；
 7. 执行完整回归，修复后再进入文档收尾。
+
+任何生产顶层类型在实现时都必须维护 `FrameworkArchitectureAttribute`。模块完成前应能从 Framework Center 根目录逐层进入模块，查看职责、依赖并定位到正确源码；不得等到验收文档阶段才补一个孤立的 Module 节点。
 
 代码继续遵守中文 XML 注释、解释“为什么”的中文注释、语义化 `#region`、私有序列化字段和公开只读属性规范。不为假想需求堆叠保护或抽象。
 
@@ -120,7 +124,7 @@ flowchart LR
 
 - 模块 README、ADR、实施计划、验收复盘；
 - Docs 总索引、当前项目状态和决策待办；
-- 模块依赖图、FrameworkArchitecture Attribute 与源码定位；
+- 模块依赖图、程序集分组 Attribute、全部生产类型 Attribute 与源码定位；
 - Skill 路由与必要的模块专用参考；
 - 未来分发所需的模块身份、程序集、依赖、资产与安装边界候选。
 

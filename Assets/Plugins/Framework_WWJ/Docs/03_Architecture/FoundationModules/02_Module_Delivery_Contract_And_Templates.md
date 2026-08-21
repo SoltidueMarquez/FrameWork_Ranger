@@ -7,7 +7,7 @@
 | 层次 | 必需内容 |
 | --- | --- |
 | 需求 | 模块目标、调用方、范围、非目标、验收标准 |
-| 架构 | 逻辑图、数据流、生命周期、所有权、失败与依赖 |
+| 架构 | 逻辑图、数据流、生命周期、所有权、失败与依赖；生产程序集/类型在 Framework Center 分层架构目录中可见 |
 | Runtime | Module SO、可选 Handler/Provider、公开契约、内部实现 |
 | Editor | 必要 Inspector、配置诊断、Framework Center 接入；没有真实需求时可为空 |
 | Assets | 模块模板 SO、配置、示例资产与 `.meta` |
@@ -46,6 +46,8 @@ Assets/Plugins/Framework_WWJ/
 - Tests 与 Samples 单向依赖 Runtime；生产 Runtime 不引用 Tests/Samples。
 - 可选后端进入 Adapter/Integration 程序集，不把 Addressables、YooAsset 等依赖写进模块最小核心。
 - EventCenter 若需要池化，只依赖批准的最小 Pooling 契约，避免引入 GameObject/资源后端。
+- 每个生产程序集通过 `FrameworkArchitectureAssemblyAttribute` 声明稳定分组与职责；Tests、Samples、第三方程序集不接入生产架构目录。
+- 已接入程序集的顶层类、接口、结构体和枚举必须维护 `FrameworkArchitectureAttribute`，目录诊断必须为零。
 
 ## 4. Module SO 与运行状态规则
 
@@ -137,4 +139,5 @@ Assets/Plugins/Framework_WWJ/
 - [ ] EditMode、PlayMode、全框架回归与示例验收通过。
 - [ ] Runtime、Editor、Tests、Samples 依赖方向正确。
 - [ ] 新 Unity 资产都有稳定 `.meta`。
+- [ ] 生产程序集分组、全部生产顶层类型职责、关键关系和源码定位均进入分层代码架构图。
 - [ ] Docs、ADR、架构图元数据和 Skill 路由已回写。

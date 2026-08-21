@@ -9,6 +9,14 @@ namespace Framework_WWJ.ResourceManagement.Editor
     /// <summary>
     /// 只读验证 ResourceModule 的作用域、双 Provider 与 Addressables 项目配置。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源配置校验器",
+        "验证 ResourceModule 仅安装于 GlobalScope、Provider 不重复且双后端和 Addressables 设置齐全。",
+        FrameworkArchitectureLayer.EditorIntegration,
+        505,
+        typeof(ResourceModule),
+        typeof(ResourceProviderBase),
+        typeof(ResourceManagementConfigurationDiagnostic))]
     internal static class ResourceManagementConfigurationValidator
     {
         internal static IReadOnlyList<ResourceManagementConfigurationDiagnostic> ValidateCurrentProject()

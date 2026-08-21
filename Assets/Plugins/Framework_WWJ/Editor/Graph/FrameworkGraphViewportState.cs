@@ -13,8 +13,8 @@ namespace Framework_WWJ.Editor
         360)]
     internal sealed class FrameworkGraphViewportState
     {
-        internal const float MinZoom = 0.35f;
-        internal const float MaxZoom = 2f;
+        internal const float DefaultMinZoom = 0.35f;
+        internal const float DefaultMaxZoom = 2f;
         internal const float FramePadding = 32f;
 
         #region 运行时状态
@@ -23,6 +23,8 @@ namespace Framework_WWJ.Editor
         private Vector2 m_pan;
         private bool m_frameAllRequested = true;
         private bool m_resetToOneRequested;
+        private bool m_frameBoundsRequested;
+        private Rect m_requestedBounds;
 
         #endregion
 
@@ -32,7 +34,34 @@ namespace Framework_WWJ.Editor
 
         internal Vector2 Pan => m_pan;
 
+        internal float MinZoom { get; }
+
+        internal float MaxZoom { get; }
+
         #endregion
+
+        /// <summary>
+        /// 创建一份独立视口状态。代码架构大图可以使用更低的最小缩放，
+        /// 而模块依赖图继续使用默认的 35%–200%。
+        /// </summary>
+        internal FrameworkGraphViewportState(
+            float minZoom = DefaultMinZoom,
+            float maxZoom = DefaultMaxZoom)
+        {
+            if (minZoom <= 0f)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(minZoom));
+            }
+
+            if (maxZoom < minZoom)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(maxZoom));
+            }
+
+            MinZoom = minZoom;
+            MaxZoom = maxZoom;
+            m_zoom = Mathf.Clamp(1f, MinZoom, MaxZoom);
+        }
 
         #region 视图命令
 
@@ -40,12 +69,27 @@ namespace Framework_WWJ.Editor
         {
             m_frameAllRequested = true;
             m_resetToOneRequested = false;
+            m_frameBoundsRequested = false;
         }
 
         internal void RequestResetToOne()
         {
             m_resetToOneRequested = true;
             m_frameAllRequested = false;
+            m_frameBoundsRequested = false;
+        }
+
+        internal void RequestFrame(Rect contentBounds)
+        {
+            if (contentBounds.width <= 0f || contentBounds.height <= 0f)
+            {
+                return;
+            }
+
+            m_requestedBounds = contentBounds;
+            m_frameBoundsRequested = true;
+            m_frameAllRequested = false;
+            m_resetToOneRequested = false;
         }
 
         internal void ApplyPendingView(Rect viewport, Rect contentBounds)
@@ -56,7 +100,12 @@ namespace Framework_WWJ.Editor
                 return;
             }
 
-            if (m_frameAllRequested)
+            if (m_frameBoundsRequested)
+            {
+                FrameRect(viewport.size, m_requestedBounds);
+                m_frameBoundsRequested = false;
+            }
+            else if (m_frameAllRequested)
             {
                 FrameAll(viewport.size, contentBounds);
                 m_frameAllRequested = false;
@@ -80,7 +129,19 @@ namespace Framework_WWJ.Editor
             m_pan += delta;
         }
 
+        internal void KeepCanvasAnchor(Vector2 oldCanvasPoint, Vector2 newCanvasPoint)
+        {
+            // 布局展开会改变后续分组的 Canvas 坐标。补偿这段差值后，
+            // 用户刚刚操作的标题仍停留在相同的屏幕位置。
+            m_pan += (oldCanvasPoint - newCanvasPoint) * m_zoom;
+        }
+
         internal void FrameAll(Vector2 viewportSize, Rect contentBounds)
+        {
+            FrameRect(viewportSize, contentBounds);
+        }
+
+        internal void FrameRect(Vector2 viewportSize, Rect contentBounds)
         {
             var availableWidth = Mathf.Max(1f, viewportSize.x - FramePadding * 2f);
             var availableHeight = Mathf.Max(1f, viewportSize.y - FramePadding * 2f);
@@ -92,7 +153,7 @@ namespace Framework_WWJ.Editor
 
         internal void ResetToOne(Vector2 viewportSize, Rect contentBounds)
         {
-            m_zoom = 1f;
+            m_zoom = Mathf.Clamp(1f, MinZoom, MaxZoom);
             CenterContent(viewportSize, contentBounds);
         }
 

@@ -6,6 +6,14 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// Framework Center 与测试按需读取的资源运行状态，不向模板回写任何数据。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源诊断快照",
+        "汇总当前 Provider、缓存、Pending 与 Lease 数量，供编辑器和测试只读观察。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        190,
+        typeof(ResourceStore),
+        typeof(ResourceBackendDiagnostic),
+        typeof(ResourceEntryDiagnostic))]
     internal sealed class ResourceDiagnosticsSnapshot
     {
         internal bool IsAcceptingRequests { get; }
@@ -37,6 +45,12 @@ namespace Framework_WWJ.ResourceManagement
         }
     }
 
+    [FrameworkArchitecture(
+        "资源后端诊断项",
+        "记录一个已初始化资源后端的种类与 Provider 名称。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        191,
+        typeof(ResourceBackendKind))]
     internal readonly struct ResourceBackendDiagnostic
     {
         internal ResourceBackendKind Backend { get; }
@@ -50,6 +64,12 @@ namespace Framework_WWJ.ResourceManagement
         }
     }
 
+    [FrameworkArchitecture(
+        "资源条目诊断项",
+        "记录一个缓存或 Pending 条目的键、类型、Provider 与引用/等待数量。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        192,
+        typeof(ResourceKey))]
     internal readonly struct ResourceEntryDiagnostic
     {
         internal ResourceKey Key { get; }

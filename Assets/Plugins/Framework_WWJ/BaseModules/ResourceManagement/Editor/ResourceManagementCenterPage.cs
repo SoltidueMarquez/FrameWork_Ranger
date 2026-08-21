@@ -10,6 +10,14 @@ namespace Framework_WWJ.ResourceManagement.Editor
     /// <summary>
     /// Framework Center 中 Resource Management 的配置与运行时只读诊断页。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源模块中心页",
+        "在 Framework Center 汇总资源配置、双后端健康度与 Play Mode 缓存/Pending/Lease 快照。",
+        FrameworkArchitectureLayer.EditorIntegration,
+        500,
+        typeof(ResourceManagementConfigurationValidator),
+        typeof(ResourceModule),
+        typeof(ResourceDiagnosticsSnapshot))]
     [FrameworkCenterPageExtension]
     public sealed class ResourceManagementCenterPage : FrameworkCenterPage
     {

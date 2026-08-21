@@ -6,3 +6,5 @@
 2. [ADR-EC-002：声明式代码架构元数据](./ADR-EC-002_Declarative_Architecture_Metadata.md)
 3. [ADR-EC-003：共享可导航图视口](./ADR-EC-003_Shared_Navigable_Graph_Viewport.md)
 4. [ADR-EC-004：预览页签与固定页面快捷入口](./ADR-EC-004_Preview_And_Pinned_Page_Tabs.md)
+5. [ADR-EC-005：生产程序集显式接入与分层架构导航](./ADR-EC-005_OptIn_Production_Assemblies_And_Hierarchical_Navigation.md)
+6. [ADR-EC-006：单画布可展开代码架构图](./ADR-EC-006_Expandable_Compound_Architecture_Graph.md)

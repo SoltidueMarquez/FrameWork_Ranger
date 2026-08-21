@@ -2,6 +2,11 @@ using System;
 
 namespace Framework_WWJ
 {
+    [FrameworkArchitecture(
+        "模块图诊断级别",
+        "区分模块依赖图诊断的信息、警告与错误级别。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        6)]
     internal enum ModuleGraphDiagnosticSeverity
     {
         Info,
@@ -9,6 +14,12 @@ namespace Framework_WWJ
         Error,
     }
 
+    [FrameworkArchitecture(
+        "模块图诊断代码",
+        "定义空模板、缺失依赖、重复类型、方向错误和依赖环等稳定错误代码。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        7,
+        typeof(ModuleGraphDiagnostic))]
     internal enum ModuleGraphDiagnosticCode
     {
         MissingConfig,

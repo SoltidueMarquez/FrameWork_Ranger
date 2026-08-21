@@ -7,6 +7,13 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// 表示调用方对一份已加载资源拥有的独立借用权。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源租约",
+        "向调用方提供资源值和幂等 Release，并把一次借用权交由 ResourceLeaseState 管理。",
+        FrameworkArchitectureLayer.Contracts,
+        130,
+        typeof(ResourceKey),
+        typeof(ResourceLeaseState))]
     public sealed class ResourceLease<T> : IDisposable where T : Object
     {
         private readonly ResourceLeaseState m_state;

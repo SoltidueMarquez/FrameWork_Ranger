@@ -8,6 +8,12 @@ namespace Framework_WWJ.ResourceManagement.Addressables
     /// <summary>
     /// 独占一份 Addressables 引用计数的后端句柄。
     /// </summary>
+    [FrameworkArchitecture(
+        "Addressables 句柄",
+        "独占 Addressables 原生 Handle 的一份引用计数，并确保只释放一次。",
+        FrameworkArchitectureLayer.Contracts,
+        110,
+        typeof(IResourceBackendHandle<>))]
     internal sealed class AddressablesResourceBackendHandle<T> : IResourceBackendHandle<T> where T : Object
     {
         private AsyncOperationHandle<T> m_handle;

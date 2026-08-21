@@ -7,6 +7,14 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// 协调一个缓存键的共享底层加载与多个独立等待者。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源合并加载状态",
+        "让同一缓存键共享一次 Provider 加载，同时维护独立等待者、取消和完成所有权。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        150,
+        typeof(ResourceCacheKey),
+        typeof(ResourceProviderBase),
+        typeof(ResourceCacheEntry))]
     internal sealed class ResourcePendingLoad : IDisposable
     {
         private readonly CancellationTokenSource m_providerCancellation = new CancellationTokenSource();

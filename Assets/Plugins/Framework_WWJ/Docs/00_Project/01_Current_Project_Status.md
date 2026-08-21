@@ -1,12 +1,12 @@
 # Framework_WWJ 当前项目状态
 
-> 盘点时间：2026-08-19<br>
+> 盘点时间：2026-08-20<br>
 > Unity 项目：`D:\unityhub\UnityProjects\Framework_Test`  
 > 框架目录：`Assets/Plugins/Framework_WWJ`
 
 ## 1. 当前结论
 
-Framework_WWJ 已完成核心骨架、Editor Center Phase 1.1–1.3，以及首个正式基础模块 Resource Management。当前代码可以通过固定项目设置自动装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、可导航节点图、A/B 示例和 Resources/Addressables 双后端资源管理。
+Framework_WWJ 已完成核心骨架、Editor Center Phase 1.1–1.5，以及首个正式基础模块 Resource Management。当前代码可以通过固定项目设置自动装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、单画布可展开代码架构图、A/B 示例和 Resources/Addressables 双后端资源管理。
 
 Resource Management 已按批准契约实现并验收关闭；对象池/引用池与事件中心仍未开始，音频、输入、UI、存档等继续是未来候选。下一阶段只能先讨论 Pooling 的需求和公共契约，不能直接实现或并行推进 Event Center。
 
@@ -29,18 +29,18 @@ Resource Management 已按批准契约实现并验收关闭；对象池/引用�
 
 ## 3. 代码与程序集快照
 
-按 2026-08-18 工作区中的 `.cs` 文件与物理行统计：
+按 2026-08-20 工作区中的 `.cs` 文件与物理行统计：
 
 | 区域 | C# 文件 | 代码行 | 主要职责 |
 | --- | ---: | ---: | --- |
-| `Runtime` | 41 | 3,479 | 抽象、中央配置、Module/Handler、Graph、Scope、Bootstrap 与 Runtime |
-| `Editor` | 30 | 4,200 | Framework Center、预览/固定页签、显式页面发现、共享图视口、设置工具、依赖图、代码架构图与源码定位 |
-| `Tests/EditMode` | 9 | 1,037 | 图解析、克隆、中央设置、架构目录、Center 页签状态/持久化与图视口数学 |
-| `Tests/PlayMode` | 7 | 707 | 自动启动、场景、失败、Tick、Shutdown 与示例集成 |
-| `Samples/CoreSkeleton/Runtime` | 6 | 275 | 全局时钟、场景 Module、两种 Handler 与 IMGUI View |
-| `Samples/CoreSkeleton/Editor` | 2 | 263 | 示例资产构建器与显式标记的 Framework Center 扩展页 |
-| `BaseModules/ResourceManagement` 生产代码 | 28 | 2,360 | Resource Runtime、双 Integration、Editor 与 Samples |
-| `BaseModules/ResourceManagement/Tests` | 7 | 1,008 | 资源契约、缓存/取消、配置、生命周期与真实双后端集成 |
+| `Runtime` | 42 | 3,763 | 抽象、中央配置、Module/Handler、Graph、Scope、Bootstrap 与 Runtime |
+| `Editor` | 33 | 6,105 | Framework Center、预览/固定页签、生产程序集目录、单画布复合架构图、共享图视口、设置工具与源码定位 |
+| `Tests/EditMode` | 10 | 1,327 | 图解析、克隆、中央设置、架构目录、复合布局、Center 页签状态/持久化与图视口数学 |
+| `Tests/PlayMode` | 7 | 708 | 自动启动、场景、失败、Tick、Shutdown 与示例集成 |
+| `Samples/CoreSkeleton/Runtime` | 6 | 296 | 全局时钟、场景 Module、两种 Handler 与 IMGUI View |
+| `Samples/CoreSkeleton/Editor` | 2 | 286 | 示例资产构建器与显式标记的 Framework Center 扩展页 |
+| `BaseModules/ResourceManagement` 生产代码 | 26 | 1,952 | Resource Runtime、双 Integration 与 Editor；不含 Samples/Tests |
+| `BaseModules/ResourceManagement/Tests` | 7 | 1,018 | 资源契约、缓存/取消、配置、生命周期与真实双后端集成 |
 
 独立程序集：
 
@@ -80,9 +80,13 @@ Runtime 不引用 `UnityEditor`；Editor、Tests 和 Sample 单向依赖 Runtime
 
 - 菜单 `Framework_WWJ/Framework Center` 是项目配置、架构图、帮助和示例验收的统一入口。
 - 页面通过 `FrameworkCenterPage`、`[FrameworkCenterPageExtension]` 和 `TypeCache` 显式发现，支持搜索、单预览页、可排序持久固定页和页面级错误隔离；测试替身不会进入生产目录。
-- Runtime/Editor 顶层类及关键接口通过 `FrameworkArchitectureAttribute` 维护名称、中文职责、层级与关键协作关系；当前共有 65 个声明。
+- 生产程序集通过 `FrameworkArchitectureAssemblyAttribute` 显式加入架构目录，避免核心维护模块白名单；Tests、Samples 和第三方程序集默认排除。
+- 所有接入生产程序集中的顶层类、接口、结构体与枚举通过 `FrameworkArchitectureAttribute` 维护中文名称、职责、层级与关键协作关系。
+- 当前正式目录包含 11 个分组、104 个类型节点且诊断为零；其中 Resource Management 为 25 个节点，覆盖公开契约、Module/Handler、缓存状态、Provider、双后端与 Editor 工具。
+- 架构页使用一张 Compound Graph：分组是可折叠纵向泳道，展开后在原位置显示子组和类型；全部类型继续按七个全局逻辑层列对齐。
+- 新 Unity 会话默认全部收起，当前会话保存用户展开集合；折叠关系聚合到可见分组代理，搜索使用不污染用户状态的临时展开。
 - Center 使用 42px 顶部栏、30px 标签栏、208px 扁平导航、动态页面标题卡片和深浅主题自适应样式。
-- 代码架构图与模块依赖图共用 35%–200% 的可缩放、可平移视口，提供适配和 100% 重置；节点仍使用固定自动布局。
+- 代码架构图与模块依赖图共用可缩放、可平移视口，提供适配和 100% 重置；代码架构图为 10%–200%，其他图保持 35%–200%。
 - 固定项目设置的 Inspector、Framework Center 和构建前校验共享同一套设置诊断和模块图结果；项目配置页可按任意 SceneAsset 预览真实 Global + Scene 组合。
 
 ## 6. 示例与资产接线
@@ -101,12 +105,12 @@ Resource Sample 追加一个 Global `ResourceModule.asset`、空 SceneConfig 和
 
 | 测试集 | 结果 | 用例 | NUnit 时长 |
 | --- | --- | ---: | ---: |
-| EditMode | Passed | 55/55 | — |
-| PlayMode | Passed | 18/18 | — |
+| EditMode | Passed | 67/67 | 2.831 s |
+| PlayMode | Passed | 18/18 | 0.581 s |
 
-Resource 专属结果为 EditMode 22/22、PlayMode 5/5；全框架为 EditMode 55/55、PlayMode 18/18。Addressables 本地内容、StandaloneWindows64 Player（0 warning）和 Player 双后端命令行冒烟均通过，冒烟退出码为 0。完整证据见 [Resource Management 验收与复盘](../03_Architecture/FoundationModules/ResourceManagement/04_Acceptance_And_Review.md)。
+最新隔离工程完整回归为 EditMode 67/67、PlayMode 18/18；目录保持 104 个正式节点、25 个 Resource 节点、0 条元数据/源码定位诊断。Resource 原阶段专属结果为 EditMode 22/22、PlayMode 5/5；Addressables 本地内容、StandaloneWindows64 Player（0 warning）和 Player 双后端命令行冒烟均通过，冒烟退出码为 0。完整证据见 [Resource Management 验收与复盘](../03_Architecture/FoundationModules/ResourceManagement/04_Acceptance_And_Review.md)及 [Phase 1.5 验收与复盘](../03_Architecture/EditorCenter/11_Phase1_5_Expandable_Compound_Architecture_Graph_Acceptance_And_Review.md)。
 
-完整证据、计划偏差和人工步骤见 [Phase 1.3 验收与复盘](../03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)。
+Editor Center 前序页签验收见 [Phase 1.3 验收与复盘](../03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)；最新单画布架构图证据与人工步骤见 [Phase 1.5 验收与复盘](../03_Architecture/EditorCenter/11_Phase1_5_Expandable_Compound_Architecture_Graph_Acceptance_And_Review.md)。
 
 ## 8. 当前未决范围
 

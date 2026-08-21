@@ -15,7 +15,7 @@ namespace Framework_WWJ.Editor
         typeof(FrameworkSourceScriptIndex))]
     internal static class FrameworkArchitectureDetailDrawer
     {
-        internal static void Draw(FrameworkArchitectureTypeDescriptor descriptor)
+        internal static void DrawType(FrameworkArchitectureTypeDescriptor descriptor)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(310f));
             EditorGUILayout.LabelField("节点详情", EditorStyles.boldLabel);
@@ -31,8 +31,9 @@ namespace Framework_WWJ.Editor
             EditorGUILayout.Space(6f);
             DrawValue("类型", descriptor.Type.FullName);
             DrawValue("程序集", descriptor.AssemblyName);
+            DrawValue("分组", descriptor.Group.GroupId);
             DrawValue("层级", descriptor.Metadata.Layer.ToString());
-            DrawValue("种类", descriptor.IsInterface ? "Interface" : "Class");
+            DrawValue("种类", descriptor.Kind.ToString());
             DrawValue("基类", descriptor.BaseType?.FullName ?? "<无>");
             DrawTypes("直接接口", descriptor.DirectInterfaces);
             DrawTypes("关键协作", descriptor.Metadata.RelatedTypes);
@@ -56,6 +57,54 @@ namespace Framework_WWJ.Editor
                 }
 
                 EditorGUILayout.EndHorizontal();
+            }
+
+            EditorGUILayout.EndVertical();
+        }
+
+        internal static void DrawGroup(
+            FrameworkArchitectureGroupDescriptor descriptor,
+            bool isExpanded,
+            bool canToggle,
+            Action<FrameworkArchitectureGroupDescriptor> toggleGroup)
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(310f));
+            EditorGUILayout.LabelField("分组详情", EditorStyles.boldLabel);
+            if (descriptor == null)
+            {
+                EditorGUILayout.HelpBox("点击一个分组查看职责和内部规模。", MessageType.Info);
+                EditorGUILayout.EndVertical();
+                return;
+            }
+
+            EditorGUILayout.LabelField(descriptor.DisplayName, FrameworkCenterStyles.CardTitle);
+            EditorGUILayout.LabelField(descriptor.Responsibility, FrameworkCenterStyles.Description);
+            EditorGUILayout.Space(6f);
+            DrawValue("稳定路径", string.IsNullOrEmpty(descriptor.GroupId) ? "<根目录>" : descriptor.GroupId);
+            DrawValue("内部类型", descriptor.DescendantTypeCount.ToString());
+            DrawValue("生产程序集", descriptor.DescendantAssemblyCount.ToString());
+            DrawValue(
+                "直属程序集",
+                descriptor.AssemblyNames.Count == 0
+                    ? "<无>"
+                    : string.Join("\n", descriptor.AssemblyNames));
+            DrawValue(
+                "下级分组",
+                descriptor.Children.Count == 0
+                    ? "<无>"
+                    : string.Join(
+                        "、",
+                        System.Linq.Enumerable.Select(
+                            descriptor.Children,
+                            child => child.DisplayName)));
+
+            EditorGUILayout.Space(8f);
+            using (new EditorGUI.DisabledScope(!canToggle))
+            {
+                if (GUILayout.Button(isExpanded ? "收起分组" : "展开分组"))
+                {
+                    toggleGroup?.Invoke(descriptor);
+                }
             }
 
             EditorGUILayout.EndVertical();

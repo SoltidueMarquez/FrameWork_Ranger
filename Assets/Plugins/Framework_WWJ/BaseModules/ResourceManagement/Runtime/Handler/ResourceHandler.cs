@@ -12,6 +12,14 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// ResourceModule 的运行编排器，负责双 Provider 初始化、路由表与 ResourceStore 生命周期。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源模块 Handler",
+        "串行初始化双 Provider、构建后端路由与 ResourceStore，并在卸载时完成聚合清理。",
+        FrameworkArchitectureLayer.RuntimeDriving,
+        180,
+        typeof(ResourceModule),
+        typeof(ResourceProviderBase),
+        typeof(ResourceStore))]
     [Serializable]
     public sealed class ResourceHandler : ModuleHandlerBase
     {

@@ -8,6 +8,13 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// 由引用类型保存单份 Lease 的状态，避免值类型复制导致引用计数重复归还。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源租约状态",
+        "保存单份 Lease 的活动状态与主线程约束，并把释放请求归还给 ResourceStore。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        140,
+        typeof(ResourceStore),
+        typeof(ResourceCacheEntry))]
     internal sealed class ResourceLeaseState
     {
         private ResourceStore m_store;

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Framework_WWJ.Editor
 {
@@ -16,15 +18,27 @@ namespace Framework_WWJ.Editor
         internal IReadOnlyList<FrameworkArchitectureTypeDescriptor> Nodes { get; }
         internal IReadOnlyList<FrameworkArchitectureRelation> Relations { get; }
         internal IReadOnlyList<string> Diagnostics { get; }
+        internal FrameworkArchitectureGroupDescriptor RootGroup { get; }
+        internal IReadOnlyList<FrameworkArchitectureGroupDescriptor> Groups { get; }
 
         internal FrameworkArchitectureCatalog(
             IReadOnlyList<FrameworkArchitectureTypeDescriptor> nodes,
             IReadOnlyList<FrameworkArchitectureRelation> relations,
-            IReadOnlyList<string> diagnostics)
+            IReadOnlyList<string> diagnostics,
+            FrameworkArchitectureGroupDescriptor rootGroup,
+            IReadOnlyList<FrameworkArchitectureGroupDescriptor> groups)
         {
             Nodes = nodes;
             Relations = relations;
             Diagnostics = diagnostics;
+            RootGroup = rootGroup;
+            Groups = groups;
+        }
+
+        internal FrameworkArchitectureGroupDescriptor FindGroup(string groupId)
+        {
+            return Groups.FirstOrDefault(group =>
+                string.Equals(group.GroupId, groupId ?? string.Empty, StringComparison.Ordinal));
         }
     }
 }

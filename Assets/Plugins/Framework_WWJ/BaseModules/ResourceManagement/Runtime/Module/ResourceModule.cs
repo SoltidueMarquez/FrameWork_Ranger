@@ -12,11 +12,12 @@ namespace Framework_WWJ.ResourceManagement
     [CreateAssetMenu(fileName = "ResourceModule", menuName = "Framework WWJ/Modules/Resource Management")]
     [FrameworkArchitecture(
         "资源管理模块",
-        "以显式后端 ResourceKey 提供异步加载与 Lease 所有权。",
+        "作为 GlobalScope 公开门面，以显式后端 ResourceKey 提供异步加载与 Lease 所有权。",
         FrameworkArchitectureLayer.PublicFacade,
         100,
         typeof(ResourceHandler),
-        typeof(ResourceKey))]
+        typeof(ResourceKey),
+        typeof(ResourceLease<>))]
     public sealed class ResourceModule : HandlerModuleBase<ResourceHandler>
     {
         /// <summary>

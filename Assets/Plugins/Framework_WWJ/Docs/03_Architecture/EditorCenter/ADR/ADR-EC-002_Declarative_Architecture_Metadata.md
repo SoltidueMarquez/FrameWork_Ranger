@@ -4,6 +4,9 @@
 - 日期：2026-08-07
 - 所属阶段：Phase 1.1——中央启动、统一编辑器中心与架构类图
 
+> Phase 1.4 通过 [ADR-EC-005](./ADR-EC-005_OptIn_Production_Assemblies_And_Hierarchical_Navigation.md)
+> 扩展了本决定：目标范围改为显式接入的生产程序集，类型覆盖增加结构体与枚举，显示方式改为分组目录 + 叶级类型图。
+
 ## 背景与约束
 
 Framework_WWJ 需要在 Unity 内展示可理解、可点击并能定位源码的类图。仅靠反射可以推导继承和接口实现，却无法可靠表达中文名称、职责、逻辑层级及少量关键协作关系；手工维护独立清单又容易与代码漂移。
@@ -25,7 +28,7 @@ Attribute 使用 `Conditional("UNITY_EDITOR")`，使玩家构建不保留职责�
 - 新增 Runtime/Editor 顶层目标类型时必须同步维护 Attribute，EditMode 测试负责防漂移。
 - 代码中的 Attribute 是架构图元数据事实源，详细设计与决策仍以 Docs 为事实源。
 - 图只表达继承、接口实现与少量显式协作，不代表完整运行时调用图。
-- Samples、Tests、第三方代码、枚举、委托和私有嵌套辅助类型不进入图。
+- Samples、Tests、第三方代码、委托和私有嵌套辅助类型不进入图；生产结构体与枚举已由 Phase 1.4 纳入。
 - 本阶段不使用 GraphView，也不支持节点自由拖动、缩放或自动写回代码。
 
 ## 验证方式

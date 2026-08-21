@@ -10,6 +10,16 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// ResourceModule 的运行容器，集中管理后端路由、缓存、共享加载和 Lease 所有权。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源运行 Store",
+        "统一执行后端路由、缓存命中、并发请求合并、Lease 引用计数与关停清理。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        170,
+        typeof(ResourceProviderBase),
+        typeof(ResourceCacheEntry),
+        typeof(ResourcePendingLoad),
+        typeof(ResourceLeaseState),
+        typeof(ResourceDiagnosticsSnapshot))]
     internal sealed class ResourceStore
     {
         private readonly Dictionary<ResourceBackendKind, ResourceProviderBase> m_providers;

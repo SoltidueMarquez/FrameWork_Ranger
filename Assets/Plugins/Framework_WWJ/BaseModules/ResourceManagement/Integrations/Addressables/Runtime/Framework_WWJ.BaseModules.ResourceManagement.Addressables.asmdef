@@ -2,6 +2,7 @@
   "name": "Framework_WWJ.BaseModules.ResourceManagement.Addressables",
   "rootNamespace": "Framework_WWJ.ResourceManagement.Addressables",
   "references": [
+    "Framework_WWJ.Runtime",
     "Framework_WWJ.BaseModules.ResourceManagement.Runtime",
     "Unity.Addressables",
     "Unity.ResourceManager",

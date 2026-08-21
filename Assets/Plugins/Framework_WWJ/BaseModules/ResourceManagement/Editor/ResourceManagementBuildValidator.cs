@@ -7,6 +7,12 @@ namespace Framework_WWJ.ResourceManagement.Editor
     /// <summary>
     /// 阻止缺失双后端或错误作用域的 Resource 配置进入 Player 构建。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源构建校验器",
+        "在 Player 构建前复用资源配置诊断，阻止缺失双后端或错误作用域进入构建。",
+        FrameworkArchitectureLayer.EditorIntegration,
+        510,
+        typeof(ResourceManagementConfigurationValidator))]
     internal sealed class ResourceManagementBuildValidator : IPreprocessBuildWithReport
     {
         public int callbackOrder => 20;

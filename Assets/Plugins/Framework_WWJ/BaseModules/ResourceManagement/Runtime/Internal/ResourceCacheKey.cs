@@ -5,6 +5,12 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// 缓存以完整 ResourceKey 与调用方请求的精确类型共同分区。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源缓存键",
+        "以 ResourceKey 与精确请求类型共同划分缓存和合并加载边界。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        110,
+        typeof(ResourceKey))]
     internal readonly struct ResourceCacheKey : IEquatable<ResourceCacheKey>
     {
         internal ResourceKey ResourceKey { get; }

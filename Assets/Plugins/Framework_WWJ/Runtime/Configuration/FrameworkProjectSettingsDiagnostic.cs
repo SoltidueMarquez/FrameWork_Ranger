@@ -3,6 +3,11 @@ namespace Framework_WWJ
     /// <summary>
     /// 项目设置诊断的严重程度。
     /// </summary>
+    [FrameworkArchitecture(
+        "项目设置诊断级别",
+        "区分中央项目设置诊断的信息、警告与错误级别。",
+        FrameworkArchitectureLayer.Configuration,
+        46)]
     internal enum FrameworkProjectSettingsDiagnosticSeverity
     {
         Info,
@@ -13,6 +18,12 @@ namespace Framework_WWJ
     /// <summary>
     /// 项目设置诊断的稳定代码，供 Editor 和测试判断具体问题。
     /// </summary>
+    [FrameworkArchitecture(
+        "项目设置诊断代码",
+        "定义中央项目设置各类结构错误的稳定机器可读代码。",
+        FrameworkArchitectureLayer.Configuration,
+        47,
+        typeof(FrameworkProjectSettingsDiagnostic))]
     internal enum FrameworkProjectSettingsDiagnosticCode
     {
         MissingSettings,

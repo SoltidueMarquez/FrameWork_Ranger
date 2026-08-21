@@ -26,10 +26,10 @@ namespace Framework_WWJ.Tests
             var state = new FrameworkGraphViewportState();
 
             state.SetZoomAround(Vector2.zero, 10f);
-            Assert.That(state.Zoom, Is.EqualTo(FrameworkGraphViewportState.MaxZoom));
+            Assert.That(state.Zoom, Is.EqualTo(FrameworkGraphViewportState.DefaultMaxZoom));
 
             state.SetZoomAround(Vector2.zero, 0.01f);
-            Assert.That(state.Zoom, Is.EqualTo(FrameworkGraphViewportState.MinZoom));
+            Assert.That(state.Zoom, Is.EqualTo(FrameworkGraphViewportState.DefaultMinZoom));
         }
 
         [Test]
@@ -73,6 +73,51 @@ namespace Framework_WWJ.Tests
             state.PanBy(new Vector2(45f, -12f));
 
             Assert.That(state.CanvasToViewport(new Vector2(10f, 20f)), Is.EqualTo(before + new Vector2(45f, -12f)));
+        }
+
+        [Test]
+        public void CustomZoomRange_AllowsArchitectureOverviewWithoutChangingDefaultRange()
+        {
+            var architectureState = new FrameworkGraphViewportState(0.10f, 2f);
+            var defaultState = new FrameworkGraphViewportState();
+
+            architectureState.SetZoomAround(Vector2.zero, 0.01f);
+            defaultState.SetZoomAround(Vector2.zero, 0.01f);
+
+            Assert.That(architectureState.Zoom, Is.EqualTo(0.10f));
+            Assert.That(defaultState.Zoom, Is.EqualTo(0.35f));
+        }
+
+        [Test]
+        public void KeepCanvasAnchor_PreservesOldViewportPositionAfterLayoutMoves()
+        {
+            var state = new FrameworkGraphViewportState(0.10f, 2f);
+            state.SetZoomAround(Vector2.zero, 1.4f);
+            state.PanBy(new Vector2(80f, -35f));
+            var oldCanvasPoint = new Vector2(200f, 300f);
+            var oldViewportPoint = state.CanvasToViewport(oldCanvasPoint);
+            var newCanvasPoint = new Vector2(200f, 820f);
+
+            state.KeepCanvasAnchor(oldCanvasPoint, newCanvasPoint);
+
+            Assert.That(state.CanvasToViewport(newCanvasPoint).x, Is.EqualTo(oldViewportPoint.x).Within(0.001f));
+            Assert.That(state.CanvasToViewport(newCanvasPoint).y, Is.EqualTo(oldViewportPoint.y).Within(0.001f));
+        }
+
+        [Test]
+        public void RequestFrame_FramesSpecifiedBoundsInsteadOfWholeContent()
+        {
+            var state = new FrameworkGraphViewportState(0.10f, 2f);
+            var viewport = new Rect(0f, 0f, 1000f, 600f);
+            var wholeContent = new Rect(0f, 0f, 4000f, 3000f);
+            var requested = new Rect(700f, 800f, 400f, 240f);
+
+            state.RequestFrame(requested);
+            state.ApplyPendingView(viewport, wholeContent);
+
+            Assert.That(state.CanvasToViewport(requested).center.x, Is.EqualTo(viewport.center.x).Within(0.001f));
+            Assert.That(state.CanvasToViewport(requested).center.y, Is.EqualTo(viewport.center.y).Within(0.001f));
+            Assert.That(state.Zoom, Is.GreaterThan(0.10f));
         }
     }
 }

@@ -9,6 +9,13 @@ namespace Framework_WWJ.ResourceManagement.UnityResources
     /// <summary>
     /// 使用 Unity Resources.LoadAsync 的内置资源后端。
     /// </summary>
+    [FrameworkArchitecture(
+        "Unity Resources Provider",
+        "把 Resources.LoadAsync 结果包装为框架后端句柄，不触发跨后端回退。",
+        FrameworkArchitectureLayer.RuntimeDriving,
+        100,
+        typeof(ResourceProviderBase),
+        typeof(UnityResourcesBackendHandle<>))]
     [Serializable]
     public sealed class UnityResourcesProvider : ResourceProviderBase
     {

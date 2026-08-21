@@ -11,6 +11,13 @@ namespace Framework_WWJ.ResourceManagement.Addressables
     /// <summary>
     /// 使用 Unity Addressables 的资源后端，原生 Handle 不向 Resource Runtime 或业务层泄漏。
     /// </summary>
+    [FrameworkArchitecture(
+        "Addressables Provider",
+        "初始化 Addressables、执行异步加载并把原生 Handle 所有权封装为框架后端句柄。",
+        FrameworkArchitectureLayer.RuntimeDriving,
+        100,
+        typeof(ResourceProviderBase),
+        typeof(AddressablesResourceBackendHandle<>))]
     [Serializable]
     public sealed class AddressablesResourceProvider : ResourceProviderBase
     {

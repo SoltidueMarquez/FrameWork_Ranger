@@ -4,6 +4,8 @@
 
 本目录是 Framework_WWJ 资源管理模块的权威事实源。Runtime 实现位于 `BaseModules/ResourceManagement`，模块采用显式后端键、独立 Lease、同键同类型 single-flight，并同时提供 Unity Resources 与 Addressables 1.22.3。
 
+Resource Management 已接入 Framework Center 的分层代码架构目录：从“基础模块 → 资源管理”可继续查看 Runtime、Editor、Unity Resources 与 Addressables。25 个生产顶层类型均维护中文职责与关键协作信息；实现与验收见 [Phase 1.4 分层代码架构导航](../../EditorCenter/09_Phase1_4_Hierarchical_Architecture_Navigator_Acceptance_And_Review.md)。
+
 ## 文档
 
 1. [需求简报](./00_Requirement_Brief.md)

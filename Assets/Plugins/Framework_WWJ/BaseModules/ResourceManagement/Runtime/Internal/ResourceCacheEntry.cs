@@ -8,6 +8,13 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// 保存一份底层加载结果、后端所有权句柄和全部活动 Lease。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源缓存条目",
+        "独占一份后端加载结果，创建并跟踪 Lease，在最后引用归还后释放后端句柄。",
+        FrameworkArchitectureLayer.GraphAndScope,
+        130,
+        typeof(ResourceCacheKey),
+        typeof(ResourceLeaseState))]
     internal sealed class ResourceCacheEntry
     {
         private readonly HashSet<ResourceLeaseState> m_leases = new HashSet<ResourceLeaseState>();

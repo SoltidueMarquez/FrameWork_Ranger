@@ -47,3 +47,7 @@ Player 日志包含：`[Framework_WWJ][ResourceStandaloneSmoke] PASS 双后端 A
 ## 后续
 
 Resource 阶段关闭后，下一次对话可开始 Pooling 的需求确认；不得直接实现 Pooling，也不得让 Event Center 依赖 Resource 或具体池实现。
+
+## Phase 1.4 后续集成记录
+
+2026-08-20，Resource Management 的 25 个生产顶层类型已接入 Framework Center 分层代码架构目录，覆盖 Runtime、Editor、Unity Resources 与 Addressables；目录诊断与源码定位失败均为零。该改动只补充架构元数据和编辑器导航，不改变本页已验收的资源 Runtime 行为。完整证据见 [Phase 1.4 验收与复盘](../../EditorCenter/09_Phase1_4_Hierarchical_Architecture_Navigator_Acceptance_And_Review.md)。

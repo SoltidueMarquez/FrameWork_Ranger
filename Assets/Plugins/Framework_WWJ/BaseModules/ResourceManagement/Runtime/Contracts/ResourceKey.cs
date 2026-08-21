@@ -5,6 +5,12 @@ namespace Framework_WWJ.ResourceManagement
     /// <summary>
     /// 同时描述加载后端与后端内位置的稳定资源键。
     /// </summary>
+    [FrameworkArchitecture(
+        "资源键",
+        "以明确后端与位置组成不可变资源身份，并提供校验、相等与哈希语义。",
+        FrameworkArchitectureLayer.Contracts,
+        120,
+        typeof(ResourceBackendKind))]
     public readonly struct ResourceKey : IEquatable<ResourceKey>
     {
         #region 公开属性

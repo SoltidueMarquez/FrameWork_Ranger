@@ -13,7 +13,10 @@ namespace Framework_WWJ
         -100)]
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(
-        AttributeTargets.Class | AttributeTargets.Interface,
+        AttributeTargets.Class |
+        AttributeTargets.Interface |
+        AttributeTargets.Struct |
+        AttributeTargets.Enum,
         AllowMultiple = false,
         Inherited = false)]
     public sealed class FrameworkArchitectureAttribute : Attribute
