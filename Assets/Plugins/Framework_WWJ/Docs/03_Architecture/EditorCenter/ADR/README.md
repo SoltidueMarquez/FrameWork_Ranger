@@ -9,3 +9,5 @@
 5. [ADR-EC-005：生产程序集显式接入与分层架构导航](./ADR-EC-005_OptIn_Production_Assemblies_And_Hierarchical_Navigation.md)
 6. [ADR-EC-006：单画布可展开代码架构图](./ADR-EC-006_Expandable_Compound_Architecture_Graph.md)
 7. [ADR-EC-007：紧凑可展开架构节点图](./ADR-EC-007_Compact_Expandable_Architecture_Graph.md)
+8. [ADR-EC-008：Editor 持有的配置内联 Inspector](./ADR-EC-008_Editor_Owned_Inline_Inspectors.md)
+9. [ADR-EC-009：HTY 式主从配置工作台](./ADR-EC-009_HTY_Style_Configuration_Workspace.md)

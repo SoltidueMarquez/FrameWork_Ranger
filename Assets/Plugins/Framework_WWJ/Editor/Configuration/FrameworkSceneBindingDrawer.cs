@@ -15,7 +15,9 @@ namespace Framework_WWJ.Editor
         typeof(FrameworkSceneBinding))]
     internal static class FrameworkSceneBindingDrawer
     {
-        internal static bool Draw(FrameworkProjectSettings settings)
+        internal static bool Draw(
+            FrameworkProjectSettings settings,
+            FrameworkInlineInspectorHost inlineInspectorHost)
         {
             var bindings = new List<FrameworkSceneBinding>(settings.SceneBindings);
             var changed = false;
@@ -48,11 +50,10 @@ namespace Framework_WWJ.Editor
                     oldScene,
                     typeof(SceneAsset),
                     false);
-                var newConfig = (FrameworkSceneConfig)EditorGUILayout.ObjectField(
+                var newConfig = inlineInspectorHost.DrawReferenceField(
                     "Scene Config",
-                    binding.SceneConfig,
-                    typeof(FrameworkSceneConfig),
-                    false);
+                    BuildInlineSlotId(binding, i),
+                    binding.SceneConfig);
 
                 if (newScene != oldScene || newConfig != binding.SceneConfig)
                 {
@@ -87,7 +88,22 @@ namespace Framework_WWJ.Editor
                 EditorUtility.SetDirty(settings);
             }
 
+            var validInlineSlots = new HashSet<string>();
+            for (var i = 0; i < bindings.Count; i++)
+            {
+                validInlineSlots.Add(BuildInlineSlotId(bindings[i], i));
+            }
+
+            inlineInspectorHost.RetainSlots("Project.SceneBinding.", validInlineSlots);
+
             return changed;
+        }
+
+        internal static string BuildInlineSlotId(FrameworkSceneBinding binding, int index)
+        {
+            return string.IsNullOrEmpty(binding?.SceneGuid)
+                ? $"Project.SceneBinding.Index:{index}"
+                : $"Project.SceneBinding.Scene:{binding.SceneGuid}";
         }
     }
 }

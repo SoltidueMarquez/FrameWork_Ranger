@@ -24,7 +24,6 @@ namespace Framework_WWJ
 
         [OdinSerialize]
         [Required]
-        [InlineEditor(InlineEditorObjectFieldModes.Boxed)]
         private ModuleBase m_module;
 
         #endregion

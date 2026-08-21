@@ -56,6 +56,31 @@
 
 分析配置问题时，应同时检查类型、资产引用和真实场景使用，不能只读 C# 声明。
 
+### 配置内联编辑器
+
+| 主题 | 文件 |
+| --- | --- |
+| Module 条目眼睛按钮 | `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Editor/ModuleAndCfgEditor/ModuleItemCfgDrawer.cs` |
+| 配置数据预览按钮 | `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Editor/ModuleAndCfgEditor/CfgDataDrawer.cs` |
+
+**事实（2026-08-22）**：两个 Drawer 均用 `VisibilityOn/Off` 图标控制当前引用的原位 Inspector；`ModuleItemCfgDrawer` 每次绘制展开区都会创建并销毁 PropertyTree/Editor，`CfgDataDrawer` 则持有缓存。参考配置把展开布尔值放在配置对象的 Editor 字段中。
+
+**Framework_WWJ 决策**：Phase 1.7 只复用眼睛交互语义；展开状态改由 Editor `SessionState` 持有，真实子 Editor 按宿主和槽位缓存并在生命周期边界释放，配置资产不保存 UI 状态。详见 [ADR-EC-008](../../03_Architecture/EditorCenter/ADR/ADR-EC-008_Editor_Owned_Inline_Inspectors.md)。
+
+### 新版全局模块工作台
+
+| 主题 | 文件 |
+| --- | --- |
+| 框架配置主入口 | `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Editor/GlobalModuleEditor/FrameworkCoreApp.cs` / `GlobalModulesCoreApp` |
+| 左侧作用域导航 | `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Editor/GlobalModuleEditor/GlobalModuleLeftMenu.cs` |
+| 右侧模块编辑区 | `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Editor/GlobalModuleEditor/GlobalModuleEditView.cs` |
+| 运行时配置 Inspector | `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Editor/ModuleAndCfgEditor/MainRuntimeCfgEditor.cs` |
+| 紧凑可重排列表 | `Assets/Plugins/ActFramework_ByHZR/Packages/Main/Editor/Utility/HtyReorderableList.cs` |
+
+**事实（2026-08-22）**：新版界面使用约 280px 左侧导航和右侧 Map/Edit 主区，模块条目为约 32px 紧凑行，并集中提供齿轮、定位、状态等操作；详情以单项展开为主。其实现同时包含硬编码暗色、`CustomPropertyTree` 和 `Library` JSON UI 状态，不适合直接复制。
+
+**Framework_WWJ 决策**：Phase 1.8 复用主从信息层级、紧凑行和单项详情语义；视觉改为 Unity 深浅主题自适应，状态写入 `SessionState`，真实 Inspector 继续通过 `Editor.CreateCachedEditor` 缓存。详见 [ADR-EC-009](../../03_Architecture/EditorCenter/ADR/ADR-EC-009_HTY_Style_Configuration_Workspace.md)。
+
 ## 4. 场景与运行时流程
 
 | 主题 | 文件 |

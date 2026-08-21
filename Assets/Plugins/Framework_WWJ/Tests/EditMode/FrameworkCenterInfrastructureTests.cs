@@ -117,6 +117,13 @@ namespace Framework_WWJ.Tests
             Assert.That(fallback.lastActivePinnedPageId, Is.Empty);
         }
 
+        [Test]
+        public void PageScroll_DefaultsToHost_AndSettingsWorkspaceOwnsItsScroll()
+        {
+            Assert.That(new FirstTestPage().UseHostContentScroll, Is.True);
+            Assert.That(new FrameworkSettingsPage().UseHostContentScroll, Is.False);
+        }
+
         public sealed class FirstTestPage : FrameworkCenterPage
         {
             public override string PageId => "test.first";

@@ -25,16 +25,13 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
         internal const string AddressablesPrefabPath = RootDirectory + "/Prefabs/AddressablesSamplePrefab.prefab";
         internal const string ResourcesPrefabPath =
             RootDirectory + "/Runtime/Resources/Framework_WWJ/ResourceManagement/ResourcesSamplePrefab.prefab";
-        internal const string DefaultScenePath = "Assets/Scenes/SampleScene.unity";
+        internal const string SampleScenePath = RootDirectory + "/Scenes/ResourceManagementSample.unity";
         internal const string AddressablesGroupName = "Framework_WWJ ResourceManagement Samples";
         internal const string AddressablesAddress =
             "framework-wwj/samples/resource-management/addressables-prefab";
 
         private const string GlobalConfigPath =
             "Assets/Plugins/Framework_WWJ/Resources/FrameworkGlobalConfig.asset";
-        private const string LegacyResourceScenePath =
-            RootDirectory + "/Scenes/ResourceManagementSample.unity";
-
         internal static void Build()
         {
             Build(true);
@@ -75,8 +72,8 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
                 ConfigureAddressables();
                 ConfigureGlobal(module);
                 ConfigureProjectSettings();
-                ConfigureDefaultScene();
-                EnsureDefaultBuildSettingsScene();
+                ConfigureSampleScene();
+                EnsureSampleBuildSettingsScene();
 
                 module = AssetDatabase.LoadAssetAtPath<ResourceModule>(ModulePath);
                 if (module != null)
@@ -86,7 +83,7 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
 
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-                Debug.Log("[Framework_WWJ] Resource Management 双后端验收资产已刷新到默认场景。" );
+                Debug.Log("[Framework_WWJ] Resource Management 双后端验收资产已刷新到模块示例场景。" );
             }
             finally
             {
@@ -126,10 +123,8 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
             var validBindings = settings.SceneBindings
                 .Where(binding =>
                     binding != null &&
-                    !string.Equals(binding.ScenePath, LegacyResourceScenePath, StringComparison.Ordinal) &&
                     AssetDatabase.LoadAssetAtPath<SceneAsset>(binding.ScenePath) != null)
                 .ToList();
-            settings.SetDefaultSceneConfig(null);
             settings.SetSceneBindings(validBindings);
             EditorUtility.SetDirty(settings);
         }
@@ -169,9 +164,9 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
             }
         }
 
-        private static void ConfigureDefaultScene()
+        private static void ConfigureSampleScene()
         {
-            var scene = EditorSceneManager.OpenScene(DefaultScenePath, OpenSceneMode.Single);
+            var scene = EditorSceneManager.OpenScene(SampleScenePath, OpenSceneMode.Single);
             var hasAcceptanceView = scene.GetRootGameObjects()
                 .Any(root => root.GetComponentInChildren<ResourceManagementSampleView>(true) != null);
             if (!hasAcceptanceView)
@@ -180,17 +175,16 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
                 EditorSceneManager.MarkSceneDirty(scene);
             }
 
-            EditorSceneManager.SaveScene(scene, DefaultScenePath);
+            EditorSceneManager.SaveScene(scene, SampleScenePath);
         }
 
-        private static void EnsureDefaultBuildSettingsScene()
+        private static void EnsureSampleBuildSettingsScene()
         {
             var scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             scenes.RemoveAll(scene =>
-                string.Equals(scene.path, DefaultScenePath, StringComparison.Ordinal) ||
-                string.Equals(scene.path, LegacyResourceScenePath, StringComparison.Ordinal) ||
+                string.Equals(scene.path, SampleScenePath, StringComparison.Ordinal) ||
                 AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path) == null);
-            scenes.Insert(0, new EditorBuildSettingsScene(DefaultScenePath, true));
+            scenes.Insert(0, new EditorBuildSettingsScene(SampleScenePath, true));
             EditorBuildSettings.scenes = scenes.ToArray();
         }
 
@@ -212,6 +206,7 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
         {
             EnsureFolder(RootDirectory + "/Configs");
             EnsureFolder(RootDirectory + "/Prefabs");
+            EnsureFolder(RootDirectory + "/Scenes");
             EnsureFolder(RootDirectory + "/Runtime/Resources/Framework_WWJ/ResourceManagement");
         }
 

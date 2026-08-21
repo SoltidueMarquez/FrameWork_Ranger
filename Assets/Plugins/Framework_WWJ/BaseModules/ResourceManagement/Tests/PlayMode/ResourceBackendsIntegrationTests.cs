@@ -11,7 +11,7 @@ namespace Framework_WWJ.ResourceManagement.Tests
 {
     internal sealed class ResourceBackendsIntegrationTests
     {
-        private const string SampleSceneName = "SampleScene";
+        private const string SampleSceneName = "ResourceManagementSample";
         private const string AddressablesLocation =
             "framework-wwj/samples/resource-management/addressables-prefab";
         private const string ResourcesLocation =

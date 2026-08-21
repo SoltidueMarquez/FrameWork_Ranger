@@ -48,6 +48,18 @@ namespace Framework_WWJ.Editor
             ? new Color(0.68f, 0.70f, 0.74f)
             : new Color(0.31f, 0.33f, 0.37f);
 
+        internal static Color SuccessColor => EditorGUIUtility.isProSkin
+            ? new Color(0.35f, 0.72f, 0.46f)
+            : new Color(0.18f, 0.56f, 0.30f);
+
+        internal static Color WarningColor => EditorGUIUtility.isProSkin
+            ? new Color(0.92f, 0.66f, 0.24f)
+            : new Color(0.78f, 0.46f, 0.08f);
+
+        internal static Color ErrorColor => EditorGUIUtility.isProSkin
+            ? new Color(0.88f, 0.34f, 0.34f)
+            : new Color(0.72f, 0.18f, 0.18f);
+
         internal static Color GraphBackgroundColor => EditorGUIUtility.isProSkin
             ? new Color(0.125f, 0.13f, 0.145f)
             : new Color(0.79f, 0.81f, 0.84f);

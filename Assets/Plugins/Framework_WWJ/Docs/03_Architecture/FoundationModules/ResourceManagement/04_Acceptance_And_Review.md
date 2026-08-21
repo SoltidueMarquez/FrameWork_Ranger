@@ -52,10 +52,10 @@ Resource 阶段关闭后，下一次对话可开始 Pooling 的需求确认；�
 
 2026-08-20，Resource Management 的 25 个生产顶层类型已接入 Framework Center 分层代码架构目录，覆盖 Runtime、Editor、Unity Resources 与 Addressables；目录诊断与源码定位失败均为零。该改动只补充架构元数据和编辑器导航，不改变本页已验收的资源 Runtime 行为。完整证据见 [Phase 1.4 验收与复盘](../../EditorCenter/09_Phase1_4_Hierarchical_Architecture_Navigator_Acceptance_And_Review.md)。
 
-## 2026-08-22 默认场景验收入口收敛
+## 2026-08-22 单一场景验收入口收敛
 
-为便于用户直接运行并逐段理解 Resource 代码，当前验收入口已从三个框架示例场景收敛到 Unity 默认 `Assets/Scenes/SampleScene.unity`。CoreSkeleton A/B 场景及其专用 Module、Handler、SO、Editor 页面、构建器和测试已删除；Resource 专用场景与空 SceneConfig 也已删除。
+为便于用户直接运行并逐段理解 Resource 代码，当前验收入口已收敛为唯一的 `BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity`。CoreSkeleton A/B 场景及其专用 Module、Handler、SO、Editor 页面、构建器和测试已删除；原先重复存在的 Resource 空壳场景也已删除，保留下来的实际验收场景从根 `Assets/Scenes` 迁入 Resource Management 模块目录，并保留 GUID `99c9720ab356a0642a771bea13969a05`。
 
-`FrameworkGlobalConfig.asset` 保留原 GUID 并迁入 `Assets/Plugins/Framework_WWJ/Resources`，其唯一 Global 模块为 `ResourceModule.asset`。`FrameworkProjectSettings.asset` 的默认 SceneConfig 和场景覆盖表均为空，Build Settings 只包含默认场景；默认场景挂载 `ResourceManagementSampleView`。Resource 双后端 Prefab、Addressables Entry、交互验收代码、生产代码与正式测试均保留。
+`FrameworkGlobalConfig.asset` 保留原 GUID 并迁入 `Assets/Plugins/Framework_WWJ/Resources`，其唯一 Global 模块为 `ResourceModule.asset`。`FrameworkProjectSettings.asset` 以验收场景 GUID 绑定模块内新路径和 `Assets/Scenes/DefaultSceneConfig.asset`，Build Settings 只包含该模块示例场景；场景挂载 `ResourceManagementSampleView`。Resource 双后端 Prefab、Addressables Entry、交互验收代码、生产代码与正式测试均保留。
 
-权威工程当时由 GUI Editor 打开，因此验证在由当前 `Assets`、`Packages`、`ProjectSettings` 创建的隔离副本执行：Import/C# 编译退出码 0，EditMode 68/68、PlayMode 17/17，Addressables 本地内容与 StandaloneWindows64 Player 构建退出码 0，Player 双后端冒烟退出码 0，并记录 `PASS 双后端 Acquire/Instantiate/Destroy/Release`。该清理只改变示例与验收入口，不改变 Resource Runtime 公共契约。
+权威工程当时由 GUI Editor 打开，因此验证在由当前 `Assets`、`Packages`、`ProjectSettings` 创建的隔离副本执行：Import/C# 编译退出码 0，EditMode 83/83、PlayMode 17/17，Addressables 本地内容与只含模块内示例场景的 StandaloneWindows64 Player 构建退出码 0，Player 双后端冒烟退出码 0，并记录 `PASS 双后端 Acquire/Instantiate/Destroy/Release`。该清理与后续场景迁移只改变示例和验收入口，不改变 Resource Runtime 公共契约。

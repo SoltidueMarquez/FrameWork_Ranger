@@ -51,6 +51,12 @@ namespace Framework_WWJ.Editor
         public virtual string HelpDocumentPath => string.Empty;
 
         /// <summary>
+        /// 获取页面是否使用 Framework Center 提供的外层内容滚动。
+        /// 需要固定工具栏或左右独立滚动区的页面可以返回 false，并在 <see cref="OnGUI"/> 中自行管理滚动。
+        /// </summary>
+        public virtual bool UseHostContentScroll => true;
+
+        /// <summary>
         /// 页面成为当前标签时调用。
         /// </summary>
         public virtual void OnActivated(FrameworkCenterPageContext context)

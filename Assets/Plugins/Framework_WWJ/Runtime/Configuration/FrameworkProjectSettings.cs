@@ -26,11 +26,9 @@ namespace Framework_WWJ
 
         [OdinSerialize]
         [Required]
-        [InlineEditor(InlineEditorObjectFieldModes.Boxed)]
         private FrameworkGlobalConfig m_globalConfig;
 
         [OdinSerialize]
-        [InlineEditor(InlineEditorObjectFieldModes.Boxed)]
         private FrameworkSceneConfig m_defaultSceneConfig;
 
         [OdinSerialize]

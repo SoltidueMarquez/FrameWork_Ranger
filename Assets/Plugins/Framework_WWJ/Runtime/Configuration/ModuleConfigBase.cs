@@ -18,6 +18,7 @@ namespace Framework_WWJ
         #region Inspector 配置
 
         [OdinSerialize]
+        [UnityEngine.HideInInspector]
         [ListDrawerSettings(ShowFoldout = true, DraggableItems = true)]
         private List<ModuleConfigEntry> m_modules = new List<ModuleConfigEntry>();
 

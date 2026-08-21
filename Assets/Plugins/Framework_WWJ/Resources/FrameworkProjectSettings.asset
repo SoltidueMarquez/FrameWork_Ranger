@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 7c6813e85f03d5d4f978080425503561, type: 2}
+    - {fileID: 11400000, guid: 80dffa32a34663745a4497937be00185, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -34,7 +35,22 @@ MonoBehaviour:
         Framework_WWJ.Runtime]], mscorlib
     - Name: 
       Entry: 12
-      Data: 0
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|Framework_WWJ.FrameworkSceneBinding, Framework_WWJ.Runtime
+    - Name: m_sceneGuid
+      Entry: 1
+      Data: 99c9720ab356a0642a771bea13969a05
+    - Name: m_scenePath
+      Entry: 1
+      Data: Assets/Plugins/Framework_WWJ/BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity
+    - Name: m_sceneConfig
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 

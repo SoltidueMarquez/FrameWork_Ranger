@@ -17,7 +17,7 @@ namespace Framework_WWJ.Editor
     internal sealed class FrameworkSettingsPage : FrameworkCenterPage
     {
         private static readonly string[] s_keywords = { "GlobalConfig", "SceneConfig", "场景映射", "依赖图" };
-        private UnityEditor.Editor m_embeddedEditor;
+        private FrameworkConfigurationWorkspace m_workspace;
         private FrameworkProjectSettings m_editingSettings;
 
         public FrameworkSettingsPage()
@@ -30,8 +30,9 @@ namespace Framework_WWJ.Editor
         public override string Category => "基础";
         public override int Order => 10;
         public override IReadOnlyList<string> Keywords => s_keywords;
+        public override bool UseHostContentScroll => false;
         public override string HelpDocumentPath =>
-            "Assets/Plugins/Framework_WWJ/Docs/03_Architecture/Core/ADR/ADR-006_Central_Project_Settings_And_Scene_Ownership.md";
+            "Assets/Plugins/Framework_WWJ/Docs/03_Architecture/EditorCenter/ADR/ADR-EC-009_HTY_Style_Configuration_Workspace.md";
 
         public override void OnGUI(FrameworkCenterPageContext context)
         {
@@ -51,50 +52,31 @@ namespace Framework_WWJ.Editor
                 return;
             }
 
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("定位设置资产", GUILayout.Width(120f)))
-            {
-                context.SelectObject(settings);
-            }
-
-            if (GUILayout.Button("保存并重新校验", GUILayout.Width(140f)))
-            {
-                FrameworkProjectSettingsAssetUtility.SyncScenePaths(settings);
-                AssetDatabase.SaveAssets();
-            }
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space(6f);
-
-            EnsureEmbeddedEditor(settings);
-            m_embeddedEditor?.OnInspectorGUI();
+            EnsureWorkspace(settings);
+            m_workspace.Draw(settings, context);
         }
 
         public override void OnDeactivated(FrameworkCenterPageContext context)
         {
-            ReleaseEmbeddedEditor();
+            ReleaseWorkspace();
         }
 
-        private void EnsureEmbeddedEditor(FrameworkProjectSettings settings)
+        private void EnsureWorkspace(FrameworkProjectSettings settings)
         {
-            if (m_editingSettings == settings && m_embeddedEditor != null)
+            if (m_editingSettings == settings && m_workspace != null)
             {
                 return;
             }
 
-            ReleaseEmbeddedEditor();
+            ReleaseWorkspace();
             m_editingSettings = settings;
-            m_embeddedEditor = UnityEditor.Editor.CreateEditor(settings);
+            m_workspace = new FrameworkConfigurationWorkspace(settings);
         }
 
-        private void ReleaseEmbeddedEditor()
+        private void ReleaseWorkspace()
         {
-            if (m_embeddedEditor != null)
-            {
-                Object.DestroyImmediate(m_embeddedEditor);
-            }
-
-            m_embeddedEditor = null;
+            m_workspace?.Dispose();
+            m_workspace = null;
             m_editingSettings = null;
         }
     }

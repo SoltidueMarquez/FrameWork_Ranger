@@ -259,19 +259,32 @@ namespace Framework_WWJ.Editor
             GUILayout.BeginArea(rect);
             DrawTabs();
 
-            m_contentScroll = EditorGUILayout.BeginScrollView(m_contentScroll);
-            GUILayout.Space(12f);
-            if (m_activePage == null)
+            if (m_activePage == null || m_activePage.UseHostContentScroll)
             {
-                EditorGUILayout.HelpBox("没有可用的 Framework Center 页面。", MessageType.Error);
+                m_contentScroll = EditorGUILayout.BeginScrollView(m_contentScroll);
+                GUILayout.Space(12f);
+                if (m_activePage == null)
+                {
+                    EditorGUILayout.HelpBox("没有可用的 Framework Center 页面。", MessageType.Error);
+                }
+                else
+                {
+                    DrawActivePage();
+                }
+
+                GUILayout.Space(18f);
+                EditorGUILayout.EndScrollView();
             }
             else
             {
+                // 主从工作台需要让标题保持在宿主区域内，并把剩余高度交给页面自己的左右滚动区。
+                GUILayout.BeginVertical(GUILayout.ExpandHeight(true));
+                GUILayout.Space(12f);
                 DrawActivePage();
+                GUILayout.Space(12f);
+                GUILayout.EndVertical();
             }
 
-            GUILayout.Space(18f);
-            EditorGUILayout.EndScrollView();
             GUILayout.EndArea();
         }
 

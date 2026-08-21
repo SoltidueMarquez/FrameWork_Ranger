@@ -6,7 +6,7 @@
 
 ## 1. 当前结论
 
-Framework_WWJ 已迁入 Unity 6000.5.9f1 URP 工程与 `FrameWork_Ranger` 仓库工作树，同时保留原框架完整 Git 历史。框架已完成核心骨架、Editor Center Phase 1.1–1.6，以及首个正式基础模块 Resource Management。当前代码可以通过固定项目设置自动装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、紧凑可展开代码架构图，以及默认 `SampleScene` 中的 Resources/Addressables 双后端资源验收入口。
+Framework_WWJ 已迁入 Unity 6000.5.9f1 URP 工程与 `FrameWork_Ranger` 仓库工作树，同时保留原框架完整 Git 历史。框架已完成核心骨架、Editor Center Phase 1.1–1.8，以及首个正式基础模块 Resource Management。当前代码可以通过固定项目设置自动装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、紧凑可展开代码架构图、HTY 式主从配置工作台，以及 Resource Management 模块目录中的 Resources/Addressables 双后端验收场景。
 
 Resource Management 已按批准契约实现并验收关闭；对象池/引用池与事件中心仍未开始，音频、输入、UI、存档等继续是未来候选。下一阶段只能先讨论 Pooling 的需求和公共契约，不能直接实现或并行推进 Event Center。
 
@@ -33,9 +33,9 @@ Resource Management 已按批准契约实现并验收关闭；对象池/引用�
 
 | 区域 | C# 文件 | 代码行 | 主要职责 |
 | --- | ---: | ---: | --- |
-| `Runtime` | 42 | 3,762 | 抽象、中央配置、Module/Handler、Graph、Scope、Bootstrap 与 Runtime |
-| `Editor` | 35 | 6,797 | Framework Center、预览/固定页签、生产程序集目录、单画布复合架构图、共享图视口、设置工具与源码定位 |
-| `Tests/EditMode` | 10 | 1,327 | 图解析、克隆、中央设置、架构目录、复合布局、Center 页签状态/持久化与图视口数学 |
+| `Runtime` | 42 | 3,760 | 抽象、中央配置、Module/Handler、Graph、Scope、Bootstrap 与 Runtime |
+| `Editor` | 40 | 10,506 | Framework Center、主从配置工作台、紧凑模块列表、真实 Inspector 宿主、生产程序集目录、复合架构图与共享图视口 |
+| `Tests/EditMode` | 12 | 1,981 | 图解析、中央设置、配置工作台状态/结构编辑/Inspector 生命周期、架构目录、复合布局与 Center 基础设施 |
 | `Tests/PlayMode` | 6 | 670 | 自动启动、场景、失败、Tick 与 Shutdown；A/B 专用示例测试已删除 |
 | `BaseModules/ResourceManagement` 生产代码 | 26 | 1,952 | Resource Runtime、双 Integration 与 Editor；不含 Samples/Tests |
 | `BaseModules/ResourceManagement/Tests` | 7 | 1,018 | 资源契约、缓存/取消、配置、生命周期与真实双后端集成 |
@@ -78,21 +78,23 @@ Runtime 不引用 `UnityEditor`；Editor、Tests 和 Sample 单向依赖 Runtime
 - 页面通过 `FrameworkCenterPage`、`[FrameworkCenterPageExtension]` 和 `TypeCache` 显式发现，支持搜索、单预览页、可排序持久固定页和页面级错误隔离；测试替身不会进入生产目录。
 - 生产程序集通过 `FrameworkArchitectureAssemblyAttribute` 显式加入架构目录，避免核心维护模块白名单；Tests、Samples 和第三方程序集默认排除。
 - 所有接入生产程序集中的顶层类、接口、结构体与枚举通过 `FrameworkArchitectureAttribute` 维护中文名称、职责、层级与关键协作关系。
-- 当前正式目录包含 11 个分组、106 个类型节点且诊断为零；其中 Resource Management 为 25 个节点，覆盖公开契约、Module/Handler、缓存状态、Provider、双后端与 Editor 工具。
+- 当前正式目录包含 11 个分组、115 个类型节点且诊断为零；其中 Resource Management 为 25 个节点，覆盖公开契约、Module/Handler、缓存状态、Provider、双后端与 Editor 工具。
 - 架构页使用一张 Compound Graph：折叠分组是互相连接的紧凑大卡片，原地展开后只包围直接子组与直属类型；每个分组只创建实际使用的局部逻辑层列。
 - 新 Unity 会话默认全部收起并启用自动布局；当前会话保存用户展开集合和非零位置偏移。折叠关系聚合到可见分组代理，搜索使用不污染用户状态或位置的临时展开。
 - 可见卡片支持缩放换算拖动、子树整体移动、嵌套左上边界约束和父容器右下扩展；布局按目录与状态 revision 缓存，普通 Repaint 复用结果。
 - Center 使用 42px 顶部栏、30px 标签栏、208px 扁平导航、动态页面标题卡片和深浅主题自适应样式。
 - 代码架构图与模块依赖图共用可缩放、可平移视口，提供适配和 100% 重置；代码架构图为 10%–200%，其他图保持 35%–200%。
-- 固定项目设置的 Inspector、Framework Center 和构建前校验共享同一套设置诊断和模块图结果；项目配置页可按任意 SceneAsset 预览真实 Global + Scene 组合。
+- 固定项目设置的 Inspector 与 Framework Center 共用主从配置工作台：左侧选择项目、Global、Default Scene 或场景覆盖，右侧在配置编辑与组合依赖图之间切换，并按当前上下文执行 Global 或 Global + Scene 解析。
+- Global/Scene Config 与独立 Inspector 共用 32px 紧凑模块列表；搜索和全部/启用/异常筛选使用源索引映射，筛选期间禁止重排，同一配置最多通过眼睛按钮展开一个真实 Module Inspector。
+- 配置工作台导航、页签、筛选、搜索和详情状态只存在当前 Unity 会话；真实子 Editor 使用缓存并在目标替换、选择失效或宿主生命周期结束时释放。
 
 ## 6. 示例与资产接线
 
-2026-08-22 已按用户确认删除 CoreSkeleton A/B 示例场景及其专用 Runtime、Editor、asmdef、SceneConfig、Module SO 和测试；同时删除 Resource 专用 `ResourceManagementSample.unity` 与空 SceneConfig。历史阶段文档继续保留这些资产曾经存在和通过验收的记录。
+2026-08-22 已按用户确认删除 CoreSkeleton A/B 示例场景及其专用 Runtime、Editor、asmdef、SceneConfig、Module SO 和测试。原先重复存在的 Resource 空壳场景也已删除；保留下来的唯一双后端验收场景随后迁入 `BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity`，并保留原场景 GUID。历史阶段文档继续记录旧资产曾经存在和通过验收的事实。
 
-固定 `FrameworkProjectSettings.asset` 现在指向 `Resources/FrameworkGlobalConfig.asset`；该 GlobalConfig 只安装 `ResourceModule.asset`。默认 SceneConfig 为空，场景覆盖表为空，因此默认场景创建合法的零模块 SceneScope，ResourceModule 只存在于 GlobalScope。
+固定 `FrameworkProjectSettings.asset` 现在指向 `Resources/FrameworkGlobalConfig.asset`；该 GlobalConfig 只安装 `ResourceModule.asset`。场景覆盖表使用验收场景原 GUID，并将新模块内路径绑定到 `Assets/Scenes/DefaultSceneConfig.asset`；该 SceneConfig 不安装 ResourceModule，因此资源模块仍只存在于 GlobalScope。
 
-`ProjectSettings/EditorBuildSettings.asset` 只保留启用的 `Assets/Scenes/SampleScene.unity`。该默认场景挂载 `ResourceManagementSampleView`，可以直接人工 Acquire、Instantiate、Destroy 与 Release 两个后端的 Prefab；Addressables 本地 Group/Entry、两个验收 Prefab、Resource Sample 代码和 Player Smoke Runner 继续保留。
+`ProjectSettings/EditorBuildSettings.asset` 只保留启用的模块内 `ResourceManagementSample.unity`。该场景挂载 `ResourceManagementSampleView`，可以直接人工 Acquire、Instantiate、Destroy 与 Release 两个后端的 Prefab；Addressables 本地 Group/Entry、两个验收 Prefab、Resource Sample 代码和 Player Smoke Runner 继续保留。
 
 ## 7. 验证状态
 
@@ -100,14 +102,14 @@ Unity 6000.5.9f1 的当前清理后验证结果如下。由于权威工程当时
 
 | 测试集 | 结果 | 用例 | NUnit 时长 |
 | --- | --- | ---: | ---: |
-| EditMode（含 Addressables 包附加用例） | Passed | 73/73 | 结果 XML 失败 0 |
+| EditMode（含 Addressables 包附加用例） | Passed | 93/93 | 结果 XML 失败 0 |
 | PlayMode | Passed | 17/17 | 结果 XML 失败 0 |
 
-隔离 Import/C# 编译、Addressables 2.9.1 本地内容、只含 `SampleScene` 的 StandaloneWindows64 Player 和 Player 双后端命令行冒烟均通过，所有进程退出码为 0；冒烟日志包含 `PASS 双后端 Acquire/Instantiate/Destroy/Release`。完整迁移历史证据见 [Unity 6000 与仓库迁移验收](../03_Architecture/Distribution/01_Unity6_Migration_Acceptance.md)，命令见 [Unity 6000 CLI 验证命令](../04_Standards/Unity_6000_CLI.md)。
+隔离 Import/C# 编译、Addressables 2.9.1 本地内容、只含模块内 `ResourceManagementSample` 的 StandaloneWindows64 Player 和 Player 双后端命令行冒烟均通过，所有进程退出码为 0；冒烟日志包含 `PASS 双后端 Acquire/Instantiate/Destroy/Release`。完整迁移历史证据见 [Unity 6000 与仓库迁移验收](../03_Architecture/Distribution/01_Unity6_Migration_Acceptance.md)，命令见 [Unity 6000 CLI 验证命令](../04_Standards/Unity_6000_CLI.md)。
 
-迁移前 Unity 2022.3.62f3 的历史结果仍保留在原阶段文档中，不用 Unity 6000 数值覆写。Resource 原阶段证据见 [Resource Management 验收与复盘](../03_Architecture/FoundationModules/ResourceManagement/04_Acceptance_And_Review.md)，Editor Center 最新证据见 [Phase 1.6 验收与复盘](../03_Architecture/EditorCenter/13_Phase1_6_Compact_Expandable_Architecture_Graph_Acceptance_And_Review.md)。
+迁移前 Unity 2022.3.62f3 的历史结果仍保留在原阶段文档中，不用 Unity 6000 数值覆写。Resource 原阶段证据见 [Resource Management 验收与复盘](../03_Architecture/FoundationModules/ResourceManagement/04_Acceptance_And_Review.md)，Editor Center 最新证据见 [Phase 1.8 验收与复盘](../03_Architecture/EditorCenter/17_Phase1_8_HTY_Style_Configuration_Workspace_Acceptance_And_Review.md)。
 
-Editor Center 前序页签验收见 [Phase 1.3 验收与复盘](../03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)；最新紧凑复合架构图证据与人工步骤见 [Phase 1.6 验收与复盘](../03_Architecture/EditorCenter/13_Phase1_6_Compact_Expandable_Architecture_Graph_Acceptance_And_Review.md)。
+Editor Center 前序页签验收见 [Phase 1.3 验收与复盘](../03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)；紧凑复合架构图证据见 [Phase 1.6 验收与复盘](../03_Architecture/EditorCenter/13_Phase1_6_Compact_Expandable_Architecture_Graph_Acceptance_And_Review.md)，最新主从配置工作台证据与人工步骤见 [Phase 1.8 验收与复盘](../03_Architecture/EditorCenter/17_Phase1_8_HTY_Style_Configuration_Workspace_Acceptance_And_Review.md)。
 
 ## 8. 当前未决范围
 
