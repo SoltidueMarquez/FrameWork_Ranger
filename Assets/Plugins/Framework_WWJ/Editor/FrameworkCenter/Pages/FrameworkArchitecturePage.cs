@@ -16,11 +16,16 @@ namespace Framework_WWJ.Editor
         230,
         typeof(FrameworkArchitectureCatalogBuilder),
         typeof(FrameworkArchitectureGraphLayout),
+        typeof(FrameworkArchitectureGraphLayoutCache),
+        typeof(FrameworkArchitectureGraphPositionState),
         typeof(FrameworkArchitectureGraphDrawer),
         typeof(FrameworkArchitectureDetailDrawer))]
     [FrameworkCenterPageExtension]
     internal sealed class FrameworkArchitecturePage : FrameworkCenterPage
     {
+        private const string DetailPanelSessionKey =
+            "Framework_WWJ.FrameworkCenter.Architecture.DetailPanelVisible.v1";
+
         private static readonly string[] s_keywords =
         {
             "类图", "节点", "职责", "源码", "Runtime", "Editor", "模块", "分组", "展开",
@@ -36,11 +41,18 @@ namespace Framework_WWJ.Editor
         private int m_searchMatchCount;
         private bool m_frameSearchMatches;
         private bool m_expansionStateRestored;
+        private bool m_detailPanelVisible = true;
         private FrameworkArchitectureGraphLayout.RelationVisibility m_relationVisibility =
             FrameworkArchitectureGraphLayout.RelationVisibility.All;
 
         private readonly FrameworkArchitectureGraphLayout.ExpansionState m_expansionState =
             new FrameworkArchitectureGraphLayout.ExpansionState();
+        private readonly FrameworkArchitectureGraphPositionState m_positionState =
+            new FrameworkArchitectureGraphPositionState();
+        private readonly FrameworkArchitectureGraphLayoutCache m_layoutCache =
+            new FrameworkArchitectureGraphLayoutCache();
+        private readonly FrameworkArchitectureGraphDrawer.InteractionState m_interactionState =
+            new FrameworkArchitectureGraphDrawer.InteractionState();
         private readonly FrameworkGraphViewportState m_graphViewport =
             new FrameworkGraphViewportState(0.10f, 2f);
 
@@ -64,6 +76,11 @@ namespace Framework_WWJ.Editor
             EnsureCatalog();
         }
 
+        public override void OnDeactivated(FrameworkCenterPageContext context)
+        {
+            m_interactionState.End(m_positionState);
+        }
+
         public override void OnGUI(FrameworkCenterPageContext context)
         {
             EnsureCatalog();
@@ -72,14 +89,20 @@ namespace Framework_WWJ.Editor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-            var result = FrameworkArchitectureGraphDrawer.Draw(
+            var layout = m_layoutCache.GetOrBuild(
                 m_catalog,
+                m_expansionState,
+                m_positionState,
+                m_searchText,
+                m_relationVisibility);
+            var result = FrameworkArchitectureGraphDrawer.Draw(
+                layout,
                 m_graphViewport,
                 m_expansionState,
+                m_positionState,
+                m_interactionState,
                 m_selectedGroup,
                 m_selectedType,
-                m_searchText,
-                m_relationVisibility,
                 m_frameSearchMatches);
             m_lastLayout = result.Layout;
             m_selectedGroup = result.SelectedGroup;
@@ -88,7 +111,11 @@ namespace Framework_WWJ.Editor
             m_frameSearchMatches = false;
             EditorGUILayout.EndVertical();
 
-            DrawDetailPanel();
+            if (m_detailPanelVisible)
+            {
+                DrawDetailPanel();
+            }
+
             EditorGUILayout.EndHorizontal();
         }
 
@@ -127,6 +154,30 @@ namespace Framework_WWJ.Editor
                 "协作",
                 FrameworkArchitectureGraphLayout.RelationVisibility.Collaboration,
                 44f);
+
+            GUILayout.Space(8f);
+            if (GUILayout.Button("重置布局", EditorStyles.toolbarButton, GUILayout.Width(68f)))
+            {
+                m_positionState.ResetAll();
+                m_graphViewport.RequestFrameAll();
+            }
+
+            var nextDetailPanelVisible = GUILayout.Toggle(
+                m_detailPanelVisible,
+                "详情",
+                EditorStyles.toolbarButton,
+                GUILayout.Width(44f));
+            if (nextDetailPanelVisible != m_detailPanelVisible)
+            {
+                m_detailPanelVisible = nextDetailPanelVisible;
+                SessionState.SetBool(DetailPanelSessionKey, m_detailPanelVisible);
+            }
+
+            GUILayout.Space(6f);
+            GUILayout.Label(
+                "拖动卡片 · F 聚焦",
+                FrameworkCenterStyles.ToolbarHint,
+                GUILayout.Width(112f));
 
             GUILayout.FlexibleSpace();
             if (!string.IsNullOrWhiteSpace(m_searchText))
@@ -276,6 +327,8 @@ namespace Framework_WWJ.Editor
             }
 
             m_expansionState.Restore(m_catalog);
+            m_positionState.Restore(m_catalog);
+            m_detailPanelVisible = SessionState.GetBool(DetailPanelSessionKey, true);
             m_expansionStateRestored = true;
         }
 
@@ -286,6 +339,7 @@ namespace Framework_WWJ.Editor
             FrameworkSourceScriptIndex.Clear();
             m_catalog = FrameworkArchitectureCatalogBuilder.Build();
             m_expansionState.Sanitize(m_catalog);
+            m_positionState.Sanitize(m_catalog);
             m_selectedGroup = string.IsNullOrEmpty(selectedGroupId)
                 ? null
                 : m_catalog.FindGroup(selectedGroupId);
@@ -293,6 +347,7 @@ namespace Framework_WWJ.Editor
                 ? null
                 : m_catalog.Nodes.FirstOrDefault(node => node.Type == selectedType);
             m_lastLayout = null;
+            m_layoutCache.Invalidate();
             m_graphViewport.RequestFrameAll();
         }
 

@@ -7,34 +7,40 @@ using UnityEngine;
 namespace Framework_WWJ.Editor
 {
     /// <summary>
-    /// 为单画布代码架构图计算确定性的分组泳道、类型节点和折叠关系。
-    /// 绘制器只消费布局结果，不在 IMGUI 事件中重复决定可见性与关系聚合。
+    /// 为代码架构图计算紧凑分组卡片、可展开容器、局部逻辑层和关系代理。
+    /// 绘制器只消费不可变布局结果，不在 IMGUI Repaint 中重新决定架构语义。
     /// </summary>
     [FrameworkArchitecture(
         "代码架构复合布局",
-        "递归计算可折叠分组泳道、全局逻辑层列、类型节点与折叠关系代理。",
+        "递归计算紧凑分组卡片、局部分层类型节点、会话偏移与折叠关系代理。",
         FrameworkArchitectureLayer.EditorIntegration,
         345,
         typeof(FrameworkArchitectureCatalog),
         typeof(FrameworkArchitectureGroupDescriptor),
-        typeof(FrameworkArchitectureRelation))]
+        typeof(FrameworkArchitectureRelation),
+        typeof(FrameworkArchitectureGraphPositionState))]
     internal sealed class FrameworkArchitectureGraphLayout
     {
         #region 布局常量
 
-        internal const float NodeWidth = 214f;
-        internal const float NodeHeight = 72f;
-        internal const float LayerGap = 58f;
-        internal const float NodeRowGap = 16f;
-        internal const float CanvasPadding = 26f;
-        internal const float LayerHeaderHeight = 30f;
-        internal const float GroupDepthIndent = 20f;
-        internal const float GroupHeaderHeight = 36f;
-        internal const float GroupPadding = 12f;
-        internal const float GroupGap = 14f;
-        internal const float SectionGap = 14f;
-        internal const float CollapsedGroupHeight = 54f;
-        internal const float EmptyContentHeight = 20f;
+        internal const float TypeNodeWidth = 190f;
+        internal const float TypeNodeHeight = 72f;
+        internal const float TypeColumnGap = 42f;
+        internal const float TypeRowGap = 16f;
+        internal const float CanvasPadding = 36f;
+        internal const float LayerHeaderHeight = 24f;
+        internal const float GroupHeaderHeight = 44f;
+        internal const float GroupPadding = 18f;
+        internal const float GroupGap = 34f;
+        internal const float GroupRowGap = 28f;
+        internal const float RootGap = 56f;
+        internal const float SectionGap = 26f;
+        internal const float CollapsedGroupWidth = 258f;
+        internal const float CollapsedGroupHeight = 96f;
+        internal const float EmptyContentHeight = 24f;
+
+        private const int MaxCollapsedChildrenPerRow = 3;
+        private const int MaxRootGroupsPerRow = 3;
 
         #endregion
 
@@ -42,9 +48,11 @@ namespace Framework_WWJ.Editor
 
         internal IReadOnlyDictionary<FrameworkArchitectureGroupDescriptor, GroupEntry> Groups { get; }
 
+        internal IReadOnlyList<GroupEntry> GroupEntries { get; }
+
         internal IReadOnlyDictionary<FrameworkArchitectureTypeDescriptor, Rect> TypeRects { get; }
 
-        internal IReadOnlyDictionary<FrameworkArchitectureLayer, float> LayerXs { get; }
+        internal IReadOnlyList<LayerHeaderEntry> LayerHeaders { get; }
 
         internal IReadOnlyList<DisplayRelation> Relations { get; }
 
@@ -56,15 +64,17 @@ namespace Framework_WWJ.Editor
 
         private FrameworkArchitectureGraphLayout(
             IReadOnlyDictionary<FrameworkArchitectureGroupDescriptor, GroupEntry> groups,
+            IReadOnlyList<GroupEntry> groupEntries,
             IReadOnlyDictionary<FrameworkArchitectureTypeDescriptor, Rect> typeRects,
-            IReadOnlyDictionary<FrameworkArchitectureLayer, float> layerXs,
+            IReadOnlyList<LayerHeaderEntry> layerHeaders,
             IReadOnlyList<DisplayRelation> relations,
             SearchResult search,
             Rect contentBounds)
         {
             Groups = groups;
+            GroupEntries = groupEntries;
             TypeRects = typeRects;
-            LayerXs = layerXs;
+            LayerHeaders = layerHeaders;
             Relations = relations;
             Search = search;
             ContentBounds = contentBounds;
@@ -75,6 +85,7 @@ namespace Framework_WWJ.Editor
         internal static FrameworkArchitectureGraphLayout Build(
             FrameworkArchitectureCatalog catalog,
             ExpansionState expansionState,
+            FrameworkArchitectureGraphPositionState positionState,
             string searchText,
             RelationVisibility relationVisibility)
         {
@@ -88,9 +99,13 @@ namespace Framework_WWJ.Editor
                 throw new ArgumentNullException(nameof(expansionState));
             }
 
+            if (positionState == null)
+            {
+                throw new ArgumentNullException(nameof(positionState));
+            }
+
             var search = SearchResult.Build(catalog, expansionState, searchText);
-            var builder = new LayoutBuilder(catalog, search, relationVisibility);
-            return builder.Build();
+            return new LayoutBuilder(catalog, search, positionState, relationVisibility).Build();
         }
 
         #endregion
@@ -113,7 +128,7 @@ namespace Framework_WWJ.Editor
                 var group = path[i];
                 if (Groups.TryGetValue(group, out var entry) && !entry.IsExpanded)
                 {
-                    endpoint = Endpoint.ForGroup(group, entry.HeaderRect);
+                    endpoint = Endpoint.ForGroup(group, entry.NodeRect);
                     return true;
                 }
             }
@@ -138,11 +153,52 @@ namespace Framework_WWJ.Editor
             {
                 if (Groups.TryGetValue(group, out var groupEntry))
                 {
-                    Encapsulate(ref bounds, ref hasBounds, groupEntry.HeaderRect);
+                    Encapsulate(ref bounds, ref hasBounds, groupEntry.NodeRect);
                 }
             }
 
             return hasBounds ? bounds : default;
+        }
+
+        internal bool IsRelatedToSelection(
+            DisplayRelation relation,
+            FrameworkArchitectureGroupDescriptor selectedGroup,
+            FrameworkArchitectureTypeDescriptor selectedType)
+        {
+            if (relation == null)
+            {
+                return false;
+            }
+
+            return selectedType != null &&
+                   (ReferenceEquals(relation.Source.Type, selectedType) ||
+                    ReferenceEquals(relation.Target.Type, selectedType)) ||
+                   selectedGroup != null &&
+                   (EndpointBelongsToGroup(relation.Source, selectedGroup) ||
+                    EndpointBelongsToGroup(relation.Target, selectedGroup));
+        }
+
+        internal static bool EndpointBelongsToGroup(
+            Endpoint endpoint,
+            FrameworkArchitectureGroupDescriptor group)
+        {
+            if (endpoint == null || group == null)
+            {
+                return false;
+            }
+
+            var current = endpoint.Type != null ? endpoint.Type.Group : endpoint.Group;
+            while (current != null)
+            {
+                if (ReferenceEquals(current, group))
+                {
+                    return true;
+                }
+
+                current = current.Parent;
+            }
+
+            return false;
         }
 
         private static void Encapsulate(ref Rect bounds, ref bool hasBounds, Rect value)
@@ -154,11 +210,11 @@ namespace Framework_WWJ.Editor
                 return;
             }
 
-            var xMin = Mathf.Min(bounds.xMin, value.xMin);
-            var yMin = Mathf.Min(bounds.yMin, value.yMin);
-            var xMax = Mathf.Max(bounds.xMax, value.xMax);
-            var yMax = Mathf.Max(bounds.yMax, value.yMax);
-            bounds = Rect.MinMaxRect(xMin, yMin, xMax, yMax);
+            bounds = Rect.MinMaxRect(
+                Mathf.Min(bounds.xMin, value.xMin),
+                Mathf.Min(bounds.yMin, value.yMin),
+                Mathf.Max(bounds.xMax, value.xMax),
+                Mathf.Max(bounds.yMax, value.yMax));
         }
 
         #endregion
@@ -169,158 +225,272 @@ namespace Framework_WWJ.Editor
         {
             private readonly FrameworkArchitectureCatalog m_catalog;
             private readonly SearchResult m_search;
+            private readonly FrameworkArchitectureGraphPositionState m_positionState;
             private readonly RelationVisibility m_relationVisibility;
             private readonly Dictionary<FrameworkArchitectureGroupDescriptor, GroupEntry> m_groups =
                 new Dictionary<FrameworkArchitectureGroupDescriptor, GroupEntry>();
             private readonly Dictionary<FrameworkArchitectureTypeDescriptor, Rect> m_typeRects =
                 new Dictionary<FrameworkArchitectureTypeDescriptor, Rect>();
-            private readonly Dictionary<FrameworkArchitectureLayer, float> m_layerXs =
-                new Dictionary<FrameworkArchitectureLayer, float>();
-            private float m_groupRight;
+            private readonly List<LayerHeaderEntry> m_layerHeaders = new List<LayerHeaderEntry>();
+            private Rect m_visibleBounds;
+            private bool m_hasVisibleBounds;
 
             internal LayoutBuilder(
                 FrameworkArchitectureCatalog catalog,
                 SearchResult search,
+                FrameworkArchitectureGraphPositionState positionState,
                 RelationVisibility relationVisibility)
             {
                 m_catalog = catalog;
                 m_search = search;
+                m_positionState = positionState;
                 m_relationVisibility = relationVisibility;
             }
 
             internal FrameworkArchitectureGraphLayout Build()
             {
-                BuildLayerColumns();
-                var y = CanvasPadding + LayerHeaderHeight;
-                for (var i = 0; i < m_catalog.RootGroup.Children.Count; i++)
+                LayoutRootGroups();
+                var relations = BuildDisplayRelations();
+                for (var i = 0; i < relations.Count; i++)
                 {
-                    y += LayoutGroup(m_catalog.RootGroup.Children[i], 0, y);
-                    if (i < m_catalog.RootGroup.Children.Count - 1)
-                    {
-                        y += GroupGap;
-                    }
+                    Encapsulate(ref m_visibleBounds, ref m_hasVisibleBounds, relations[i].Geometry.Bounds);
                 }
 
-                var contentHeight = Mathf.Max(
-                    CanvasPadding * 2f + LayerHeaderHeight + CollapsedGroupHeight,
-                    y + CanvasPadding);
-                var contentBounds = new Rect(
-                    0f,
-                    0f,
-                    m_groupRight + CanvasPadding,
-                    contentHeight);
-                var relations = BuildDisplayRelations();
+                var contentBounds = m_hasVisibleBounds
+                    ? ExpandRect(m_visibleBounds, CanvasPadding)
+                    : new Rect(0f, 0f, CollapsedGroupWidth + CanvasPadding * 2f,
+                        CollapsedGroupHeight + CanvasPadding * 2f);
                 return new FrameworkArchitectureGraphLayout(
                     m_groups,
+                    m_groups.Values.OrderBy(entry => entry.Depth).ToArray(),
                     m_typeRects,
-                    m_layerXs,
+                    m_layerHeaders,
                     relations,
                     m_search,
                     contentBounds);
             }
 
-            private void BuildLayerColumns()
+            private void LayoutRootGroups()
             {
-                var layers = Enum.GetValues(typeof(FrameworkArchitectureLayer))
-                    .Cast<FrameworkArchitectureLayer>()
-                    .OrderBy(layer => layer)
-                    .ToArray();
-                var maximumDepth = m_catalog.Groups.Count == 0
-                    ? 0
-                    : m_catalog.Groups.Max(GetDepth);
-                var layerStartX = CanvasPadding +
-                                  (maximumDepth + 1) * GroupDepthIndent +
-                                  GroupPadding;
-                for (var i = 0; i < layers.Length; i++)
+                var x = CanvasPadding;
+                var y = CanvasPadding;
+                var rowHeight = 0f;
+                var rowCount = 0;
+                for (var i = 0; i < m_catalog.RootGroup.Children.Count; i++)
                 {
-                    m_layerXs.Add(layers[i], layerStartX + i * (NodeWidth + LayerGap));
-                }
+                    var group = m_catalog.RootGroup.Children[i];
+                    var isExpanded = m_search.EffectiveExpandedGroupIds.Contains(group.GroupId);
+                    if (isExpanded && rowCount > 0)
+                    {
+                        x = CanvasPadding;
+                        y += rowHeight + RootGap;
+                        rowHeight = 0f;
+                        rowCount = 0;
+                    }
 
-                m_groupRight = m_layerXs[layers[layers.Length - 1]] + NodeWidth + GroupPadding;
+                    var result = LayoutGroup(group, 0, new Vector2(x, y), new Vector2(x, y));
+                    x += result.AutoSize.x + RootGap;
+                    rowHeight = Mathf.Max(rowHeight, result.AutoSize.y);
+                    rowCount++;
+
+                    if (isExpanded || rowCount >= MaxRootGroupsPerRow)
+                    {
+                        x = CanvasPadding;
+                        y += rowHeight + RootGap;
+                        rowHeight = 0f;
+                        rowCount = 0;
+                    }
+                }
             }
 
-            private float LayoutGroup(
+            private LayoutResult LayoutGroup(
                 FrameworkArchitectureGroupDescriptor group,
                 int depth,
-                float y)
+                Vector2 automaticPosition,
+                Vector2 minimumPosition)
             {
-                var x = CanvasPadding + depth * GroupDepthIndent;
-                var width = m_groupRight - x;
+                var origin = automaticPosition + m_positionState.GetOffset(group);
+                if (group.Parent != null && !group.Parent.IsRoot)
+                {
+                    origin.x = Mathf.Max(minimumPosition.x, origin.x);
+                    origin.y = Mathf.Max(minimumPosition.y, origin.y);
+                }
+
                 var isExpanded = m_search.EffectiveExpandedGroupIds.Contains(group.GroupId);
                 if (!isExpanded)
                 {
-                    var collapsedRect = new Rect(x, y, width, CollapsedGroupHeight);
-                    m_groups.Add(
+                    var cardRect = new Rect(
+                        origin.x,
+                        origin.y,
+                        CollapsedGroupWidth,
+                        CollapsedGroupHeight);
+                    AddGroup(group, new GroupEntry(
                         group,
-                        new GroupEntry(group, collapsedRect, collapsedRect, depth, false));
-                    return CollapsedGroupHeight;
+                        cardRect,
+                        cardRect,
+                        Rect.zero,
+                        depth,
+                        false));
+                    return new LayoutResult(cardRect.size);
                 }
 
-                var contentY = y + GroupHeaderHeight + GroupPadding;
+                var contentStart = new Vector2(
+                    origin.x + GroupPadding,
+                    origin.y + GroupHeaderHeight + GroupPadding);
+                var cursorY = contentStart.y;
+                var contentRight = contentStart.x;
                 var hadContent = false;
-                if (group.Nodes.Count > 0)
-                {
-                    contentY += LayoutTypes(group.Nodes, contentY);
-                    hadContent = true;
-                }
 
                 if (group.Children.Count > 0)
                 {
+                    var childResult = LayoutChildGroups(group.Children, depth + 1, contentStart);
+                    cursorY += childResult.Height;
+                    contentRight = Mathf.Max(contentRight, childResult.Right);
+                    hadContent = true;
+                }
+
+                if (group.Nodes.Count > 0)
+                {
                     if (hadContent)
                     {
-                        contentY += SectionGap;
+                        cursorY += SectionGap;
                     }
 
-                    for (var i = 0; i < group.Children.Count; i++)
-                    {
-                        contentY += LayoutGroup(group.Children[i], depth + 1, contentY);
-                        if (i < group.Children.Count - 1)
-                        {
-                            contentY += GroupGap;
-                        }
-                    }
-
+                    var typeResult = LayoutTypes(group, group.Nodes, new Vector2(contentStart.x, cursorY));
+                    cursorY += typeResult.Height;
+                    contentRight = Mathf.Max(contentRight, typeResult.Right);
                     hadContent = true;
                 }
 
                 if (!hadContent)
                 {
-                    contentY += EmptyContentHeight;
+                    cursorY += EmptyContentHeight;
                 }
 
-                contentY += GroupPadding;
-                var groupRect = new Rect(x, y, width, contentY - y);
-                var headerRect = new Rect(x, y, width, GroupHeaderHeight);
-                m_groups.Add(group, new GroupEntry(group, groupRect, headerRect, depth, true));
-                return groupRect.height;
+                var width = Mathf.Max(
+                    CollapsedGroupWidth,
+                    contentRight - origin.x + GroupPadding);
+                var height = Mathf.Max(
+                    CollapsedGroupHeight,
+                    cursorY - origin.y + GroupPadding);
+                var bounds = new Rect(origin.x, origin.y, width, height);
+                var headerRect = new Rect(origin.x, origin.y, width, GroupHeaderHeight);
+                var contentRect = new Rect(
+                    contentStart.x,
+                    contentStart.y,
+                    Mathf.Max(1f, width - GroupPadding * 2f),
+                    Mathf.Max(1f, height - GroupHeaderHeight - GroupPadding * 2f));
+                AddGroup(group, new GroupEntry(
+                    group,
+                    bounds,
+                    headerRect,
+                    contentRect,
+                    depth,
+                    true));
+                return new LayoutResult(bounds.size);
             }
 
-            private float LayoutTypes(
-                IReadOnlyList<FrameworkArchitectureTypeDescriptor> nodes,
-                float y)
+            private SectionResult LayoutChildGroups(
+                IReadOnlyList<FrameworkArchitectureGroupDescriptor> children,
+                int depth,
+                Vector2 start)
             {
-                var maxRows = 0;
-                foreach (var pair in m_layerXs)
+                var x = start.x;
+                var y = start.y;
+                var rowHeight = 0f;
+                var right = start.x;
+                var rowCount = 0;
+                for (var i = 0; i < children.Count; i++)
                 {
-                    var layerNodes = nodes
-                        .Where(node => node.Metadata.Layer == pair.Key)
-                        .ToArray();
-                    maxRows = Mathf.Max(maxRows, layerNodes.Length);
-                    for (var row = 0; row < layerNodes.Length; row++)
+                    var child = children[i];
+                    var isExpanded = m_search.EffectiveExpandedGroupIds.Contains(child.GroupId);
+                    if (isExpanded && rowCount > 0)
                     {
-                        m_typeRects.Add(
-                            layerNodes[row],
-                            new Rect(
-                                pair.Value,
-                                y + row * (NodeHeight + NodeRowGap),
-                                NodeWidth,
-                                NodeHeight));
+                        x = start.x;
+                        y += rowHeight + GroupRowGap;
+                        rowHeight = 0f;
+                        rowCount = 0;
+                    }
+
+                    var result = LayoutGroup(child, depth, new Vector2(x, y), start);
+                    var entry = m_groups[child];
+                    right = Mathf.Max(right, entry.Bounds.xMax);
+                    rowHeight = Mathf.Max(rowHeight, entry.Bounds.yMax - y);
+                    rowCount++;
+
+                    if (isExpanded || rowCount >= MaxCollapsedChildrenPerRow)
+                    {
+                        x = start.x;
+                        y += rowHeight + GroupRowGap;
+                        rowHeight = 0f;
+                        rowCount = 0;
+                    }
+                    else
+                    {
+                        x = Mathf.Max(
+                            x + result.AutoSize.x,
+                            entry.Bounds.xMax) + GroupGap;
                     }
                 }
 
-                return maxRows == 0
-                    ? EmptyContentHeight
-                    : maxRows * NodeHeight + Mathf.Max(0, maxRows - 1) * NodeRowGap;
+                var bottom = rowCount > 0 ? y + rowHeight : y - GroupRowGap;
+                return new SectionResult(
+                    Mathf.Max(0f, bottom - start.y),
+                    right);
+            }
+
+            private SectionResult LayoutTypes(
+                FrameworkArchitectureGroupDescriptor group,
+                IReadOnlyList<FrameworkArchitectureTypeDescriptor> nodes,
+                Vector2 start)
+            {
+                var layers = nodes
+                    .Select(node => node.Metadata.Layer)
+                    .Distinct()
+                    .OrderBy(layer => layer)
+                    .ToArray();
+                var right = start.x;
+                var bottom = start.y + LayerHeaderHeight;
+                for (var layerIndex = 0; layerIndex < layers.Length; layerIndex++)
+                {
+                    var layer = layers[layerIndex];
+                    var x = start.x + layerIndex * (TypeNodeWidth + TypeColumnGap);
+                    m_layerHeaders.Add(new LayerHeaderEntry(
+                        group,
+                        layer,
+                        new Rect(x, start.y, TypeNodeWidth, LayerHeaderHeight)));
+
+                    var layerNodes = nodes.Where(node => node.Metadata.Layer == layer).ToArray();
+                    for (var row = 0; row < layerNodes.Length; row++)
+                    {
+                        var node = layerNodes[row];
+                        var automaticPosition = new Vector2(
+                            x,
+                            start.y + LayerHeaderHeight + row * (TypeNodeHeight + TypeRowGap));
+                        var nodePosition = automaticPosition + m_positionState.GetOffset(node);
+                        nodePosition.x = Mathf.Max(start.x, nodePosition.x);
+                        nodePosition.y = Mathf.Max(start.y + LayerHeaderHeight, nodePosition.y);
+                        var rect = new Rect(
+                            nodePosition,
+                            new Vector2(TypeNodeWidth, TypeNodeHeight));
+                        m_typeRects.Add(node, rect);
+                        Encapsulate(ref m_visibleBounds, ref m_hasVisibleBounds, rect);
+                        right = Mathf.Max(right, rect.xMax);
+                        bottom = Mathf.Max(bottom, rect.yMax);
+                    }
+                }
+
+                return new SectionResult(
+                    Mathf.Max(EmptyContentHeight, bottom - start.y),
+                    right);
+            }
+
+            private void AddGroup(
+                FrameworkArchitectureGroupDescriptor group,
+                GroupEntry entry)
+            {
+                m_groups.Add(group, entry);
+                Encapsulate(ref m_visibleBounds, ref m_hasVisibleBounds, entry.Bounds);
             }
 
             private List<DisplayRelation> BuildDisplayRelations()
@@ -388,7 +558,7 @@ namespace Framework_WWJ.Editor
                     var group = path[i];
                     if (m_groups.TryGetValue(group, out var entry) && !entry.IsExpanded)
                     {
-                        endpoint = Endpoint.ForGroup(group, entry.HeaderRect);
+                        endpoint = Endpoint.ForGroup(group, entry.NodeRect);
                         return true;
                     }
                 }
@@ -397,17 +567,35 @@ namespace Framework_WWJ.Editor
                 return false;
             }
 
-            private static int GetDepth(FrameworkArchitectureGroupDescriptor group)
+            private static Rect ExpandRect(Rect rect, float padding)
             {
-                var depth = -1;
-                var current = group;
-                while (current != null)
-                {
-                    depth++;
-                    current = current.Parent;
-                }
+                return new Rect(
+                    rect.x - padding,
+                    rect.y - padding,
+                    rect.width + padding * 2f,
+                    rect.height + padding * 2f);
+            }
+        }
 
-                return Mathf.Max(0, depth - 1);
+        private readonly struct LayoutResult
+        {
+            internal Vector2 AutoSize { get; }
+
+            internal LayoutResult(Vector2 autoSize)
+            {
+                AutoSize = autoSize;
+            }
+        }
+
+        private readonly struct SectionResult
+        {
+            internal float Height { get; }
+            internal float Right { get; }
+
+            internal SectionResult(float height, float right)
+            {
+                Height = height;
+                Right = right;
             }
         }
 
@@ -432,6 +620,8 @@ namespace Framework_WWJ.Editor
 
             internal IReadOnlyCollection<string> UserExpandedGroupIds => m_userExpandedGroupIds;
 
+            internal int Revision { get; private set; }
+
             internal ExpansionState(string sessionKey = DefaultSessionKey)
             {
                 m_sessionKey = string.IsNullOrWhiteSpace(sessionKey)
@@ -449,6 +639,7 @@ namespace Framework_WWJ.Editor
                     m_userExpandedGroupIds.Add(values[i]);
                 }
 
+                Revision++;
                 Sanitize(catalog);
             }
 
@@ -459,7 +650,13 @@ namespace Framework_WWJ.Editor
                         .Where(group => !group.IsRoot)
                         .Select(group => group.GroupId),
                     StringComparer.Ordinal);
+                var previousCount = m_userExpandedGroupIds.Count;
                 m_userExpandedGroupIds.RemoveWhere(groupId => !validIds.Contains(groupId));
+                if (previousCount != m_userExpandedGroupIds.Count)
+                {
+                    Revision++;
+                }
+
                 Save();
             }
 
@@ -484,6 +681,7 @@ namespace Framework_WWJ.Editor
 
                 m_pendingAnchorGroupId = group.GroupId;
                 m_pendingAnchorCanvasPoint = oldHeaderCanvasPoint;
+                Revision++;
                 Save();
             }
 
@@ -499,13 +697,20 @@ namespace Framework_WWJ.Editor
                 }
 
                 ClearPendingAnchor();
+                Revision++;
                 Save();
             }
 
             internal void CollapseAll()
             {
+                if (m_userExpandedGroupIds.Count == 0)
+                {
+                    return;
+                }
+
                 m_userExpandedGroupIds.Clear();
                 ClearPendingAnchor();
+                Revision++;
                 Save();
             }
 
@@ -530,9 +735,14 @@ namespace Framework_WWJ.Editor
                 }
 
                 oldCanvasPoint = m_pendingAnchorCanvasPoint;
-                newCanvasPoint = entry.HeaderRect.center;
+                newCanvasPoint = GetHeaderAnchor(entry.HeaderRect);
                 ClearPendingAnchor();
                 return true;
+            }
+
+            internal static Vector2 GetHeaderAnchor(Rect headerRect)
+            {
+                return new Vector2(headerRect.x + 24f, headerRect.center.y);
             }
 
             private void Save()
@@ -668,21 +878,42 @@ namespace Framework_WWJ.Editor
             internal FrameworkArchitectureGroupDescriptor Group { get; }
             internal Rect Bounds { get; }
             internal Rect HeaderRect { get; }
+            internal Rect ContentRect { get; }
             internal int Depth { get; }
             internal bool IsExpanded { get; }
+            internal Rect NodeRect => IsExpanded ? HeaderRect : Bounds;
 
             internal GroupEntry(
                 FrameworkArchitectureGroupDescriptor group,
                 Rect bounds,
                 Rect headerRect,
+                Rect contentRect,
                 int depth,
                 bool isExpanded)
             {
                 Group = group;
                 Bounds = bounds;
                 HeaderRect = headerRect;
+                ContentRect = contentRect;
                 Depth = depth;
                 IsExpanded = isExpanded;
+            }
+        }
+
+        internal sealed class LayerHeaderEntry
+        {
+            internal FrameworkArchitectureGroupDescriptor Group { get; }
+            internal FrameworkArchitectureLayer Layer { get; }
+            internal Rect Rect { get; }
+
+            internal LayerHeaderEntry(
+                FrameworkArchitectureGroupDescriptor group,
+                FrameworkArchitectureLayer layer,
+                Rect rect)
+            {
+                Group = group;
+                Layer = layer;
+                Rect = rect;
             }
         }
 
@@ -726,6 +957,7 @@ namespace Framework_WWJ.Editor
             internal Endpoint Source { get; }
             internal Endpoint Target { get; }
             internal FrameworkArchitectureRelationKind Kind { get; }
+            internal RelationGeometry Geometry { get; }
             internal int Count { get; set; }
             internal bool HasSearchMatch { get; set; }
             internal bool IsAggregated => Source.IsGroup || Target.IsGroup;
@@ -738,6 +970,74 @@ namespace Framework_WWJ.Editor
                 Source = source;
                 Target = target;
                 Kind = kind;
+                Geometry = RelationGeometry.Create(source.Rect, target.Rect, source.Key, target.Key, kind);
+            }
+        }
+
+        internal sealed class RelationGeometry
+        {
+            internal Vector2 Start { get; }
+            internal Vector2 Control1 { get; }
+            internal Vector2 Control2 { get; }
+            internal Vector2 End { get; }
+            internal Rect Bounds { get; }
+
+            private RelationGeometry(
+                Vector2 start,
+                Vector2 control1,
+                Vector2 control2,
+                Vector2 end)
+            {
+                Start = start;
+                Control1 = control1;
+                Control2 = control2;
+                End = end;
+                Bounds = Rect.MinMaxRect(
+                    Mathf.Min(start.x, control1.x, control2.x, end.x),
+                    Mathf.Min(start.y, control1.y, control2.y, end.y),
+                    Mathf.Max(start.x, control1.x, control2.x, end.x),
+                    Mathf.Max(start.y, control1.y, control2.y, end.y));
+            }
+
+            internal static RelationGeometry Create(
+                Rect source,
+                Rect target,
+                string sourceKey,
+                string targetKey,
+                FrameworkArchitectureRelationKind kind)
+            {
+                var direction = target.center - source.center;
+                var horizontal = Mathf.Abs(direction.x) >= Mathf.Abs(direction.y);
+                Vector2 start;
+                Vector2 end;
+                Vector2 control1;
+                Vector2 control2;
+                if (horizontal)
+                {
+                    var sign = direction.x >= 0f ? 1f : -1f;
+                    start = new Vector2(sign > 0f ? source.xMax : source.xMin, source.center.y);
+                    end = new Vector2(sign > 0f ? target.xMin : target.xMax, target.center.y);
+                    var distance = Mathf.Max(46f, Mathf.Abs(end.x - start.x) * 0.42f);
+                    control1 = start + Vector2.right * sign * distance;
+                    control2 = end - Vector2.right * sign * distance;
+                }
+                else
+                {
+                    var sign = direction.y >= 0f ? 1f : -1f;
+                    start = new Vector2(source.center.x, sign > 0f ? source.yMax : source.yMin);
+                    end = new Vector2(target.center.x, sign > 0f ? target.yMin : target.yMax);
+                    var distance = Mathf.Max(46f, Mathf.Abs(end.y - start.y) * 0.42f);
+                    control1 = start + Vector2.up * sign * distance;
+                    control2 = end - Vector2.up * sign * distance;
+                }
+
+                // 多种关系共享端点时使用稳定微偏移，避免三条曲线完全重叠。
+                var relationOffset = ((int)kind - 1) * 6f;
+                var stableSign = string.Compare(sourceKey, targetKey, StringComparison.Ordinal) <= 0 ? 1f : -1f;
+                var perpendicular = horizontal ? Vector2.up : Vector2.right;
+                control1 += perpendicular * relationOffset * stableSign;
+                control2 += perpendicular * relationOffset * stableSign;
+                return new RelationGeometry(start, control1, control2, end);
             }
         }
 

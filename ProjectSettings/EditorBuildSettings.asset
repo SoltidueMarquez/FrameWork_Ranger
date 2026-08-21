@@ -8,15 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
-    path: Assets/Plugins/Framework_WWJ/Samples/CoreSkeleton/Scenes/CoreSkeleton_A.unity
-    guid: 042fb59698d65cb4eb6602fcdedb5933
-  - enabled: 1
-    path: Assets/Plugins/Framework_WWJ/Samples/CoreSkeleton/Scenes/CoreSkeleton_B.unity
-    guid: edd3c2e039203d5478204d059068c5ba
-  - enabled: 1
-    path: Assets/Plugins/Framework_WWJ/BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity
-    guid: a9f91fc090f04b141919a7f0d409469f
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 0e3d4427c4bba8d44ac0bea7a3d72bdd, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

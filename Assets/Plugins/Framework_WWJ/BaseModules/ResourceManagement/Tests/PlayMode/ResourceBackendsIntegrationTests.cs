@@ -11,7 +11,7 @@ namespace Framework_WWJ.ResourceManagement.Tests
 {
     internal sealed class ResourceBackendsIntegrationTests
     {
-        private const string SampleSceneName = "ResourceManagementSample";
+        private const string SampleSceneName = "SampleScene";
         private const string AddressablesLocation =
             "framework-wwj/samples/resource-management/addressables-prefab";
         private const string ResourcesLocation =
@@ -73,10 +73,10 @@ namespace Framework_WWJ.ResourceManagement.Tests
             addressablesLeaseA.Dispose();
             Assert.That(module.CreateDiagnosticsSnapshot().LeaseCount, Is.EqualTo(1));
 
-            yield return SceneManager.LoadSceneAsync("CoreSkeleton_A", LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SampleSceneName, LoadSceneMode.Single);
             yield return WaitForReady();
             Assert.That(Framework.GetModule<ResourceModule>(), Is.SameAs(module));
-            yield return SceneManager.LoadSceneAsync("CoreSkeleton_B", LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SampleSceneName, LoadSceneMode.Single);
             yield return WaitForReady();
             Assert.That(Framework.GetModule<ResourceModule>(), Is.SameAs(module));
 

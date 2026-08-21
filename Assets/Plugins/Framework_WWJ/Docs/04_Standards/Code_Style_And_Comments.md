@@ -120,3 +120,7 @@
 - [ ] 是否存在重复保护、静默失败或隐藏副作用？
 - [ ] SO 原资产是否保持纯配置？
 - [ ] 卸载和异常路径是否与成功路径同样清楚？
+
+## 11. Unity CLI 开发与验证入口
+
+Framework_WWJ 的 Unity 导入、编译、测试、内容构建、Player 构建和冒烟必须使用项目根目录 `Tools/UnityCli.ps1`，并遵守 [Unity CLI 开发规则](./Unity_CLI_Development_Rules.md)。MCP/EditorMcpAdapter 不属于当前开发验证链路；详细命令和脚本原理分别见 [Unity 6000 CLI 开发与验证](./Unity_6000_CLI.md)与 [Unity CLI 技术参考](./Unity_CLI_Technical_Reference.md)。

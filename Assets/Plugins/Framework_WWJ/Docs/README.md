@@ -21,7 +21,7 @@ Docs/
 ├─ 03_Architecture/EditorCenter/ 中央启动、统一编辑器中心与代码架构图
 ├─ 03_Architecture/FoundationModules/ 基础模块纲领、AI 流水线与模块交付契约
 ├─ 03_Architecture/Distribution/ 框架仓库、模块分发与管理 App 探索
-├─ 04_Standards/            代码、注释、目录和实现规范
+├─ 04_Standards/            代码、注释、Unity CLI、目录和实现规范
 └─ 05_Skills/               项目内 Skill 路由与自动发现 Skill 的同步入口
 ```
 
@@ -40,19 +40,23 @@ Docs/
 9. [Phase 1.4 验收与复盘](./03_Architecture/EditorCenter/09_Phase1_4_Hierarchical_Architecture_Navigator_Acceptance_And_Review.md)
 10. [Phase 1.5 单画布架构图实施计划](./03_Architecture/EditorCenter/10_Phase1_5_Expandable_Compound_Architecture_Graph_Implementation_Plan.md)
 11. [Phase 1.5 验收与复盘](./03_Architecture/EditorCenter/11_Phase1_5_Expandable_Compound_Architecture_Graph_Acceptance_And_Review.md)
-12. [Core 架构设计入口](./03_Architecture/Core/README.md)
-13. [第一阶段实现计划（历史启动模型）](./03_Architecture/Core/03_Phase1_Core_Skeleton_Implementation_Plan.md)
-14. [第一阶段验收与复盘（历史基线）](./03_Architecture/Core/04_Phase1_Core_Skeleton_Acceptance_And_Review.md)
-15. [Core ADR](./03_Architecture/Core/ADR/README.md)
-16. [代码、注释与分区规范](./04_Standards/Code_Style_And_Comments.md)
-17. [Unity 6000 CLI 验证命令](./04_Standards/Unity_6000_CLI.md)
-18. [Skill 路由](./05_Skills/README.md)
-19. [基础模块建设入口](./03_Architecture/FoundationModules/README.md)
-20. [AI 模块开发流水线](./03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)
-21. [框架仓库、分发与管理 App](./03_Architecture/Distribution/README.md)
-22. [Unity 6000 与仓库迁移 ADR](./03_Architecture/Distribution/ADR-DIST-001_Unity6_Repository_Migration.md)
-23. [Unity 6000 与仓库迁移验收](./03_Architecture/Distribution/01_Unity6_Migration_Acceptance.md)
-24. [Resource Management 模块入口](./03_Architecture/FoundationModules/ResourceManagement/README.md)
+12. [Phase 1.6 紧凑可展开架构节点图实施计划](./03_Architecture/EditorCenter/12_Phase1_6_Compact_Expandable_Architecture_Graph_Implementation_Plan.md)
+13. [Phase 1.6 验收与复盘](./03_Architecture/EditorCenter/13_Phase1_6_Compact_Expandable_Architecture_Graph_Acceptance_And_Review.md)
+14. [Core 架构设计入口](./03_Architecture/Core/README.md)
+15. [第一阶段实现计划（历史启动模型）](./03_Architecture/Core/03_Phase1_Core_Skeleton_Implementation_Plan.md)
+16. [第一阶段验收与复盘（历史基线）](./03_Architecture/Core/04_Phase1_Core_Skeleton_Acceptance_And_Review.md)
+17. [Core ADR](./03_Architecture/Core/ADR/README.md)
+18. [代码、注释与分区规范](./04_Standards/Code_Style_And_Comments.md)
+19. [Unity CLI 开发强制规则](./04_Standards/Unity_CLI_Development_Rules.md)
+20. [Unity 6000 CLI 命令速查](./04_Standards/Unity_6000_CLI.md)
+21. [Unity CLI 技术参考与排障](./04_Standards/Unity_CLI_Technical_Reference.md)
+22. [Skill 路由](./05_Skills/README.md)
+23. [基础模块建设入口](./03_Architecture/FoundationModules/README.md)
+24. [AI 模块开发流水线](./03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)
+25. [框架仓库、分发与管理 App](./03_Architecture/Distribution/README.md)
+26. [Unity 6000 与仓库迁移 ADR](./03_Architecture/Distribution/ADR-DIST-001_Unity6_Repository_Migration.md)
+27. [Unity 6000 与仓库迁移验收](./03_Architecture/Distribution/01_Unity6_Migration_Acceptance.md)
+28. [Resource Management 模块入口](./03_Architecture/FoundationModules/ResourceManagement/README.md)
 
 ## 项目与历史
 

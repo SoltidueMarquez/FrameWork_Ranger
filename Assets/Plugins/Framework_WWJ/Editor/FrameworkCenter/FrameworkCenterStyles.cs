@@ -76,6 +76,11 @@ namespace Framework_WWJ.Editor
         private static GUIStyle s_toolbarLabel;
         private static GUIStyle s_toolbarHint;
         private static GUIStyle s_graphLayerLabel;
+        private static GUIStyle s_architectureTitle;
+        private static GUIStyle s_architectureBody;
+        private static GUIStyle s_architectureBadge;
+        private static readonly Vector3[] s_roundedFillPoints = new Vector3[24];
+        private static readonly Vector3[] s_roundedBorderPoints = new Vector3[25];
 
         internal static GUIStyle TopTitle => GetStyle(ref s_topTitle, () => new GUIStyle(EditorStyles.boldLabel)
         {
@@ -161,6 +166,43 @@ namespace Framework_WWJ.Editor
             clipping = TextClipping.Clip,
         });
 
+        internal static GUIStyle GetArchitectureTitle(float zoom)
+        {
+            var style = GetStyle(ref s_architectureTitle, () => new GUIStyle(EditorStyles.boldLabel)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                clipping = TextClipping.Clip,
+                padding = new RectOffset(0, 0, 0, 0),
+            });
+            style.fontSize = Mathf.Clamp(Mathf.RoundToInt(12f * zoom), 8, 14);
+            return style;
+        }
+
+        internal static GUIStyle GetArchitectureBody(float zoom)
+        {
+            var style = GetStyle(ref s_architectureBody, () => new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                clipping = TextClipping.Clip,
+                padding = new RectOffset(0, 0, 0, 0),
+                normal = { textColor = MutedTextColor },
+            });
+            style.fontSize = Mathf.Clamp(Mathf.RoundToInt(10f * zoom), 7, 11);
+            return style;
+        }
+
+        internal static GUIStyle GetArchitectureBadge(float zoom)
+        {
+            var style = GetStyle(ref s_architectureBadge, () => new GUIStyle(EditorStyles.miniBoldLabel)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                clipping = TextClipping.Clip,
+                padding = new RectOffset(3, 3, 0, 0),
+            });
+            style.fontSize = Mathf.Clamp(Mathf.RoundToInt(9f * zoom), 7, 10);
+            return style;
+        }
+
         #endregion
 
         #region 绘制辅助
@@ -177,6 +219,67 @@ namespace Framework_WWJ.Editor
             EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - thickness, rect.width, thickness), color);
             EditorGUI.DrawRect(new Rect(rect.x, rect.y, thickness, rect.height), color);
             EditorGUI.DrawRect(new Rect(rect.xMax - thickness, rect.y, thickness, rect.height), color);
+        }
+
+        /// <summary>
+        /// 使用复用顶点绘制圆角矩形，避免为每个节点创建纹理或临时数组。
+        /// 调用方须位于 <see cref="Handles.BeginGUI"/> 与 <see cref="Handles.EndGUI"/> 之间。
+        /// </summary>
+        internal static void DrawRoundedRect(
+            Rect rect,
+            Color fill,
+            Color border,
+            float radius,
+            float borderWidth = 1f)
+        {
+            var clampedRadius = Mathf.Clamp(radius, 0f, Mathf.Min(rect.width, rect.height) * 0.5f);
+            var pointIndex = 0;
+            for (var corner = 0; corner < 4; corner++)
+            {
+                Vector2 center;
+                float startAngle;
+                switch (corner)
+                {
+                    case 0:
+                        center = new Vector2(rect.xMin + clampedRadius, rect.yMin + clampedRadius);
+                        startAngle = 180f;
+                        break;
+                    case 1:
+                        center = new Vector2(rect.xMax - clampedRadius, rect.yMin + clampedRadius);
+                        startAngle = 270f;
+                        break;
+                    case 2:
+                        center = new Vector2(rect.xMax - clampedRadius, rect.yMax - clampedRadius);
+                        startAngle = 0f;
+                        break;
+                    default:
+                        center = new Vector2(rect.xMin + clampedRadius, rect.yMax - clampedRadius);
+                        startAngle = 90f;
+                        break;
+                }
+
+                for (var segment = 0; segment < 6; segment++)
+                {
+                    var radians = (startAngle + segment * 18f) * Mathf.Deg2Rad;
+                    s_roundedFillPoints[pointIndex++] = new Vector3(
+                        center.x + Mathf.Cos(radians) * clampedRadius,
+                        center.y + Mathf.Sin(radians) * clampedRadius,
+                        0f);
+                }
+            }
+
+            var previousColor = Handles.color;
+            Handles.color = fill;
+            Handles.DrawAAConvexPolygon(s_roundedFillPoints);
+            for (var i = 0; i < s_roundedFillPoints.Length; i++)
+            {
+                s_roundedBorderPoints[i] = s_roundedFillPoints[i];
+            }
+
+            s_roundedBorderPoints[s_roundedBorderPoints.Length - 1] = s_roundedFillPoints[0];
+            Handles.color = border;
+            Handles.DrawAAPolyLine(Mathf.Max(0.5f, borderWidth), s_roundedBorderPoints);
+            Handles.color = previousColor;
         }
 
         internal static bool DrawPinButton(Rect rect, bool pinned)
@@ -256,6 +359,9 @@ namespace Framework_WWJ.Editor
             s_toolbarLabel = null;
             s_toolbarHint = null;
             s_graphLayerLabel = null;
+            s_architectureTitle = null;
+            s_architectureBody = null;
+            s_architectureBadge = null;
         }
 
         #endregion

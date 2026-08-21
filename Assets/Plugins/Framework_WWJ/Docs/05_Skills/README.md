@@ -21,12 +21,13 @@
 6. [重建设计待办](../00_Project/09_Rebuild_Decision_Backlog.md)
 7. [计划交付规范](../03_Architecture/Core/02_Core_Skeleton_Plan_Output_Spec.md)
 8. [代码规范](../04_Standards/Code_Style_And_Comments.md)
-9. [HTY 参考架构](../02_References/HTY/06_HTY_Reference_Architecture.md)
-10. [基础模块建设入口](../03_Architecture/FoundationModules/README.md)
-11. [AI 模块开发流水线](../03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)
-12. [YokiFrame Kit 参考](../02_References/YokiFrame/00_YokiFrame_Kit_Architecture_And_Source_Map.md)
-13. [分发 App 探索](../03_Architecture/Distribution/README.md)
-14. [Resource Management 已验收事实](../03_Architecture/FoundationModules/ResourceManagement/README.md)
+9. [Unity CLI 开发强制规则](../04_Standards/Unity_CLI_Development_Rules.md)
+10. [HTY 参考架构](../02_References/HTY/06_HTY_Reference_Architecture.md)
+11. [基础模块建设入口](../03_Architecture/FoundationModules/README.md)
+12. [AI 模块开发流水线](../03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)
+13. [YokiFrame Kit 参考](../02_References/YokiFrame/00_YokiFrame_Kit_Architecture_And_Source_Map.md)
+14. [分发 App 探索](../03_Architecture/Distribution/README.md)
+15. [Resource Management 已验收事实](../03_Architecture/FoundationModules/ResourceManagement/README.md)
 
 设计输入与决策问题仍作为历史推导资料保留，但不再代表当前 API 尚未确定。
 
@@ -39,6 +40,7 @@
 - 用户讨论框架仓库、模块选择安装、跨项目升级、源码回流或专用管理 App：加载 `$plan-framework-wwj-distribution`，先研究并形成 ADR，不直接迁移仓库或开发 App。
 - 用户要求修改 HTY：除非明确把 LyingBottle 设为写入目标，否则只读参考并回写 Framework_WWJ 文档。
 - 用户要求参考 YokiFrame：遵守其项目 Skill 阅读路线，默认只读；Kit API 和安装协议不自动成为 Framework_WWJ 决策。
+- 任何涉及 Unity C#、资产、设置、测试、内容或 Player 构建的任务：加载并遵守 [Unity CLI 开发强制规则](../04_Standards/Unity_CLI_Development_Rules.md)，优先使用项目根目录 `Tools/UnityCli.ps1`；MCP/EditorMcpAdapter 不作为当前开发或验收入口。
 
 ## 文档与 Skill 同步检查
 

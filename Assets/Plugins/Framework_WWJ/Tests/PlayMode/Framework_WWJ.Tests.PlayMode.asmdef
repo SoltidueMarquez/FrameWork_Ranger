@@ -3,7 +3,6 @@
   "rootNamespace": "Framework_WWJ.Tests",
   "references": [
     "Framework_WWJ.Runtime",
-    "Framework_WWJ.Samples.CoreSkeleton",
     "UniTask"
   ],
   "includePlatforms": [],

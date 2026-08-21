@@ -40,7 +40,7 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
 
             using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
             {
-                if (GUILayout.Button("打开示例场景", GUILayout.Height(34f)))
+                if (GUILayout.Button("打开默认验收场景", GUILayout.Height(34f)))
                 {
                     OpenScene();
                 }
@@ -53,7 +53,7 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
             DrawStep("2", "分别点击两个后端的 Acquire，确认出现两个 Prefab 实例。" );
             DrawStep("3", "分别 Release，确认先销毁实例，再使对应缓存与 Lease 归零。" );
             DrawStep("4", "在 Resource Management 页面确认后端之间没有自动回退。" );
-            DrawStep("5", "切换 CoreSkeleton A/B 场景，确认 Global ResourceModule 不重建。" );
+            DrawStep("5", "重新加载默认场景，确认 Global ResourceModule 保持同一运行时实例。" );
         }
 
         private static void OpenScene()
@@ -63,7 +63,7 @@ namespace Framework_WWJ.ResourceManagement.Samples.Editor
                 return;
             }
 
-            EditorSceneManager.OpenScene(ResourceManagementSampleAssetBuilder.ScenePath, OpenSceneMode.Single);
+            EditorSceneManager.OpenScene(ResourceManagementSampleAssetBuilder.DefaultScenePath, OpenSceneMode.Single);
         }
 
         private static void DrawStep(string index, string text)
