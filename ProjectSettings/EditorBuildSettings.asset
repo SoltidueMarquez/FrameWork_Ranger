@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Plugins/Framework_WWJ/BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity
+    path: Assets/Plugins/FrameWork_Ranger/BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 0e3d4427c4bba8d44ac0bea7a3d72bdd, type: 2}

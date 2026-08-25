@@ -1,0 +1,25 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.ResourceManagement.Samples.Editor",
+  "rootNamespace": "FrameWork_Ranger.ResourceManagement.Samples.Editor",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.Editor",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.UnityResources",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Addressables",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Samples",
+    "Unity.Addressables",
+    "Unity.Addressables.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

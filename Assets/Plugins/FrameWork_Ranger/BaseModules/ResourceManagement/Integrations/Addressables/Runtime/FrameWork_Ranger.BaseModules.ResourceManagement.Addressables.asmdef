@@ -1,0 +1,21 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.ResourceManagement.Addressables",
+  "rootNamespace": "FrameWork_Ranger.ResourceManagement.Addressables",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+    "Unity.Addressables",
+    "Unity.ResourceManager",
+    "UniTask",
+    "UniTask.Addressables"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

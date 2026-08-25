@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: FrameWork_WWJ
+  productName: FrameWork_Ranger
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -262,7 +262,7 @@ PlayerSettings:
   shaderPrecisionModel: 0
   clonedFromGUID: 3c72c65a16f0acb438eed22b8b16c24a
   templatePackageId: com.unity.template.urp-blank@17.0.14
-  templateDefaultScene: Assets/Plugins/Framework_WWJ/BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity
+  templateDefaultScene: Assets/Plugins/FrameWork_Ranger/BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity
   useCustomMainManifest: 0
   useCustomLauncherManifest: 0
   useCustomMainGradleTemplate: 0
@@ -869,14 +869,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: FrameWork_WWJ
+  metroPackageName: FrameWork_Ranger
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: FrameWork_WWJ
+  metroApplicationDescription: FrameWork_Ranger
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0

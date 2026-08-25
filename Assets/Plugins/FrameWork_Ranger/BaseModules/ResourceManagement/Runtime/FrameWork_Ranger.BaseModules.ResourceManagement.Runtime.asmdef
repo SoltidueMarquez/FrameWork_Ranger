@@ -1,0 +1,17 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+  "rootNamespace": "FrameWork_Ranger.ResourceManagement",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

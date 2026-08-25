@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f063142eedf5694b9abc4ca4f7b868a, type: 3}
   m_Name: DefaultSceneConfig
-  m_EditorClassIdentifier: Framework_WWJ.Runtime::Framework_WWJ.FrameworkSceneConfig
+  m_EditorClassIdentifier: FrameWork_Ranger.Runtime::FrameWork_Ranger.FrameworkSceneConfig
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
@@ -23,8 +23,8 @@ MonoBehaviour:
     SerializationNodes:
     - Name: m_modules
       Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[Framework_WWJ.ModuleConfigEntry,
-        Framework_WWJ.Runtime]], mscorlib
+      Data: 0|System.Collections.Generic.List`1[[FrameWork_Ranger.ModuleConfigEntry,
+        FrameWork_Ranger.Runtime]], mscorlib
     - Name: 
       Entry: 12
       Data: 0

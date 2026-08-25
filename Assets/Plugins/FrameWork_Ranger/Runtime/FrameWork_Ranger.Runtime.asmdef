@@ -1,0 +1,16 @@
+{
+  "name": "FrameWork_Ranger.Runtime",
+  "rootNamespace": "FrameWork_Ranger",
+  "references": [
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

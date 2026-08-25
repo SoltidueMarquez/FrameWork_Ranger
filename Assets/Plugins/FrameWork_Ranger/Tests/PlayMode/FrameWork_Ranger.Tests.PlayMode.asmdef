@@ -1,0 +1,24 @@
+{
+  "name": "FrameWork_Ranger.Tests.PlayMode",
+  "rootNamespace": "FrameWork_Ranger.Tests",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.Serialization.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

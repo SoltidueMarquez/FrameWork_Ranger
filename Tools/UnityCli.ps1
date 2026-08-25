@@ -117,14 +117,14 @@ function Resolve-UnityEditor {
     }
 
     # 当前工作站通过 Unity Hub 使用此目录布局。
-    $candidates.Add((Join-Path 'D:\unityhub' "$ExpectedVersion\Editor\Unity.exe"))
+    $candidates.Add((Join-Path 'D:\unityhub' (Join-Path $ExpectedVersion 'Editor\Unity.exe')))
 
     if (-not [string]::IsNullOrWhiteSpace($env:ProgramFiles)) {
-        $candidates.Add((Join-Path $env:ProgramFiles "Unity\Hub\Editor\$ExpectedVersion\Editor\Unity.exe"))
+        $candidates.Add((Join-Path $env:ProgramFiles (Join-Path 'Unity\Hub\Editor' (Join-Path $ExpectedVersion 'Editor\Unity.exe'))))
     }
 
-    $candidates.Add((Join-Path 'D:\UnityHub\Editors' "$ExpectedVersion\Editor\Unity.exe"))
-    $candidates.Add((Join-Path 'D:\Program Files\Unity\Hub\Editor' "$ExpectedVersion\Editor\Unity.exe"))
+    $candidates.Add((Join-Path 'D:\UnityHub\Editors' (Join-Path $ExpectedVersion 'Editor\Unity.exe')))
+    $candidates.Add((Join-Path 'D:\Program Files\Unity\Hub\Editor' (Join-Path $ExpectedVersion 'Editor\Unity.exe')))
 
     $pathCommand = Get-Command 'Unity.exe' -ErrorAction SilentlyContinue
     if ($pathCommand) {
@@ -571,7 +571,7 @@ function Invoke-ResourceSmoke {
     $arguments = @(
         '-batchmode',
         '-nographics',
-        '-frameworkWwjResourceSmoke',
+        '-frameworkRangerResourceSmoke',
         '-logFile', $logPath
     )
 
@@ -616,7 +616,7 @@ if ($Task -eq 'Doctor') {
 $validationRoot = New-ValidationRoot -RequestedRoot $OutputRoot -ProjectRoot $ProjectPath -TaskName $Task
 
 if ([string]::IsNullOrWhiteSpace($PlayerPath)) {
-    $PlayerPath = Join-Path $ProjectPath 'Builds\UnityCli\Framework_WWJ.exe'
+    $PlayerPath = Join-Path $ProjectPath 'Builds\UnityCli\FrameWork_Ranger.exe'
 }
 else {
     $PlayerPath = Resolve-AbsolutePath -Path $PlayerPath

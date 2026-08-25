@@ -1,0 +1,29 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.ResourceManagement.Tests.PlayMode",
+  "rootNamespace": "FrameWork_Ranger.ResourceManagement.Tests",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.UnityResources",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Addressables",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Samples",
+    "Unity.Addressables",
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.Serialization.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
