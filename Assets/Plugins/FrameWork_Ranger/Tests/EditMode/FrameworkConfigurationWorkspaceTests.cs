@@ -156,7 +156,7 @@ namespace FrameWork_Ranger.Tests
         [Test]
         public void ModuleController_OdinSerializedList_RoundTripsThroughCopiedAsset()
         {
-            var folder = "Assets/FrameworkWWJ_Phase18_Test_" + Guid.NewGuid().ToString("N");
+            var folder = "Assets/FrameWork_Ranger_Phase18_Test_" + Guid.NewGuid().ToString("N");
             AssetDatabase.CreateFolder("Assets", folder.Substring("Assets/".Length));
             var sourcePath = folder + "/Source.asset";
             var copyPath = folder + "/Copy.asset";

@@ -183,9 +183,9 @@ namespace FrameWork_Ranger.Editor
             GUILayout.BeginArea(new Rect(rect.x + 10f, rect.y + 5f, rect.width - 20f, rect.height - 10f));
             EditorGUILayout.BeginHorizontal();
 
-            var logoRect = GUILayoutUtility.GetRect(38f, 24f, GUILayout.Width(38f), GUILayout.Height(24f));
+            var logoRect = GUILayoutUtility.GetRect(64f, 24f, GUILayout.Width(64f), GUILayout.Height(24f));
             EditorGUI.DrawRect(logoRect, FrameworkCenterStyles.AccentColor);
-            GUI.Label(logoRect, "WWJ", FrameworkCenterStyles.StatusBadge);
+            GUI.Label(logoRect, "RANGER", FrameworkCenterStyles.StatusBadge);
             GUILayout.Space(8f);
 
             EditorGUILayout.BeginVertical(GUILayout.Width(154f));

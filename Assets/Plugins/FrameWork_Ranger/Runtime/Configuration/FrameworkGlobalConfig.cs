@@ -14,7 +14,7 @@ namespace FrameWork_Ranger
         20,
         typeof(ModuleConfigBase),
         typeof(FrameworkDriverHandlerBase))]
-    [CreateAssetMenu(fileName = "FrameworkGlobalConfig", menuName = "Framework WWJ/Global Config")]
+    [CreateAssetMenu(fileName = "FrameworkGlobalConfig", menuName = "FrameWork_Ranger/Global Config")]
     public sealed class FrameworkGlobalConfig : ModuleConfigBase
     {
         #region Inspector 配置

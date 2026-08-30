@@ -9,7 +9,7 @@ namespace FrameWork_Ranger.ResourceManagement
     /// <summary>
     /// 跨场景资源借用门面；缓存、后端和运行句柄全部由内嵌 ResourceHandler 管理。
     /// </summary>
-    [CreateAssetMenu(fileName = "ResourceModule", menuName = "Framework WWJ/Modules/Resource Management")]
+    [CreateAssetMenu(fileName = "ResourceModule", menuName = "FrameWork_Ranger/Modules/Resource Management")]
     [FrameworkArchitecture(
         "资源管理模块",
         "作为 GlobalScope 公开门面，以显式后端 ResourceKey 提供异步加载与 Lease 所有权。",

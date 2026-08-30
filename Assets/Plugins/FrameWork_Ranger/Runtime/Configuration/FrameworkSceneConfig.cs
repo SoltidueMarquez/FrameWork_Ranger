@@ -11,7 +11,7 @@ namespace FrameWork_Ranger
         FrameworkArchitectureLayer.Configuration,
         30,
         typeof(ModuleConfigBase))]
-    [CreateAssetMenu(fileName = "FrameworkSceneConfig", menuName = "Framework WWJ/Scene Config")]
+    [CreateAssetMenu(fileName = "FrameworkSceneConfig", menuName = "FrameWork_Ranger/Scene Config")]
     public sealed class FrameworkSceneConfig : ModuleConfigBase
     {
     }
