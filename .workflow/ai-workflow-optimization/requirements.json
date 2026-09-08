@@ -1,0 +1,18 @@
+{
+  "task_id": "ai-workflow-optimization",
+  "goal": "使项目新对话只需描述需求即可进入轻量开发工作流，并用 JSON 保存长任务记忆",
+  "scope_notes": ["修改个人项目 Skills、项目入口与流程文档", "本轮不实现事件中心或新增 Unity CLI 工具"],
+  "questions": [
+    {"id": "Q-001", "question": "本轮是否可以按优化文档落地？", "answer_quote": "我们可以按照这个优化文档开始进行SKILL以及相关流程文档的修改", "interpretation": "用户授权修改技能与流程，不需要再次审批同一工作", "source": "本对话本轮用户请求", "requirement_ids": ["REQ-001", "REQ-002", "REQ-003", "REQ-004"]}
+  ],
+  "requirements": [
+    {"id": "REQ-001", "text": "新对话直接描述模块或功能需求，不要求用户指定 Skill 名称", "basis": "user_confirmed", "status": "active", "acceptance": "项目入口自动路由到对应技能和流程，普通小任务不过度扩展"},
+    {"id": "REQ-002", "text": "以 JSON 保存问答、有效需求和实现进度，跨上下文恢复不遗漏已完成但仍有效的要求", "basis": "user_confirmed", "status": "active", "acceptance": "有可复制模板、保存时机、恢复步骤与需求到工作项的映射"},
+    {"id": "REQ-003", "text": "保留设计修改空间，已有授权不重复确认，默认不增加哈希指纹或繁复测试", "basis": "user_confirmed", "status": "active", "acceptance": "入口、技能、流程和验证文档口径一致"},
+    {"id": "REQ-004", "text": "为用户随后重新开始事件中心开发的试点准备流程", "basis": "user_confirmed", "status": "active", "acceptance": "事件需求可以启动；旧 Pooling 验收记录不被伪造为已通过，实际依赖问题按范围处理"}
+  ],
+  "decisions": [
+    {"date": "2026-09-05", "basis": "implementation_choice", "text": "使用根 AGENTS.md 路由、已有个人 Skills 与项目内流程文档；不复制整套通用 Skill"}
+  ],
+  "open_questions": []
+}

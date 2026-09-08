@@ -1,7 +1,7 @@
 # FrameWork_Ranger 基础模块建设纲领
 
 > 日期：2026-08-19  
-> 状态：Resource Management 已关闭；下一候选为 Pooling，仍需独立批准。
+> 状态：Resource Management 已关闭；Pooling 已批准并实施，等待最终 Unity 全门禁。
 
 ## 1. 用户目标
 
@@ -11,7 +11,7 @@
 2. 对象池/引用池模块；
 3. 事件中心模块。
 
-同时建立一条可重复的 AI 接入流水线，使后续用户只需描述模块目标、功能范围和架构思路，AI 就能按固定门禁完成资料加载、Skill 路由、设计计划、代码/SO/配置、测试和文档回写。
+同时建立一条可重复的 AI 接入流水线，使后续用户只需描述模块目标、功能范围和架构思路，AI 就能按自然语言入口与 JSON 任务记忆完成资料加载、Skill 路由、设计计划、代码/SO/配置、测试和文档回写。
 
 ## 2. 参考定位
 
@@ -27,7 +27,7 @@
 
 ### 已确认方向
 
-- 三个基础模块逐个推进，不并行一次性实现。
+- 三个基础模块按实际用户目标逐个推进，不自动扩展到其他模块。2026-09-05 用户指定 Event 为下一次工作流试点；允许直接开始需求与设计，相关依赖问题按影响处理。
 - EventCenter 将依赖对象/引用池系统；依赖的精确层级仍需设计。
 - 每个正式模块都必须接入现有 Module SO、Scope 生命周期、依赖图、中央设置和测试体系。
 - AI 流水线必须覆盖“查找/加载 Skill → 设计计划 → 代码与 SO → 配置 → 测试 → 文档回写”。
@@ -40,26 +40,28 @@
 - 首版同时要求 Unity Resources 与 Addressables 1.22.3，使用显式后端 Key、Lease 与 single-flight。
 - 详细事实与 ADR 见 [Resource Management 入口](./ResourceManagement/README.md)。
 
-### 仍待决定
+### Pooling 阶段已接受的决定
 
-- 对象池与引用池是一个 Module 的两个能力，还是两个独立 Module。
-- EventCenter 依赖整个 PoolingModule，还是只依赖最小的引用复用接口。
-- Pooling 的 GameObject 池是否只通过 ResourceModule 加载模板，或同时允许直接 Prefab 模板。
-- Pooling 的精确程序集拆分、配置、预热、容量和回收策略。
+- `BaseModules/Pooling` 是一个垂直胶囊，内部使用 Global `ReferencePoolModule` 与 Scene `GameObjectPoolModule` 两个独立门面。
+- Event Center 未来只依赖 Reference Runtime，不依赖 GameObject 或 Resource Pooling。
+- GameObject 池只通过 ResourceModule 的 `ResourceKey` 与 `ResourceLease<GameObject>` 获取模板，不接受直接 Prefab 配置。
+- Core/Reference/GameObject 三个 Runtime 程序集共享严格所有权、批量扩容和修正后的 HTY 循环缩容；详细事实见 [Pooling 入口](./Pooling/README.md)。
 
 ## 4. 候选依赖图
 
 ```mermaid
 flowchart LR
-    Resource["Resource Management Module"] -->|"可选：按地址加载 Prefab 模板"| GameObjectPool["GameObject Pool Capability"]
-    ReferencePool["Reference Pool Capability"] -->|"用户确认方向：复用事件对象/节点"| EventCenter["Event Center Module"]
-    ReferencePool --> Pooling["Pooling Module Boundary"]
-    GameObjectPool --> Pooling
+    Resource["Global ResourceModule"] --> GameObjectPool["Scene GameObjectPoolModule"]
+    ReferencePool["Global ReferencePoolModule"] --> EventCenter["未来 EventCenter"]
+    Core["Pooling Core"] --> ReferencePool
+    Core --> GameObjectPool
 ```
 
-这张图是需求分解，不是最终程序集依赖。尤其要避免为了复用一个事件节点，让 EventCenter 被迫依赖 GameObject、Transform 或资源后端。
+这张图是已接受的模块方向。EventCenter 不会因复用事件载荷而依赖 GameObject、Transform 或资源后端。
 
-## 5. 候选实施顺序
+## 5. 历史候选实施顺序
+
+以下保留最初比较过程，实际默认顺序已记录在第 3 节。新的任务启动与用户调整按[模块流水线](./01_AI_Module_Development_Pipeline.md)执行，不重新要求选择整套顺序。
 
 ### 方案 A：Resource → Pooling → Event（当前建议进入讨论）
 
@@ -77,7 +79,7 @@ flowchart LR
 
 YokiFrame 证明 Event 可不依赖 Pool；但这不满足用户已提出的 EventCenter 依赖池化方向，除非后续用户修改需求。
 
-正式顺序由第一个模块的需求会议确认。本文不以“建议”替代决定。
+以上为当时选择顺序的历史理由，不作为新对话的重复审批要求。
 
 ## 6. 每个模块必须回答的问题
 
@@ -99,6 +101,6 @@ YokiFrame 证明 Event 可不依赖 Pool；但这不满足用户已提出的 Eve
 - 可独立理解的模块文档与 ADR；
 - 明确依赖方向的程序集和目录；
 - SO 模板、中央配置与示例资产；
-- 自动化测试和人工验收路径；
+- 与本次范围相称的验证及实际调用路径，具体检查按 Unity CLI 规则选择；
 - Framework Center 中适量而非强制的大型编辑器支持；
 - 可供未来分发 App 读取的模块身份、版本、依赖和安装边界设计。

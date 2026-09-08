@@ -13,3 +13,6 @@ using FrameWork_Ranger;
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.ResourceManagement.Tests.EditMode")]
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.ResourceManagement.Tests.PlayMode")]
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.ResourceManagement.Samples.Editor")]
+[assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.Pooling.Tests.EditMode")]
+[assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.Pooling.Tests.PlayMode")]
+[assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.Pooling.Samples.Editor")]

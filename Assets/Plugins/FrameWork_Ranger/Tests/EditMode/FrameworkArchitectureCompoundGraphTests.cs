@@ -145,8 +145,10 @@ namespace FrameWork_Ranger.Tests
         public void NestedGroupMovement_IsClampedAndExpandsParentToContainSubtree()
         {
             m_expansionState.ExpandAll(m_catalog);
-            var nested = m_catalog.Groups.First(group =>
-                !group.IsRoot && group.Parent != null && !group.Parent.IsRoot);
+            // 固定使用原有资源模块节点，避免新增按字母序更靠前的生产模块改变
+            // First(...) 的目标并把此布局回归测试误变成目录枚举顺序测试。
+            var nested = m_catalog.FindGroup("base-modules/resource-management/editor");
+            Assert.That(nested, Is.Not.Null);
             var baseline = Build(string.Empty);
             var baselineRect = baseline.Groups[nested].Bounds;
 

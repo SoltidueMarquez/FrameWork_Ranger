@@ -1,7 +1,9 @@
 # FrameWork_Ranger 重建设计待办
 
-> 状态：核心与 Editor 阶段已完成；Resource Management 已验收关闭，Pooling 与 Event Center 等待逐模块需求确认与批准。<br>
+> 状态：核心与 Editor 阶段已完成；Resource Management 已验收关闭，Pooling 已实施并等待最终 Unity 全门禁，Event Center 尚未开始。<br>
 > 本文是决策入口，不是已经批准的阶段路线。
+
+2026-09-05 工作流已更新：用户直接描述需求即可按[模块流水线](../03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)开始，关键输入保存到任务 JSON。以下问题按当前目标选读，不作为每个新任务必须重问的问卷；事件中心试点可先开展需求和设计，旧模块待验证事实继续保留。
 
 当前骨架设计的用户输入、问题清单和计划格式已拆分到 [Core 架构设计入口](../03_Architecture/Core/README.md)。
 第一阶段的实际结果见[验收与复盘](../03_Architecture/Core/04_Phase1_Core_Skeleton_Acceptance_And_Review.md)。
@@ -76,15 +78,15 @@ Phase 1.3 的当前结果见[预览与固定页签验收](../03_Architecture/Edi
 
 ## 6. 基础模块程序已确认方向与待办
 
-2026-08-19 已建立基础模块流水线，并按该流程关闭首个 [Resource Management](../03_Architecture/FoundationModules/ResourceManagement/README.md) 阶段。Pooling 与 Event 仍必须各自经过需求、研究、计划和批准。
+2026-08-19 已建立基础模块流水线并关闭首个 [Resource Management](../03_Architecture/FoundationModules/ResourceManagement/README.md) 阶段。2026-08-31 Pooling 已完成需求、研究、计划批准和代码实施，权威事实见 [Pooling 入口](../03_Architecture/FoundationModules/Pooling/README.md)；Event 仍必须独立经过相同门禁。
 
 | 主题 | 当前状态 | 下一项决策 |
 | --- | --- | --- |
 | Resource Management | 已实现并验收 | Global；Resources + Addressables 1.22.3；显式 Key；Lease；single-flight；详细见模块 ADR |
-| Object/Reference Pooling | 用户选定的首批基础模块 | 引用池与 GameObject 池是否同一 Module；配置、预热、容量和 Resource 依赖 |
+| Object/Reference Pooling | 已实施，等待最终 Unity 全门禁 | 双 Module/双 Scope；严格所有权；循环缩容；ResourceKey/Lease；分帧预热 |
 | Event Center | 用户选定的首批基础模块 | 用户确认其依赖池化系统；仍需把依赖收缩到最小引用复用契约，并决定 Token/订阅所有权 |
-| 正式实施顺序 | Resource → Pooling → Event | Resource 已关闭；下一步只允许 Pooling 需求设计 |
-| 模块物理边界 | Resource 已验证 `BaseModules/<ModuleName>` 垂直胶囊 | Pooling 复用原则但重新确认具体 asmdef 与依赖 |
+| 正式实施顺序 | Resource → Pooling → Event | Resource 已关闭；Pooling 验收关闭前不得开始 Event |
+| 模块物理边界 | Resource 与 Pooling 均采用 `BaseModules/<ModuleName>` 垂直胶囊 | Pooling 内部拆为 Core/Reference/GameObject 三个 Runtime 边界 |
 
 其他日志、时间、场景、音频、输入、UI、存档等继续保留为后续候选，不进入当前三模块程序。
 
@@ -185,10 +187,8 @@ Unity 6000.5.9f1 与 `FrameWork_Ranger` 仓库迁移已由 [ADR-DIST-001](../03_
 
 ## 11. 下一步需要用户提供
 
-1. 确认 Pooling 是对象池与引用池的一个 Module 还是两个能力边界；
-2. Pooling 首批真实调用方和必须解决的游戏/开发工作流；
-3. 必须实现与明确不实现的能力；
-4. 所有权、异步、取消、失败、性能和内存的最低要求；
-5. 希望优先借鉴或明确避免的 HTY/YokiFrame 机制。
+1. 在关闭 GUI Editor 后执行 Pooling Import、聚焦测试、全回归、Sample Builder、Addressables、Player 与双 Smoke；
+2. 将真实 NUnit XML、构建退出码和 Smoke PASS 日志回写 Pooling 验收页；
+3. Pooling 验收关闭后，再为 Event Center 确认调用方、订阅所有权、Token、异常与 ReferencePool 依赖边界。
 
-收到这些信息后，按[模块交付契约](../03_Architecture/FoundationModules/02_Module_Delivery_Contract_And_Templates.md)形成 Pooling 的详细设计与验收计划。计划批准前不创建 Pooling Runtime 代码。
+Event Center 仍按[模块交付契约](../03_Architecture/FoundationModules/02_Module_Delivery_Contract_And_Templates.md)先形成详细设计与验收计划；批准前不创建 Event Runtime 代码。

@@ -1,0 +1,142 @@
+{
+  "task_id": "event-center",
+  "status": "planning",
+  "design_docs": [
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/README.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/01_Reference_Research_And_Design_Starting_Point.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/02_Event_Class_API_And_HTY_Usage.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/03_Architecture_And_Public_Contracts.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/04_Implementation_Plan.md"
+  ],
+  "current_task": "",
+  "next_action": "本轮设计交付完成。进入实施阶段时从 WI-004 开始，恢复全部 active 要求和完整契约；按用户后续输入执行，不重问已经确认的行为。",
+  "tasks": [
+    {
+      "id": "WI-001",
+      "title": "参考研究与项目现状核对",
+      "requirement_ids": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-003",
+        "REQ-004"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/01_Reference_Research_And_Design_Starting_Point.md"
+      ],
+      "result": "已对照 HTY EventManager/DefaultEventHelper/ActionData/EventHub 与 YokiFrame TypeEvent/EnumEvent/EasyEvent/Token，核实本项目 ModuleContext 和 ReferencePool 借还契约；形成候选方向。",
+      "verification": [
+        "静态阅读本机参考源码及一个 HTY 窗口事件业务用例。",
+        "未运行 Unity 编译/测试，未更改运行时代码。",
+        "两份任务 JSON 解析通过；7 个文档链接已解析；三个新 .meta 齐全；修改的文档索引 diff --check 通过。"
+      ]
+    },
+    {
+      "id": "WI-002",
+      "title": "明确首批调用场景与公共行为，形成事件中心设计",
+      "requirement_ids": [
+        "REQ-001",
+        "REQ-003",
+        "REQ-004",
+        "REQ-005",
+        "REQ-006",
+        "REQ-008",
+        "REQ-009",
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-013",
+        "REQ-014",
+        "REQ-015",
+        "REQ-016"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/02_Event_Class_API_And_HTY_Usage.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/03_Architecture_And_Public_Contracts.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/04_Implementation_Plan.md"
+      ],
+      "result": "主要公共行为问答完成，已形成完整公共契约、关键脚本职责、配置接线和聚焦验证计划。静态核对 Core 可在回调内同步开始关闭，因此计划使用 Event 自身的异步卸载钩子等待当前发送归还载荷。尚未创建 Event Runtime/配置/样例或运行 Unity。",
+      "verification": [
+        "核对现行 DirectModuleBase、ModuleScopeRuntime、FrameworkOperationQueue 与 Reference Pool 借还代码，设计沿用现有生命周期。",
+        "JSON 解析、15 项有效要求与工作项关联检查通过；20 个文档链接可解析；Markdown 代码块/行尾及 .meta GUID 格式检查通过。未运行 Unity 编译或测试。"
+      ]
+    },
+    {
+      "id": "WI-003",
+      "title": "核对 HTY 业务调用链并细化事件类静态接口",
+      "requirement_ids": [
+        "REQ-002",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/02_Event_Class_API_And_HTY_Usage.md"
+      ],
+      "result": "已核对数值升级、UI 显隐、数据重载和窗口变化场景，准确区分 HTY 静态 Throw 与本轮要求的事件类静态 Subscribe；仅更新设计文档和任务记录。",
+      "verification": [
+        "参考工程源码静态检查；未运行 Unity 编译/测试。",
+        "两份 JSON 解析及需求 ID 检查通过；设计文件和 .meta 齐全；9 个文档链接均可解析；Markdown 行尾空白检查通过。"
+      ]
+    },
+    {
+      "id": "WI-004",
+      "title": "后续实施：Runtime、全局模板接线与最小样例",
+      "requirement_ids": [
+        "REQ-003",
+        "REQ-004",
+        "REQ-005",
+        "REQ-006",
+        "REQ-008",
+        "REQ-009",
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-013",
+        "REQ-014",
+        "REQ-015",
+        "REQ-016"
+      ],
+      "status": "pending",
+      "outputs": [],
+      "result": "已在 04_Implementation_Plan.md 中具体化；当前会话范围仍为设计，Runtime 尚未创建。",
+      "verification": []
+    },
+    {
+      "id": "WI-005",
+      "title": "后续实施：聚焦 Unity 验证与实际交付说明",
+      "requirement_ids": [
+        "REQ-003",
+        "REQ-004",
+        "REQ-006",
+        "REQ-008",
+        "REQ-009",
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-013",
+        "REQ-014",
+        "REQ-015",
+        "REQ-016"
+      ],
+      "status": "pending",
+      "outputs": [],
+      "result": "等待相应实现，按计划运行 Import 与 Event 聚焦测试；不使用历史 Pooling 结果代替 Event 验证。",
+      "verification": []
+    }
+  ],
+  "blockers": [],
+  "recent_notes": [
+    "2026-09-05：使用 work-with-framework-ranger 与 build-framework-ranger-module。",
+    "工作区已有 Pooling、流程文档和其他配置改动，本任务保留。",
+    "2026-09-05：完成首轮参考研究。HTY 初始化委托位于归还 finally 之外；YokiFrame 类型路由实际以泛型 T 为准。详见研究文档。",
+    "第二轮：用户确认每事件单独一类、事件类静态订阅、按需在代码中显式订阅；主要业务参考为 LyingBottle/HTY。",
+    "第二轮设计已落盘：静态订阅入口转发到模块运行实例，配套 Unsubscribe/Throw 是建议；参考实例提供静态 Throw，订阅经 EventManager。",
+    "第三轮：用户要求继续设计问答。本轮先问作用域、订阅释放和发送时机；推荐值仍为待答假设。",
+    "第四轮：用户“我同意”已映射为 REQ-008/009/010；复合建议 REQ-007 拆分保留历史，尚未问过的行为继续待定。",
+    "第五轮：上一轮三项推荐已转为 REQ-011/012/013；用户要求问题描述稍详细，后续附执行顺序示例。",
+    "第六轮：用户确认派发中增删、同步嵌套、未加载调用规则，新增 REQ-014/015/016；不再逐项询问内部存储细节。",
+    "第六轮收尾：新增 03_Architecture_And_Public_Contracts.md 与 04_Implementation_Plan.md；WI-002 设计完成，WI-004/005 为后续未实施工作。"
+  ]
+}

@@ -1,7 +1,7 @@
 # Unity 6000 CLI 开发与验证
 
 > 配置日期：2026-08-22<br>
-> 工程：`D:\unityhub\UnityProjects\FrameWork\FrameWork_Ranger`<br>
+> 工程：当前工作目录/Git 根；外层目录可能仍为 `FrameWork_WWJ`<br>
 > Editor：Unity 6000.5.9f1<br>
 > Shell：PowerShell 7 或 Windows PowerShell 5.1
 
@@ -34,6 +34,8 @@ pwsh -File .\Tools\UnityCli.ps1 -Task Doctor `
 
 ## 2. 日常开发命令
 
+以下是可选择的命令，不是每次全部执行的固定序列。按本次改动选择编译、聚焦验证或必要构建；具体规则见上面的开发规则第 5 节。
+
 ```powershell
 # 导入、依赖解析与脚本编译
 pwsh -File .\Tools\UnityCli.ps1 -Task Import
@@ -44,6 +46,9 @@ pwsh -File .\Tools\UnityCli.ps1 -Task TestPlayMode
 
 # 顺序运行 EditMode + PlayMode
 pwsh -File .\Tools\UnityCli.ps1 -Task TestAll
+
+# 创建/刷新 Pooling 独立场景、配置、双后端 Prefab 与 Addressables Group
+pwsh -File .\Tools\UnityCli.ps1 -Task BuildPoolingSample
 ```
 
 默认导入不会接受 API Updater 修改。只有升级 Unity 或依赖并准备审查兼容性改动时才显式启用：
@@ -73,7 +78,7 @@ pwsh -File .\Tools\UnityCli.ps1 -Task TestEditMode `
 
 分号分隔多个值时，把整个值保留在同一对引号内。过滤后零用例会被脚本判为失败，避免错误过滤造成“假通过”。
 
-Test Framework 会在执行结束后关闭 Editor，因此测试命令不传入 `-quit`。Unity 6 官方文档明确指出 `-runTests` 与 `-quit` 同用会在测试完成前退出。结果 XML 是用例计数与失败详情的事实来源；当前项目基线为 EditMode 67/67、PlayMode 18/18，完整迁移运行还会包含 Addressables 包的附加 EditMode 用例。
+Test Framework 会在执行结束后关闭 Editor，因此测试命令不传入 `-quit`。Unity 6 官方文档明确指出 `-runTests` 与 `-quit` 同用会在测试完成前退出。结果 XML 是用例计数与失败详情的事实来源；历史计数见各模块验收记录，当前计数读取本次结果；不同过滤条件或包附加用例会改变统计范围。
 
 ## 4. 构建与 Resource 冒烟
 
@@ -86,6 +91,9 @@ pwsh -File .\Tools\UnityCli.ps1 -Task BuildWindows64
 
 # 运行已构建 Player 的 Resources + Addressables 双后端冒烟
 pwsh -File .\Tools\UnityCli.ps1 -Task ResourceSmoke
+
+# 运行 Resources + Addressables GameObject Pool 与 Reference Pool 冒烟
+pwsh -File .\Tools\UnityCli.ps1 -Task PoolingSmoke
 ```
 
 可以用 `-PlayerPath` 覆盖 Player 路径，用 `-OutputRoot` 覆盖本次日志与 XML 目录。Resource 冒烟的成功标准是退出码 `0`，并且日志同时记录 Resources 与 Addressables 后端成功；不能只以“Player 能启动”替代双后端断言。

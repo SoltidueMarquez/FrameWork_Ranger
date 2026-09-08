@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c33bff054f6ea6b4cab51cc16583d65d, type: 3}
+  m_Name: GameObjectPoolModule
+  m_EditorClassIdentifier: FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime::FrameWork_Ranger.Pooling.GameObjects.GameObjectPoolModule
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: m_handler
+      Entry: 7
+      Data: 0|FrameWork_Ranger.Pooling.GameObjects.GameObjectPoolHandler, FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime
+    - Name: m_definitions
+      Entry: 7
+      Data: 1|System.Collections.Generic.List`1[[FrameWork_Ranger.Pooling.GameObjects.GameObjectPoolDefinition,
+        FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 2|FrameWork_Ranger.Pooling.GameObjects.GameObjectPoolDefinition, FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime
+    - Name: m_poolName
+      Entry: 1
+      Data: Resources Prefab
+    - Name: m_backend
+      Entry: 3
+      Data: 0
+    - Name: m_location
+      Entry: 1
+      Data: FrameWork_Ranger/Pooling/ResourcesPoolPrefab
+    - Name: m_capacity
+      Entry: 7
+      Data: 3|FrameWork_Ranger.Pooling.PoolCapacitySettings, FrameWork_Ranger.BaseModules.Pooling.Core.Runtime
+    - Name: m_initialCount
+      Entry: 3
+      Data: 0
+    - Name: m_expansionBatchSize
+      Entry: 3
+      Data: 5
+    - Name: m_maxRetained
+      Entry: 3
+      Data: -1
+    - Name: m_idleShrinkIntervalSeconds
+      Entry: 4
+      Data: 120
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|FrameWork_Ranger.Pooling.GameObjects.GameObjectPoolDefinition, FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime
+    - Name: m_poolName
+      Entry: 1
+      Data: Addressables Prefab
+    - Name: m_backend
+      Entry: 3
+      Data: 1
+    - Name: m_location
+      Entry: 1
+      Data: framework-ranger/samples/pooling/addressables-prefab
+    - Name: m_capacity
+      Entry: 7
+      Data: 5|FrameWork_Ranger.Pooling.PoolCapacitySettings, FrameWork_Ranger.BaseModules.Pooling.Core.Runtime
+    - Name: m_initialCount
+      Entry: 3
+      Data: 0
+    - Name: m_expansionBatchSize
+      Entry: 3
+      Data: 5
+    - Name: m_maxRetained
+      Entry: 3
+      Data: -1
+    - Name: m_idleShrinkIntervalSeconds
+      Entry: 4
+      Data: 120
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: m_prewarmBudgetPerFrame
+      Entry: 3
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+  m_loadPriority: 0

@@ -1,0 +1,19 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime",
+  "rootNamespace": "FrameWork_Ranger.Pooling.GameObjects",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.Pooling.Core.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Plugins/FrameWork_Ranger/BaseModules/Pooling/Samples/Scenes/PoolingSample.unity
+    guid: 5decf861a988016499893aa3fdadd8e9
+  - enabled: 1
     path: Assets/Plugins/FrameWork_Ranger/BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:

@@ -29,6 +29,10 @@ Docs/
 
 未来新增基础模块时，在 `03_Architecture/FoundationModules/<ModuleName>/` 建立对应设计资料，不把所有模块混入 Core 文档。
 
+## 开发工作流入口
+
+根 [AGENTS.md](../../../../AGENTS.md)自动引导新对话；用户直接描述需求即可。多轮任务按[JSON 任务记忆协议](./05_Skills/01_Task_Memory_And_Recovery.md)保存和恢复，[Skill 路由](./05_Skills/README.md)负责按范围选读文档。实现授权不重复确认，验证按实际改动选择。
+
 ## 当前设计入口
 
 1. [Editor Center 与中央启动入口](./03_Architecture/EditorCenter/README.md)
@@ -64,6 +68,8 @@ Docs/
 31. [产品身份重命名 ADR](./03_Architecture/Distribution/ADR-DIST-002_Identity_Rename_To_FrameWork_Ranger.md)
 32. [Unity 6000 与仓库迁移验收](./03_Architecture/Distribution/01_Unity6_Migration_Acceptance.md)
 33. [Resource Management 模块入口](./03_Architecture/FoundationModules/ResourceManagement/README.md)
+34. [Pooling 对象池/引用池模块入口](./03_Architecture/FoundationModules/Pooling/README.md)
+35. [Event Center 事件中心需求与参考研究](./03_Architecture/FoundationModules/EventCenter/README.md)
 
 ## 项目与历史
 
@@ -72,6 +78,7 @@ Docs/
 - [全量重建基线](./00_Project/04_Rebuild_Baseline.md)
 - [旧代码清理记录](./00_Project/05_Cleanup_Log.md)
 - [重建设计待办](./00_Project/09_Rebuild_Decision_Backlog.md)
+- [AI 开发工作流优化：JSON 任务记忆与轻量验证](./00_Project/10_AI_Development_Workflow_Optimization.md)（已落实自然语言入口、JSON 任务记忆与轻量验证；工具扩展按需）
 - [旧框架架构](./01_History/02_Legacy_Architecture.md)
 - [历史计划与设计演进](./01_History/03_Previous_Plans_And_Design_Evolution.md)
 - [旧对象池设计归档](./01_History/Legacy_Object_Pool_Design.md)

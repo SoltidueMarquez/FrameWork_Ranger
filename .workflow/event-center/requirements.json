@@ -1,0 +1,273 @@
+{
+  "task_id": "event-center",
+  "goal": "重新开始 FrameWork_Ranger 事件中心的需求与设计，参考 HTY 与 YokiFrame 的相关实现。",
+  "scope_notes": [
+    "2026-09-05 用户原始需求：我们需要重新开始事件中心，我们可以参考 HTY 与 YokiFrame 框架的相关实现。",
+    "本轮先进入参考研究与需求设计；未确认的新接口、订阅语义和依赖保持候选。",
+    "参考工程只读，保留当前工程已有用户改动和历史资料。",
+    "当前 .workflow 中没有已有事件中心任务；新建 event-center，旧文档中的事件候选不直接视为本轮确认。",
+    "2026-09-05 第二轮原始需求：我建议参考LyingBottyle中HTY框架的事件中心设计与具体使用场景，每个事件单独写一个类与静态订阅方法，具体需要的时候在代码中订阅。",
+    "第三轮原始需求：按照流程继续吧，你来继续问我设计上需要敲定的问题吧。当前继续设计问答，不把此消息视为正式 Runtime 实施指令。",
+    "第四轮原始回答：我同意。对应上一轮列出的三项推荐：Global 唯一中心、成对手动注销、主线程同步派发及归还载荷。",
+    "第五轮原始回答：我同意，只需描述可以再稍微详细一些。确认上一轮三项推荐；后续提问适当增加具体调用例子、执行顺序和选择影响，避免只给术语。",
+    "第六轮原始回答：同意。对应上一轮派发中增删监听、同步嵌套、未加载时明确报错三项推荐。本轮整理完整公共契约与最小实现计划。"
+  ],
+  "questions": [
+    {
+      "id": "Q-001",
+      "question": "用户主动提出：事件中心重新启动及参考来源",
+      "answer_quote": "我们需要重新开始事件中心，我们可以参考 HTY 与 YokiFrame 框架的相关实现。",
+      "interpretation": "重新梳理事件中心，允许研究 HTY 与 YokiFrame 作为设计参考。",
+      "source": "2026-09-05 本任务首轮用户消息",
+      "requirement_ids": [
+        "REQ-001",
+        "REQ-002"
+      ]
+    },
+    {
+      "id": "Q-002",
+      "question": "第一版事件中心希望采用哪些具体使用流程与接口组织？",
+      "answer_quote": "我建议参考LyingBottyle中HTY框架的事件中心设计与具体使用场景，每个事件单独写一个类与静态订阅方法，具体需要的时候在代码中订阅。",
+      "interpretation": "以用户给定的 LyingBottle/HTY 真实使用场景推导设计，明确一事件一类、事件类静态订阅、业务按需显式订阅。不得把静态订阅擅自改解为仅静态发送。",
+      "source": "2026-09-05 第二轮用户消息，附 LyingBottle 与 YokiFrame 本地目录",
+      "requirement_ids": [
+        "REQ-005",
+        "REQ-006"
+      ]
+    },
+    {
+      "id": "Q-003",
+      "question": "用户主动要求继续推进的阶段",
+      "answer_quote": "按照流程继续吧，你来继续问我设计上需要敲定的问题吧。",
+      "interpretation": "继续关键设计问答；已确认的一事件一类、事件类静态订阅和 HTY 主要参考保持有效。",
+      "source": "第三轮用户消息",
+      "requirement_ids": [
+        "REQ-001",
+        "REQ-006"
+      ]
+    },
+    {
+      "id": "Q-004",
+      "question": "上一轮三项建议：全局共享中心、成对手动注销、主线程同步派发并归还池化载荷。",
+      "answer_quote": "我同意",
+      "interpretation": "用户同意上一轮三项推荐。确认范围不扩展到尚未提问的重复订阅、优先级、Once、派发中增删或异常策略。",
+      "source": "第四轮用户回复，承接第三轮三张问题卡片及最终回复",
+      "requirement_ids": [
+        "REQ-008",
+        "REQ-009",
+        "REQ-010"
+      ]
+    },
+    {
+      "id": "Q-005",
+      "question": "上一轮三项建议：同一回调去重，普通订阅按注册顺序执行，监听异常记录后继续。",
+      "answer_quote": "我同意，只需描述可以再稍微详细一些",
+      "interpretation": "确认上一轮三项推荐，并要求设计问题的描述稍详细，说明实例及调用影响。尚未询问的派发中增删、嵌套发送与未就绪调用仍未确认。",
+      "source": "第五轮用户回复，承接第四轮三张设计问题卡片及最终回复",
+      "requirement_ids": [
+        "REQ-011",
+        "REQ-012",
+        "REQ-013"
+      ]
+    },
+    {
+      "id": "Q-006",
+      "question": "上一轮三项建议：注销立即生效且新增不进入本轮；允许同步嵌套；未加载时订阅/发送报错，卸载后注销无操作。",
+      "answer_quote": "同意",
+      "interpretation": "用户同意上一轮三项推荐，确认每次嵌套发送独立借出载荷；当前设计问答已覆盖主要公共行为，下一步整理契约与实施计划。",
+      "source": "第六轮用户回复，承接第五轮三张问题卡片及最终回复",
+      "requirement_ids": [
+        "REQ-014",
+        "REQ-015",
+        "REQ-016"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "text": "重新启动事件中心需求与设计，不自动沿用旧候选作为已确认接口。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "形成可讨论的设计方向与关键未决问题，保留新一轮问答和进度。"
+    },
+    {
+      "id": "REQ-002",
+      "text": "参考 HTY 与 YokiFrame 的事件相关实现。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "定位参考源码，对比接口、派发、订阅清理、作用域和池化行为，并区分事实与建议。"
+    },
+    {
+      "id": "REQ-003",
+      "text": "遵守现行模块边界与 SO 模板/运行状态分离；开始事件设计不以完成整个 Pooling 历史验收为前提。",
+      "basis": "project_fact",
+      "status": "active",
+      "acceptance": "设计引用实际 Core 与 Reference Pool 契约，仅记录相关依赖风险。"
+    },
+    {
+      "id": "REQ-004",
+      "text": "保留历史已确认的事件中心依赖池化方向，将模块依赖限制到 Reference Runtime；具体池化对象和公共所有权在本轮设计中确定。",
+      "basis": "project_fact",
+      "status": "active",
+      "acceptance": "设计明确 ReferencePoolModule 的使用点与借还责任，不引入 GameObject/Resource 依赖。"
+    },
+    {
+      "id": "REQ-005",
+      "text": "以 LyingBottle 内 HTY 事件中心及真实使用场景作为当前业务接口设计的主要参考，YokiFrame 继续作为内部机制的补充参考。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "用真实事件类、发布者与订阅者调用链说明本项目设计，不再要求用户另行虚构首批使用场景。"
+    },
+    {
+      "id": "REQ-006",
+      "text": "每个事件单独编写一个类，提供该事件的静态订阅方法，业务代码在需要时显式订阅。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "设计示例展示 EventClass.Subscribe(callback) 形式；每类有独立文件及强类型数据，订阅由业务显式调用。"
+    },
+    {
+      "id": "REQ-007",
+      "text": "建议使用 Global EventModule、成对静态 Subscribe/Unsubscribe、同委托去重、静态 Throw 和主线程同步派发，事件载荷由引用池统一借还。",
+      "basis": "assumption",
+      "status": "superseded",
+      "acceptance": "如采用，以打开/订阅/发送/回调/关闭/注销的流程验证，并核对派发中增删、异常借还和模块卸载。",
+      "superseded_by": [
+        "REQ-008",
+        "REQ-009",
+        "REQ-010",
+        "REQ-011"
+      ],
+      "note": "复合建议拆分后逐项问答：第四轮确认 REQ-008/009/010，第五轮另确认同回调去重 REQ-011；未询问的行为不因复合建议自动确认。"
+    },
+    {
+      "id": "REQ-008",
+      "text": "第一版仅使用一个 GlobalScope 事件中心，跨场景共享；事件类静态入口统一指向该中心。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "场景切换保持同一个中心；静态订阅和发送不会解析到另一个 Scene 中心。"
+    },
+    {
+      "id": "REQ-009",
+      "text": "业务按需调用静态 Subscribe，并在对应生命周期结束时成对调用 Unsubscribe；第一版采用手动注销，不附加 Token 或自动生命周期绑定。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "打开或启用后订阅可收事件，关闭或停用时注销后不再收到；中心卸载统一清空监听。"
+    },
+    {
+      "id": "REQ-010",
+      "text": "事件注册、发送和清理使用主线程；Throw 同步调用监听器，并在发送结束时归还引用池载荷。监听方延后处理时复制所需数据，第一版不增加延迟派发队列。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "Throw 返回前完成派发及载荷归还；接收方不在回调结束后持有池化载荷。"
+    },
+    {
+      "id": "REQ-011",
+      "text": "同一事件类型下相同回调自动去重，只保留一次订阅；重复 Unsubscribe 没有副作用。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "同一对象的同一方法重复订阅后，一次发送只调用一次；一次注销即停止监听，再次注销不报错。"
+    },
+    {
+      "id": "REQ-012",
+      "text": "第一版仅提供普通订阅，按注册先后顺序执行；不增加 priority 参数或 SubscribeOnce。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "A、B、C 按顺序订阅，在无订阅变更时按 A、B、C 执行，持续生效直到业务注销。"
+    },
+    {
+      "id": "REQ-013",
+      "text": "单个监听回调抛异常时记录异常并继续后续监听器；监听异常不向发送方重新抛出，派发结束仍归还事件载荷。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "B 监听抛异常时记录事件/监听来源与原始异常，C 仍执行，池化载荷被归还。初始化和清理异常与监听异常分别处理。"
+    },
+    {
+      "id": "REQ-014",
+      "text": "派发中注销立即生效，已注销且尚未执行的监听跳过；新增监听不参加已经开始的这轮派发，可参加后续新发起的发送。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "监听顺序 A/B/C，A 注销 C 并新增 D，本轮仅执行 A/B；后续新发起的发送可命中 D。"
+    },
+    {
+      "id": "REQ-015",
+      "text": "允许同步嵌套发送，包括同类事件；内层完成后返回外层回调，再继续外层后续监听。每次发送独立借出载荷，同类递归由业务保证有结束条件。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "外层 A 发送内层事件时，内层全部派发并归还其载荷后才继续 A 和外层 B；内层不会覆盖外层载荷。"
+    },
+    {
+      "id": "REQ-016",
+      "text": "中心尚未加载时 Subscribe/Throw 明确报错，不缓存早期订阅或事件；中心已卸载后的 Unsubscribe 安全无操作，不重新创建中心。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "早于模块加载的订阅/发送暴露明确错误；正确等待就绪后可用；卸载后的成对注销无副作用且不产生新中心。"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "text": "以现行模块流水线开展本轮需求研究；旧文档中 Pooling 全验收前不得开始 Event 的表述不再阻止需求设计。",
+      "basis": "project_fact",
+      "status": "active",
+      "reason": "项目 AGENTS.md 与 2026-09-05 模块流水线已明确这一行为。",
+      "source": "AGENTS.md；Docs/03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md 第 7 节"
+    },
+    {
+      "id": "DEC-002",
+      "text": "当前业务接口围绕独立事件类及静态订阅展开，业务在需要时显式订阅；以 LyingBottle/HTY 真实流程作为主要参考。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "reason": "第二轮用户明确事件类组织和静态订阅入口；第四轮进一步选择首版普通手动注销，Token 不进入本次范围。",
+      "source": "第二轮用户消息"
+    },
+    {
+      "id": "DEC-003",
+      "text": "采用 Global 唯一中心、静态入口成对手动订阅/注销、主线程同步派发与引用池载荷归还。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "reason": "用户对第三轮三项推荐回复“我同意”。",
+      "source": "第四轮用户回复",
+      "requirement_ids": [
+        "REQ-008",
+        "REQ-009",
+        "REQ-010"
+      ]
+    },
+    {
+      "id": "DEC-004",
+      "text": "采用相同回调去重、注册顺序普通订阅和逐监听异常隔离；第一版不添加 priority 或 SubscribeOnce。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "reason": "用户对第四轮三项推荐回复“我同意”，并要求后续描述稍详细。",
+      "source": "第五轮用户回复",
+      "requirement_ids": [
+        "REQ-011",
+        "REQ-012",
+        "REQ-013"
+      ]
+    },
+    {
+      "id": "DEC-005",
+      "text": "固定每次派发的进入边界，注销即时生效；允许独立载荷同步嵌套；未加载调用报错，卸载后注销无操作。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "reason": "用户对第五轮三项推荐回复“同意”。",
+      "source": "第六轮用户回复",
+      "requirement_ids": [
+        "REQ-014",
+        "REQ-015",
+        "REQ-016"
+      ]
+    },
+    {
+      "id": "DEC-006",
+      "text": "实施设计采用 DirectModuleBase + 普通 EventRuntime/每类型通道，公开 Subscribe/Unsubscribe/Publish；每个业务事件保留静态包装，池化限于载荷。",
+      "basis": "assumption",
+      "status": "active",
+      "reason": "根据已确认的单一同步策略和项目模块交付契约收敛内部组织，无替换后端需求，不配置空 Handler。完整契约中的签名和参数边界属于本轮设计产物，并非此前用户逐项确认的原文。",
+      "source": "Docs/03_Architecture/FoundationModules/EventCenter/03_Architecture_And_Public_Contracts.md"
+    }
+  ],
+  "open_questions": []
+}

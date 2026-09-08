@@ -6,9 +6,11 @@ param(
         'TestEditMode',
         'TestPlayMode',
         'TestAll',
+        'BuildPoolingSample',
         'BuildAddressables',
         'BuildWindows64',
-        'ResourceSmoke'
+        'ResourceSmoke',
+        'PoolingSmoke'
     )]
     [string] $Task = 'Doctor',
 
@@ -517,6 +519,32 @@ function Invoke-AddressablesBuild {
     Write-Host "[Unity CLI] 日志：$logPath"
 }
 
+function Invoke-PoolingSampleBuild {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $EditorPath,
+
+        [Parameter(Mandatory = $true)]
+        [string] $ProjectRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string] $ValidationRoot
+    )
+
+    $logPath = Join-Path $ValidationRoot 'pooling-sample.log'
+    $arguments = @(
+        '-batchmode',
+        '-quit',
+        '-projectPath', $ProjectRoot,
+        '-executeMethod', 'FrameWork_Ranger.Pooling.Samples.Editor.PoolingSampleAssetBuilder.BuildFromCommandLine',
+        '-logFile', $logPath
+    )
+
+    $exitCode = Invoke-NativeProcess -FilePath $EditorPath -Arguments $arguments -DisplayName 'Pooling 独立示例资产构建'
+    Assert-SuccessfulExit -ExitCode $exitCode -DisplayName 'Pooling 独立示例资产构建' -LogPath $logPath
+    Write-Host "[Unity CLI] 日志：$logPath"
+}
+
 function Invoke-WindowsBuild {
     param(
         [Parameter(Mandatory = $true)]
@@ -580,6 +608,32 @@ function Invoke-ResourceSmoke {
     Write-Host "[Unity CLI] 日志：$logPath"
 }
 
+function Invoke-PoolingSmoke {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $ExecutablePath,
+
+        [Parameter(Mandatory = $true)]
+        [string] $ValidationRoot
+    )
+
+    if (-not (Test-Path -LiteralPath $ExecutablePath -PathType Leaf)) {
+        throw "找不到 Pooling 冒烟所需的 Player：$ExecutablePath。请先运行 BuildWindows64。"
+    }
+
+    $logPath = Join-Path $ValidationRoot 'pooling-smoke.log'
+    $arguments = @(
+        '-batchmode',
+        '-nographics',
+        '-frameworkRangerPoolingSmoke',
+        '-logFile', $logPath
+    )
+
+    $exitCode = Invoke-NativeProcess -FilePath $ExecutablePath -Arguments $arguments -DisplayName 'Pooling 双后端 Player 冒烟'
+    Assert-SuccessfulExit -ExitCode $exitCode -DisplayName 'Pooling 双后端 Player 冒烟' -LogPath $logPath
+    Write-Host "[Unity CLI] 日志：$logPath"
+}
+
 if ([string]::IsNullOrWhiteSpace($ProjectPath)) {
     $ProjectPath = Split-Path -Parent $PSScriptRoot
 }
@@ -640,6 +694,10 @@ switch ($Task) {
         Invoke-UnityTests -Platform 'EditMode' -EditorPath $resolvedEditor -ProjectRoot $ProjectPath -ValidationRoot $validationRoot
         Invoke-UnityTests -Platform 'PlayMode' -EditorPath $resolvedEditor -ProjectRoot $ProjectPath -ValidationRoot $validationRoot
     }
+    'BuildPoolingSample' {
+        Assert-ProjectAvailable -ProjectRoot $ProjectPath
+        Invoke-PoolingSampleBuild -EditorPath $resolvedEditor -ProjectRoot $ProjectPath -ValidationRoot $validationRoot
+    }
     'BuildAddressables' {
         Assert-ProjectAvailable -ProjectRoot $ProjectPath
         Invoke-AddressablesBuild -EditorPath $resolvedEditor -ProjectRoot $ProjectPath -ValidationRoot $validationRoot
@@ -650,6 +708,9 @@ switch ($Task) {
     }
     'ResourceSmoke' {
         Invoke-ResourceSmoke -ExecutablePath $PlayerPath -ValidationRoot $validationRoot
+    }
+    'PoolingSmoke' {
+        Invoke-PoolingSmoke -ExecutablePath $PlayerPath -ValidationRoot $validationRoot
     }
 }
 

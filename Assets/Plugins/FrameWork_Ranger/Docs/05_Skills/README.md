@@ -1,49 +1,51 @@
 # FrameWork_Ranger Skill 路由
 
-本目录是 FrameWork_Ranger 的项目内 Skill 规范入口。项目事实和架构要求存放在版本库中；Codex 自动发现的个人 Skill 只负责路由与执行这些规范，避免在项目内外复制两套容易漂移的完整 `SKILL.md`。
+> 更新：2026-09-05。自然语言启动与 JSON 任务记忆已接入。
+> 用户在本项目新建对话后直接描述需求即可，无需输入 Skill 名称或粘贴工作流。
 
-## 自动发现的个人 Skills
+## 项目入口
 
-- `$work-with-framework-ranger`：所有 FrameWork_Ranger 任务的项目入口。
-- `$framework-ranger-lightweight-refactor`：参考研究、骨架设计、ADR、分阶段实现与验收路线。
-- `$build-framework-ranger-module`：单个正式模块从需求简报、参考研究、详细计划到代码/SO/配置/测试/复盘的门禁式流水线。
-- `$plan-framework-ranger-distribution`：框架源码仓库、可选模块分发、游戏项目同步与未来管理 App 的研究和决策流程。
+根目录 [AGENTS.md](../../../../../AGENTS.md)指向本页和[任务记忆协议](./01_Task_Memory_And_Recovery.md)。个人 Skills 提供简短路由，项目文档保存实际工作流程与稳定设计；不在两处维护模块进度副本。
 
-个人 Skill 目录位于 `C:\Users\Maugham\.codex\skills`，不属于 Unity 项目资产。更新本目录的路由或强制规范时，应同步检查个人 Skill 是否仍指向正确文档。
+当前主机的个人 Skills 位于 `C:\Users\Maugham\.codex\skills`，本会话可发现这些技能。工程路径由当前工作目录确定，外层名字可能仍为 `FrameWork_WWJ`，不跳转到旧的绝对路径。
 
-## 当前核心任务加载顺序
+## 自然语言路由
 
-1. [Docs 总索引](../README.md)
-2. [当前项目状态](../00_Project/01_Current_Project_Status.md)
-3. [第一阶段实现计划](../03_Architecture/Core/03_Phase1_Core_Skeleton_Implementation_Plan.md)
-4. [第一阶段验收与复盘](../03_Architecture/Core/04_Phase1_Core_Skeleton_Acceptance_And_Review.md)
-5. [Core ADR](../03_Architecture/Core/ADR/README.md)
-6. [重建设计待办](../00_Project/09_Rebuild_Decision_Backlog.md)
-7. [计划交付规范](../03_Architecture/Core/02_Core_Skeleton_Plan_Output_Spec.md)
-8. [代码规范](../04_Standards/Code_Style_And_Comments.md)
-9. [Unity CLI 开发强制规则](../04_Standards/Unity_CLI_Development_Rules.md)
-10. [HTY 参考架构](../02_References/HTY/06_HTY_Reference_Architecture.md)
-11. [基础模块建设入口](../03_Architecture/FoundationModules/README.md)
-12. [AI 模块开发流水线](../03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)
-13. [YokiFrame Kit 参考](../02_References/YokiFrame/00_YokiFrame_Kit_Architecture_And_Source_Map.md)
-14. [分发 App 探索](../03_Architecture/Distribution/README.md)
-15. [Resource Management 已验收事实](../03_Architecture/FoundationModules/ResourceManagement/README.md)
+| 用户意图 | 技能 | 项目文档 |
+| --- | --- | --- |
+| 项目需求、状态、解释、任务继续 | `$work-with-framework-ranger` | [Docs 入口](../README.md)、[任务记忆](./01_Task_Memory_And_Recovery.md) |
+| 新模块、模块功能、设计、实现、修复 | `$build-framework-ranger-module` | [流水线](../03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)、[交付契约](../03_Architecture/FoundationModules/02_Module_Delivery_Contract_And_Templates.md) |
+| 核心生命周期、Module/Handler、Scope 或共享 Editor 基础设施 | 再加 `$framework-ranger-lightweight-refactor` | [Core 入口](../03_Architecture/Core/README.md)、[Editor 入口](../03_Architecture/EditorCenter/README.md)及相关现行 ADR |
+| 仓库、安装、分发、跨项目同步或管理工具 | `$plan-framework-ranger-distribution` | [分发入口](../03_Architecture/Distribution/README.md)，按研究/设计/实施请求范围执行 |
 
-设计输入与决策问题仍作为历史推导资料保留，但不再代表当前 API 尚未确定。
+“事件中心”“想做一个音频模块”“继续昨天的功能”等表达均可匹配，不要求包含 `FrameWork_Ranger` 字样。若个人 Skill 未加载或另一台机器未安装，直接读取表中项目文档继续工作；项目入口不依赖用户先修复个人技能安装。
 
-## 路由规则
+## 每次任务加载多少
 
-- 用户提出想法或偏好：先更新设计输入并标记为已确认方向、候选或待决策。
-- 用户要求骨架计划：按决策问题逐组确认，然后严格使用计划交付规范。
-- 用户批准计划并要求实现：先核对 ADR、脚本路径和验收，再写代码。
-- 用户要求模块功能：加载 `$build-framework-ranger-module`，在 `03_Architecture/FoundationModules/<ModuleName>` 建立模块设计文档，先批准逐脚本计划，再决定 Runtime/Editor/Tests/Assets 位置并实现。
-- 用户讨论框架仓库、模块选择安装、跨项目升级、源码回流或专用管理 App：加载 `$plan-framework-ranger-distribution`，先研究并形成 ADR，不直接迁移仓库或开发 App。
-- 用户要求修改 HTY：除非明确把 LyingBottle 设为写入目标，否则只读参考并回写 FrameWork_Ranger 文档。
-- 用户要求参考 YokiFrame：遵守其项目 Skill 阅读路线，默认只读；Kit API 和安装协议不自动成为 FrameWork_Ranger 决策。
-- 任何涉及 Unity C#、资产、设置、测试、内容或 Player 构建的任务：加载并遵守 [Unity CLI 开发强制规则](../04_Standards/Unity_CLI_Development_Rules.md)，优先使用项目根目录 `Tools/UnityCli.ps1`；MCP/EditorMcpAdapter 不作为当前开发或验收入口。
+先看任务目标、任务 JSON 与相关模块入口，再按需打开设计、源码、ADR 或参考资料。不要每次都加载全量 Core 历史、全部模块、HTY/YokiFrame 资料和旧测试基线。
 
-## 文档与 Skill 同步检查
+开始长任务前保存初始要求；恢复时读取所有有效要求，包括已实现的要求。关键回答和阶段结果及时落盘，具体规则只维护在任务记忆协议中。
 
-- 路径和文件名改变后，更新 Docs 索引、项目 Skill 路由和个人 Skills。
-- 新约束只记录一个权威来源，其他位置使用链接。
-- Skill 验证通过不代表 Unity 代码通过；实现阶段仍需 Unity 编译和对应测试。
+## 授权与设计调整
+
+用户只要求研究/设计时按该范围交付。用户已要求实现且边界清楚时继续执行；已有授权持续有效。只确认改变目标、公共行为、所有权或依赖的关键未决选择；内部调整与符合约定的修复直接推进。
+
+流程不需要审批哈希、固定批准口令、逐脚本重新批准或每项澄清单独立 REQ。需要小实验时先验证具体未知点，设计随事实演进。
+
+## 工具与验证
+
+Unity 操作使用 `Tools/UnityCli.ps1`，遵守[按改动选择验证的规则](../04_Standards/Unity_CLI_Development_Rules.md)。不默认添加指纹、完整环境快照、复杂失效图或全量测试；参考包中的飞书和监督命令不自动执行。
+
+JSON 模板位于项目根 `.workflow/_templates/`，当前没有额外 CLI 结果摘要或自动监督器。是否扩展工具依据实际使用成本决定。
+
+## 当前模块与事件试点
+
+模块进度看[基础模块入口](../03_Architecture/FoundationModules/README.md)、对应验收记录和实际代码。个人 Skill 不保存“哪些模块已经完成”的清单。
+
+用户重新开始事件中心时可立即进入需求与设计；保留现有 Pooling 未验收事实，仅在影响 Reference Pool 的实际依赖时处理相关检查。不要把当前流程更新任务自动转成 Event 实现任务。
+
+## 同步与验证范围
+
+2026-09-05 已同步根 AGENTS、入口/模块/核心/分发个人 Skills、任务 JSON 模板、模块流程、计划粒度和 CLI 验证选择。技能 metadata 与文件校验用于确认可发现的配置、链接和语法，不证明模型每次都会正确路由；事件中心的新对话是实际使用试点。
+
+Codex 会在任务启动时读取项目 AGENTS，Skill 可按描述隐式匹配，隐式调用默认开启。依据：[官方 AGENTS 说明](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[官方 Skill 说明](https://learn.chatgpt.com/docs/build-skills)。本机沿用已被当前应用发现的个人技能目录，不为匹配文档中的其他目录再次复制同名 Skills。

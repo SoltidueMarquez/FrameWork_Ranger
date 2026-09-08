@@ -1,0 +1,16 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.Pooling.Core.Runtime",
+  "rootNamespace": "FrameWork_Ranger.Pooling",
+  "references": [
+    "FrameWork_Ranger.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

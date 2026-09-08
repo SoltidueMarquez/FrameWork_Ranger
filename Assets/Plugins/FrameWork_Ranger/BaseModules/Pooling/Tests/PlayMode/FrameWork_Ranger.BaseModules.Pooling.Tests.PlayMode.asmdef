@@ -1,0 +1,28 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.Pooling.Tests.PlayMode",
+  "rootNamespace": "FrameWork_Ranger.Pooling.Tests",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.Pooling.Core.Runtime",
+    "FrameWork_Ranger.BaseModules.Pooling.Reference.Runtime",
+    "FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.Serialization.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

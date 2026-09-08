@@ -18,6 +18,7 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 11400000, guid: 7c6813e85f03d5d4f978080425503561, type: 2}
     - {fileID: 11400000, guid: 80dffa32a34663745a4497937be00185, type: 2}
+    - {fileID: 11400000, guid: 6f598851df5e4b04ab57dfc67c08312d, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -27,15 +28,15 @@ MonoBehaviour:
       Entry: 10
       Data: 0
     - Name: m_defaultSceneConfig
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 1
     - Name: m_sceneBindings
       Entry: 7
       Data: 0|System.Collections.Generic.List`1[[FrameWork_Ranger.FrameworkSceneBinding,
         FrameWork_Ranger.Runtime]], mscorlib
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
       Data: 1|FrameWork_Ranger.FrameworkSceneBinding, FrameWork_Ranger.Runtime
@@ -48,6 +49,21 @@ MonoBehaviour:
     - Name: m_sceneConfig
       Entry: 10
       Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|FrameWork_Ranger.FrameworkSceneBinding, FrameWork_Ranger.Runtime
+    - Name: m_sceneGuid
+      Entry: 1
+      Data: 5decf861a988016499893aa3fdadd8e9
+    - Name: m_scenePath
+      Entry: 1
+      Data: Assets/Plugins/FrameWork_Ranger/BaseModules/Pooling/Samples/Scenes/PoolingSample.unity
+    - Name: m_sceneConfig
+      Entry: 10
+      Data: 2
     - Name: 
       Entry: 8
       Data: 

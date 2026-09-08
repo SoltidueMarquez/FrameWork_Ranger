@@ -1,14 +1,14 @@
 # FrameWork_Ranger 当前项目状态
 
-> 盘点时间：2026-08-25<br>
-> Unity 项目：`D:\unityhub\UnityProjects\FrameWork\FrameWork_Ranger`  
+> 盘点时间：2026-08-31<br>
+> Unity 项目外层目录：`D:\unityhub\UnityProjects\FrameWork\FrameWork_WWJ`  
 > 框架目录：`Assets/Plugins/FrameWork_Ranger`
 
 ## 1. 当前结论
 
-FrameWork_Ranger 已迁入 Unity 6000.5.9f1 URP 工程与同名 GitHub 仓库工作树，同时保留原框架完整 Git 历史。2026-08-25 起现行产品身份、命名空间、插件目录与 Skills 统一为 `FrameWork_Ranger`；旧名 `Framework_WWJ` 只保留在历史文档中，见 [ADR-DIST-002](../03_Architecture/Distribution/ADR-DIST-002_Identity_Rename_To_FrameWork_Ranger.md)。框架已完成核心骨架、Editor Center Phase 1.1–1.8，以及首个正式基础模块 Resource Management。当前代码可以通过固定项目设置自动装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、紧凑可展开代码架构图、HTY 式主从配置工作台，以及 Resource Management 模块目录中的 Resources/Addressables 双后端验收场景。
+FrameWork_Ranger 已迁入 Unity 6000.5.9f1 URP 工程与同名 GitHub 仓库工作树，同时保留原框架完整 Git 历史。2026-08-25 起现行产品身份、命名空间、插件目录与 Skills 统一为 `FrameWork_Ranger`；旧名 `Framework_WWJ` 只保留在历史文档中，见 [ADR-DIST-002](../03_Architecture/Distribution/ADR-DIST-002_Identity_Rename_To_FrameWork_Ranger.md)。框架已完成核心骨架、Editor Center Phase 1.1–1.8、Resource Management，并已按批准计划实施 Pooling 对象池/引用池模块。当前代码通过固定项目设置装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、Resource 双后端，以及 Global Reference Pool + Scene GameObject Pool 的严格所有权实现。
 
-Resource Management 已按批准契约实现并验收关闭；对象池/引用池与事件中心仍未开始，音频、输入、UI、存档等继续是未来候选。下一阶段只能先讨论 Pooling 的需求和公共契约，不能直接实现或并行推进 Event Center。
+Resource Management 已按批准契约实现并验收关闭。Pooling 的 Runtime、Editor、Tests、Sample、CLI 与文档已落盘，真实 Unity Import、首轮聚焦测试和 Sample 资产生成已通过；代码审计后的最新改动、全回归、Addressables、Player 与双 Smoke 仍待当前 GUI Editor 关闭后复验。Event Center、音频、输入、UI、存档等代码尚未在此记录中启动。2026-09-05 用户指定下一次新对话以事件中心试用优化流程：可开始需求与设计，并按实际 Reference Pool 依赖选择必要检查；Pooling 未验收结果继续保留。
 
 ## 2. 环境与依赖
 
@@ -39,6 +39,9 @@ Resource Management 已按批准契约实现并验收关闭；对象池/引用�
 | `Tests/PlayMode` | 6 | 670 | 自动启动、场景、失败、Tick 与 Shutdown；A/B 专用示例测试已删除 |
 | `BaseModules/ResourceManagement` 生产代码 | 26 | 1,952 | Resource Runtime、双 Integration 与 Editor；不含 Samples/Tests |
 | `BaseModules/ResourceManagement/Tests` | 7 | 1,018 | 资源契约、缓存/取消、配置、生命周期与真实双后端集成 |
+| `BaseModules/Pooling` 生产代码 | 23 | 2,568 | Core/Reference/GameObject Runtime 与 Editor |
+| `BaseModules/Pooling/Tests` | 6 | 809 | 容量、所有权、回调、配置、作用域、预热、回滚与主线程 |
+| `BaseModules/Pooling/Samples` | 6 | 650 | 双后端独立场景、回调、引用载荷、Builder 与 Player Smoke |
 
 独立程序集：
 
@@ -54,6 +57,14 @@ Resource Management 已按批准契约实现并验收关闭；对象池/引用�
 - `FrameWork_Ranger.BaseModules.ResourceManagement.Samples.Editor`
 - `FrameWork_Ranger.BaseModules.ResourceManagement.Tests.EditMode`
 - `FrameWork_Ranger.BaseModules.ResourceManagement.Tests.PlayMode`
+- `FrameWork_Ranger.BaseModules.Pooling.Core.Runtime`
+- `FrameWork_Ranger.BaseModules.Pooling.Reference.Runtime`
+- `FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime`
+- `FrameWork_Ranger.BaseModules.Pooling.Editor`
+- `FrameWork_Ranger.BaseModules.Pooling.Samples`
+- `FrameWork_Ranger.BaseModules.Pooling.Samples.Editor`
+- `FrameWork_Ranger.BaseModules.Pooling.Tests.EditMode`
+- `FrameWork_Ranger.BaseModules.Pooling.Tests.PlayMode`
 
 Runtime 不引用 `UnityEditor`；Editor、Tests 和 Sample 单向依赖 Runtime。内部算法通过 `InternalsVisibleTo` 只开放给受控程序集。
 
@@ -96,6 +107,8 @@ Runtime 不引用 `UnityEditor`；Editor、Tests 和 Sample 单向依赖 Runtime
 
 `ProjectSettings/EditorBuildSettings.asset` 只保留启用的模块内 `ResourceManagementSample.unity`。该场景挂载 `ResourceManagementSampleView`，可以直接人工 Acquire、Instantiate、Destroy 与 Release 两个后端的 Prefab；Addressables 本地 Group/Entry、两个验收 Prefab、Resource Sample 代码和 Player Smoke Runner 继续保留。
 
+Pooling 新增独立 `PoolingSample`，没有把现有 Resource Sample 改造成混合场景。追加式 Builder 已复用 Global ResourceModule、追加 Global ReferencePoolModule，只把 GameObjectPoolModule 安装到 Pooling SceneConfig，并创建 Resources/Addressables Prefab、独立 Addressables Group、场景绑定、Build Settings 与 `PoolingSmoke`。场景当前排在 Build Settings 第一项；最新 Builder 还会补齐 Camera 与 Directional Light，待 GUI Editor 关闭后重跑落盘。
+
 ## 7. 验证状态
 
 Unity 6000.5.9f1 的当前清理后验证结果如下。由于权威工程当时由 GUI Editor 打开，本次通过由当前 `Assets`、`Packages`、`ProjectSettings` 建立的隔离副本执行：
@@ -109,16 +122,17 @@ Unity 6000.5.9f1 的当前清理后验证结果如下。由于权威工程当时
 
 迁移前 Unity 2022.3.62f3 的历史结果仍保留在原阶段文档中，不用 Unity 6000 数值覆写。Resource 原阶段证据见 [Resource Management 验收与复盘](../03_Architecture/FoundationModules/ResourceManagement/04_Acceptance_And_Review.md)，Editor Center 最新证据见 [Phase 1.8 验收与复盘](../03_Architecture/EditorCenter/17_Phase1_8_HTY_Style_Configuration_Workspace_Acceptance_And_Review.md)。
 
+Pooling 本轮真实 Unity Import 已通过；Sample 生成后的聚焦 EditMode 为 21/21、PlayMode 为 5/5。随后全 EditMode 首轮暴露 Pooling 架构路径元数据错误与既有布局测试对目录枚举顺序的耦合，二者已修正；代码审计又补入热路径零分配和加载失败回滚用例。由于 GUI Editor 随后重新打开，最新提交点的全回归、Addressables、Player 与 Smoke 尚未执行，不能沿用首轮数字冒充最终验收。当前证据与待执行表见 [Pooling 验收与复盘](../03_Architecture/FoundationModules/Pooling/04_Acceptance_And_Review.md)。
+
 Editor Center 前序页签验收见 [Phase 1.3 验收与复盘](../03_Architecture/EditorCenter/07_Phase1_3_Preview_And_Pinned_Tabs_Acceptance_And_Review.md)；紧凑复合架构图证据见 [Phase 1.6 验收与复盘](../03_Architecture/EditorCenter/13_Phase1_6_Compact_Expandable_Architecture_Graph_Acceptance_And_Review.md)，最新主从配置工作台证据与人工步骤见 [Phase 1.8 验收与复盘](../03_Architecture/EditorCenter/17_Phase1_8_HTY_Style_Configuration_Workspace_Acceptance_And_Review.md)。
 
 ## 8. 当前未决范围
 
 - 第一个可验证游戏目标及其核心循环。
-- 对象池/引用池的准确边界，以及 Event Center 对最小引用复用契约的依赖。
-- EventCenter 对 Pooling 的最小依赖接口，以及 GameObject Pool 对 Resource 的依赖方式。
-- Pooling 是否复用 Resource 的垂直胶囊原则，以及自身需要的程序集拆分。
+- Pooling 最新改动的 Unity Import、聚焦测试、全回归、Sample 刷新、Addressables、Player 与双 Smoke 证据。
+- EventCenter 对 `ReferencePoolModule` 的最小依赖接口、订阅 Token 与所有权语义。
 - 是否由真实需求扩展 Additive Scene、多实例、接口绑定或并行初始化。
 - 各业务模块的公开 API、数据所有权、失败策略与性能指标。
 - 模块分发、游戏项目可编辑维护与未来管理 App 的领域模型；工程仓库与 Unity 版本迁移已由 [ADR-DIST-001](../03_Architecture/Distribution/ADR-DIST-001_Unity6_Repository_Migration.md) 确认。
 
-这些问题继续集中到[重建设计待办](./09_Rebuild_Decision_Backlog.md)。下一步只围绕 Pooling 填写需求简报并形成正式计划；没有新的用户批准前不创建 Pooling 或 Event 代码。
+这些问题继续集中到[重建设计待办](./09_Rebuild_Decision_Backlog.md)。Pooling 已有实现与计划，后续按其真实待办处理。新的模块/功能请求按[模块流水线](../03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)和[任务记忆协议](../05_Skills/01_Task_Memory_And_Recovery.md)启动；本轮流程修改没有创建 Event 代码。

@@ -1,143 +1,62 @@
 # FrameWork_Ranger 模块交付契约与模板
 
-> 状态：流水线交付规范。垂直胶囊已由 Resource 阶段 ADR-RM-001 验证，后续模块仍需按自身依赖确认程序集。
+> 更新：2026-09-05。模块交付按用户目标组织，计划细度和验证范围与实际改动相称。
+> 通用过程见[模块流水线](./01_AI_Module_Development_Pipeline.md)，持久记录见[任务记忆协议](../../05_Skills/01_Task_Memory_And_Recovery.md)。
 
-## 1. 模块完整交付物
+## 1. 按目标交付
 
-| 层次 | 必需内容 |
+| 部分 | 交付要求 |
 | --- | --- |
-| 需求 | 模块目标、调用方、范围、非目标、验收标准 |
-| 架构 | 逻辑图、数据流、生命周期、所有权、失败与依赖；生产程序集/类型在 Framework Center 分层架构目录中可见 |
-| Runtime | Module SO、可选 Handler/Provider、公开契约、内部实现 |
-| Editor | 必要 Inspector、配置诊断、Framework Center 接入；没有真实需求时可为空 |
-| Assets | 模块模板 SO、配置、示例资产与 `.meta` |
-| Tests | 纯算法/EditMode、生命周期/PlayMode、回归验证 |
-| Samples | 最小调用示例和人工验收路径 |
-| Docs | README、ADR、实施计划、验收复盘和索引 |
-| Distribution | 模块身份、程序集、直接依赖、资产边界和可选集成说明 |
+| 需求 | 初始要求、关键问答、有效约束和可观察验收存入任务 JSON |
+| 架构 | 公共契约、所有权、关键数据流/生命周期、直接依赖；复杂关系用图说明 |
+| Runtime | 实现本次要求的能力；Module SO、Handler/Provider 按实际职责选择 |
+| Editor | 需要的 Inspector、诊断或 Framework Center 支持，没有需求时可以为空 |
+| Assets | 本次需要的配置、模板、示例与稳定 `.meta`，不机械生成整套资产 |
+| 验证 | 编译和能证明本次行为的相关测试/使用场景，具体范围按 CLI 规则选择 |
+| Docs | 稳定设计、必要 ADR、实现说明、真实验收结果和相应入口 |
+| 分发信息 | 模块身份、程序集和直接依赖可识别；安装器、版本协议按独立需求决定 |
 
-## 2. 代码目录候选
+部分功能任务只修改相关部分，不必把一个已经存在的模块重新交付一遍。完整新模块要证明首批调用方可以使用，并具有与要求相符的结束/清理行为。
 
-为了未来可选引入和分发，优先讨论“垂直模块胶囊”：
+## 2. 目录与程序集
 
-```text
-Assets/Plugins/FrameWork_Ranger/
-├─ Runtime/                         # 已有核心骨架
-├─ Editor/                          # 已有统一编辑器基础设施
-├─ Modules/
-│  └─ <ModuleName>/
-│     ├─ Runtime/
-│     ├─ Editor/
-│     ├─ Tests/EditMode/
-│     ├─ Tests/PlayMode/
-│     └─ Samples/
-└─ Docs/03_Architecture/FoundationModules/<ModuleName>/
-```
+正式模块按 `BaseModules/<ModuleName>` 垂直组织。已存在的 ResourceManagement、Pooling 可作为边界实例，不能机械复制它们的程序集数量。
 
-**候选理由：** 单模块目录可清楚识别源码、程序集、测试和示例边界，未来分发工具也更容易构建模块清单。
+- Core Runtime 不反向依赖业务模块。
+- 模块 Runtime 只依赖当前要求需要的 Core 和直接模块契约。
+- Editor、Tests、Samples 单向依赖 Runtime。
+- 可选后端进入 Adapter/Integration，避免无关包进入最小核心。
+- Event 使用 Pooling 时只依赖已确认的 Reference Runtime 边界。
+- 生产程序集/顶层类型维护已有 FrameworkArchitecture 元数据；Tests、Samples、第三方程序集不为架构展示而接入生产目录。
 
-**已验证实例：** Resource Management 使用 `BaseModules/ResourceManagement` 垂直胶囊，内部自带 Runtime、Integrations、Editor、Tests、Samples 与配置资产；详见 [ADR-RM-001](./ResourceManagement/ADR/ADR-RM-001_Vertical_Capsule_And_Integration_Boundaries.md)。后续模块可复用边界原则，但不能机械复制程序集数量。
+## 3. 配置与运行状态
 
-## 3. 程序集依赖规则
+SO 资产保存模板配置，Scope 克隆体或其拥有的对象保存运行状态。说明模块适用的 Global/Scene 范围、借用对象/句柄/订阅的持有者与释放方法。
 
-- Core Runtime 不反向引用任何基础模块。
-- 模块 Runtime 只引用 Core Runtime 和已批准的直接依赖模块。
-- 模块 Editor 只引用本模块 Runtime、Framework Editor 基础设施和必要的 UnityEditor/Odin Editor 程序集。
-- Tests 与 Samples 单向依赖 Runtime；生产 Runtime 不引用 Tests/Samples。
-- 可选后端进入 Adapter/Integration 程序集，不把 Addressables、YooAsset 等依赖写进模块最小核心。
-- EventCenter 若需要池化，只依赖批准的最小 Pooling 契约，避免引入 GameObject/资源后端。
-- 每个生产程序集通过 `FrameworkArchitectureAssemblyAttribute` 声明稳定分组与职责；Tests、Samples、第三方程序集不接入生产架构目录。
-- 已接入程序集的顶层类、接口、结构体和枚举必须维护 `FrameworkArchitectureAttribute`，目录诊断必须为零。
+Handler 只在替换策略、后端多态或隔离复杂逻辑有价值时使用。已有构造和生命周期保证的条件，不在每层重复检查；必要保护集中在实际输入与所有权边界。
 
-## 4. Module SO 与运行状态规则
+## 4. 需求与实施说明
 
-- SO 资产是模板；运行时由 Scope 克隆，原资产不保存订阅、句柄、缓存、池实例或加载状态。
-- 模块必须声明 Global/Scene 适用范围和依赖类型。
-- Handler 只在确有策略替换、后端多态或复杂逻辑隔离价值时使用。
-- 公开返回借用对象、订阅令牌或资源句柄时，API 必须说明所有者、释放方法和 Scope 卸载后的行为。
-- Scope 卸载必须回收模块仍持有的内部资源；不能依赖调用方在完美时机全部手动清理。
+新模块可在现有模块目录建立需求、架构与实施说明；小功能可以直接补充现有文档。研究文档只在实际需要研究时创建，ADR 用于重要决定，不为每次内部调整单独立项。
 
-## 5. 模块需求输入模板
+需求简报需要回答：目标与首批调用方、范围/非目标、关键所有权与公共调用方式、必要依赖、如何观察结果。关键问答和当前要求放入 JSON，Markdown 使用 ID 或路径引用，不维护第二份实时要求表。
 
-```markdown
-# <模块名>需求简报
+实施说明按需覆盖：
 
-## 目标与使用场景
-- 要解决的问题：
-- 首批调用方：
-- 玩家/开发者可观察结果：
+1. 当前目标、已确认公共行为和仍需解决的问题；
+2. 目标路径、关键脚本职责与程序集依赖；
+3. 公共 API 示例、主要数据流和生命周期；
+4. 必要的 SO、配置、Editor 或调用示例；
+5. 本次验证方式和受影响旧行为。
 
-## 范围
-- 必须实现：
-- 明确不实现：
-- 可延后：
+关键脚本需要说清楚“负责什么、和谁协作、公开什么”。内部字段、辅助方法、文件拆分可以随实现调整；不要求先写完所有私有方法规格再开始。
 
-## 生命周期与所有权
-- Global / Scene：
-- 创建者 / 持有者 / 销毁者：
-- 获得和释放方式：
-- Shutdown 行为：
+已有授权足以覆盖的实现选择直接推进。改变公共行为、范围、所有权或依赖的未决选择，说明影响并确认受影响部分，不重新审批整套文档。
 
-## API 与数据流
-- 期望调用示例：
-- 同步 / 异步：
-- 取消 / 失败 / 重试：
+## 5. 验收记录
 
-## 依赖与适配
-- 必需模块：
-- 可选后端：
-- 第三方包：
+保留实际交付、验证方式及结果、重要计划偏差、未完成要求和已知限制。工作项与检查摘要写入 `progress.json`，详细日志沿用 CLI 输出目录。
 
-## 验收
-- EditMode：
-- PlayMode：
-- 示例：
-- 性能 / 内存：
-```
+依据[Unity CLI 开发规则](../../04_Standards/Unity_CLI_Development_Rules.md)选择检查，不新增全量回归、完整录屏、性能套件或哈希证明的默认要求。已运行检查失败时处理实际问题，不能用历史通过结果代替当前未验证行为。
 
-## 6. 实施计划模板
-
-```markdown
-# <模块名>实施计划
-
-## 目标、范围与决定
-## 逻辑层次图
-## 生命周期 / 数据时序图
-## 目录与程序集树
-## 逐脚本设计
-## SO、中央配置与示例接线
-## 错误、取消、回滚与清理
-## Editor / Framework Center
-## EditMode / PlayMode / 人工验收
-## 实施门禁
-## 文档与迁移
-```
-
-逐脚本设计必须细化到字段、属性、公开/受保护/内部方法、关键算法、协作类型和保存目录，不能只列类名。
-
-## 7. 验收复盘模板
-
-```markdown
-# <模块名>验收与复盘
-
-## 实际交付
-## 自动测试结果
-## 人工验收结果
-## 原资产与运行克隆检查
-## 性能 / GC / 泄漏观察
-## 与计划的偏差
-## 已知限制
-## 后续候选（不自动进入实现）
-```
-
-## 8. 完成检查
-
-- [ ] 用户批准的公共契约已实现，没有静默扩张。
-- [ ] 模板资产在运行前后序列化内容不变。
-- [ ] 依赖缺失和配置错误在运行时克隆前给出中文诊断。
-- [ ] Load 失败回滚、Unload 和 Shutdown 完成资源清理。
-- [ ] EditMode、PlayMode、全框架回归与示例验收通过。
-- [ ] Runtime、Editor、Tests、Samples 依赖方向正确。
-- [ ] 新 Unity 资产都有稳定 `.meta`。
-- [ ] 生产程序集分组、全部生产顶层类型职责、关键关系和源码定位均进入分层代码架构图。
-- [ ] Docs、ADR、架构图元数据和 Skill 路由已回写。
+收尾逐条核对有效需求，按实际结果关闭本次范围。后续候选保持候选，不自动进入实现。

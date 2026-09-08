@@ -1,0 +1,23 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.Pooling.Editor",
+  "rootNamespace": "FrameWork_Ranger.Pooling.Editor",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.Editor",
+    "FrameWork_Ranger.BaseModules.Pooling.Core.Runtime",
+    "FrameWork_Ranger.BaseModules.Pooling.Reference.Runtime",
+    "FrameWork_Ranger.BaseModules.Pooling.GameObject.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

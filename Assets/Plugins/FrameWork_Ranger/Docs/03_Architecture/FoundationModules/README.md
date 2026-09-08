@@ -1,6 +1,6 @@
 # 基础模块建设入口
 
-> 状态：Resource Management 已实现并完成验收；Pooling 与 Event Center 尚未开始。  
+> 状态：Resource Management 已关闭；Pooling 已实施并等待最终 Unity 全门禁；Event Center 于 2026-09-05 重新进入需求与参考研究，尚未实现。<br>
 > 已确认顺序：Resource → Pooling → Event，一次只推进一个模块。
 
 本目录管理基础模块的共同计划、AI 开发流水线、交付契约，以及后续每个模块自己的需求、ADR、实施计划和验收复盘。
@@ -14,26 +14,39 @@
 5. [YokiFrame Kit 架构与源码索引](../../02_References/YokiFrame/00_YokiFrame_Kit_Architecture_And_Source_Map.md)
 6. [核心契约与 ADR](../Core/README.md)
 7. [Resource Management 模块入口](./ResourceManagement/README.md)
+8. [Pooling 对象池/引用池模块入口](./Pooling/README.md)
+9. [AI 开发工作流优化](../../00_Project/10_AI_Development_Workflow_Optimization.md)（2026-09-05 已落实自然语言入口、JSON 任务记忆与轻量验证）
+10. [Event Center 事件中心](./EventCenter/README.md)
 
-## 当前门禁
+## 当前推进规则
 
-- Resource Management 已按批准计划关闭；当前不得顺带实现 Pooling 或 Event。
-- 三个模块一次只设计和实现一个；进入 Pooling 前仍需重新完成需求确认、参考研究、详细计划和用户批准。
-- 每个模块的正式计划都必须先取得用户确认，不能从参考项目直接推导为 FrameWork_Ranger 决策。
-- 模块目录、程序集、SO 资产与可分发单元边界，要在第一个模块计划中先行决定。
+- Resource Management 已关闭；Pooling 的已实现内容和未完成验证以模块验收页为准，不能把流程变更当成验证通过。
+- 默认保持单个活动模块的工作范围。用户明确提出下一模块时，立即进入其需求和设计；历史模块的未验收项不阻止新需求整理。
+- 2026-09-05 用户指定事件中心作为下一次新对话的流程试点。实施前检查它实际依赖的 Reference Pool 契约，只处理影响当前功能的依赖问题，不自动接管无关 Pooling/GameObject/资源后端验收。
+- 公共契约的关键未决选择需确认；已有授权和回答持续有效，不要求重新审批全部逐脚本细节。
+- 持续操作见[模块流水线](./01_AI_Module_Development_Pipeline.md)与[任务记忆协议](../../05_Skills/01_Task_Memory_And_Recovery.md)。
 
 ## 后续模块目录约定
 
-每个模块进入设计阶段时，在本目录创建独立子目录。Resource Management 已形成首个正式实例：
+每个模块进入设计阶段时，在本目录创建独立子目录。Resource Management 与 Pooling 已形成正式实例：
 
 ```text
 FoundationModules/
-└─ ResourceManagement/
+├─ ResourceManagement/
+│  ├─ README.md
+│  ├─ 00_Requirement_Brief.md
+│  ├─ 01_Reference_Research.md
+│  ├─ 02_Architecture_And_Public_Contracts.md
+│  ├─ 03_Implementation_Plan.md
+│  ├─ 04_Acceptance_And_Review.md
+│  └─ ADR/
+└─ Pooling/
    ├─ README.md
    ├─ 00_Requirement_Brief.md
-   ├─ 01_Architecture_And_Public_Contracts.md
-   ├─ 02_Implementation_Plan.md
-   ├─ 03_Acceptance_And_Review.md
+   ├─ 01_Reference_Research.md
+   ├─ 02_Architecture_And_Public_Contracts.md
+   ├─ 03_Implementation_Plan.md
+   ├─ 04_Acceptance_And_Review.md
    └─ ADR/
 ```
 
