@@ -140,7 +140,7 @@ namespace FrameWork_Ranger.Editor
                 GetContextErrorCount("DefaultScene"),
                 () => Select(m_state.SelectDefaultScene()));
 
-            DrawNavigationSection($"场 景 覆 盖 · {settings.SceneBindings.Count}");
+            DrawNavigationSection($"场景覆盖 · {settings.SceneBindings.Count}", () => AddSceneBinding(settings));
             for (var i = 0; i < settings.SceneBindings.Count; i++)
             {
                 var binding = settings.SceneBindings[i];
@@ -165,15 +165,6 @@ namespace FrameWork_Ranger.Editor
             GUILayout.Space(8f);
             EditorGUILayout.EndScrollView();
 
-            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("＋ 添加场景覆盖", EditorStyles.toolbarButton, GUILayout.Width(118f)))
-            {
-                AddSceneBinding(settings);
-            }
-
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
         }
 
@@ -207,7 +198,7 @@ namespace FrameWork_Ranger.Editor
             }
         }
 
-        private static void DrawNavigationSection(string title)
+        private static void DrawNavigationSection(string title, Action onAdd = null)
         {
             var rect = GUILayoutUtility.GetRect(
                 NavigationWidth,
@@ -215,9 +206,16 @@ namespace FrameWork_Ranger.Editor
                 GUILayout.Width(NavigationWidth),
                 GUILayout.Height(25f));
             GUI.Label(
-                new Rect(rect.x + 12f, rect.y + 4f, rect.width - 24f, 16f),
+                new Rect(rect.x + 12f, rect.y + 4f, rect.width - (onAdd == null ? 24f : 136f), 16f),
                 title,
                 FrameworkCenterStyles.NavigationCategory);
+            if (onAdd != null && GUI.Button(
+                    new Rect(rect.xMax - 120f, rect.y + 2f, 108f, 20f),
+                    new GUIContent("＋ 添加场景覆盖", "添加空的场景覆盖，并在右侧选择场景和配置"),
+                    EditorStyles.miniButton))
+            {
+                onAdd();
+            }
             EditorGUI.DrawRect(
                 new Rect(rect.x + 12f, rect.yMax - 2f, rect.width - 24f, 1f),
                 FrameworkCenterStyles.BorderColor);
@@ -307,7 +305,7 @@ namespace FrameWork_Ranger.Editor
                 SelectContextOption(settings, m_contextSelections[nextIndex]);
             }
 
-            if (GUILayout.Button("＋场景", EditorStyles.toolbarButton, GUILayout.Width(54f)))
+            if (GUILayout.Button(new GUIContent("＋覆盖", "添加场景覆盖"), EditorStyles.toolbarButton, GUILayout.Width(54f)))
             {
                 AddSceneBinding(settings);
             }
@@ -614,6 +612,27 @@ namespace FrameWork_Ranger.Editor
                 binding.SceneConfig,
                 typeof(FrameworkSceneConfig),
                 false);
+            using (new EditorGUI.DisabledScope(nextConfig != null))
+            {
+                if (GUILayout.Button("新建配置", EditorStyles.miniButton, GUILayout.Width(68f)))
+                {
+                    var suggestedPath = FrameworkProjectSettingsAssetUtility.GetSceneConfigDefaultPath(nextScene);
+                    var savePath = EditorUtility.SaveFilePanelInProject(
+                        "新建场景配置",
+                        System.IO.Path.GetFileNameWithoutExtension(suggestedPath),
+                        "asset",
+                        "选择空场景配置的保存位置",
+                        System.IO.Path.GetDirectoryName(suggestedPath));
+                    try
+                    {
+                        nextConfig = FrameworkProjectSettingsAssetUtility.CreateSceneConfig(savePath);
+                    }
+                    catch (Exception exception)
+                    {
+                        EditorUtility.DisplayDialog("无法新建场景配置", exception.Message, "确定");
+                    }
+                }
+            }
             var showingConfig = m_visibleSceneConfigContext == m_selection.ContextId;
             var eyeContent = GetVisibilityContent(showingConfig);
             using (new EditorGUI.DisabledScope(nextConfig == null))
@@ -635,18 +654,8 @@ namespace FrameWork_Ranger.Editor
 
             if (nextScene != oldScene || nextConfig != binding.SceneConfig)
             {
-                Undo.RecordObject(settings, "修改 Framework 场景覆盖");
-                var path = nextScene == null ? string.Empty : AssetDatabase.GetAssetPath(nextScene);
-                var guid = string.IsNullOrEmpty(path)
-                    ? string.Empty
-                    : AssetDatabase.AssetPathToGUID(path);
-                binding.SetScene(guid, path, nextConfig);
-                ReplaceSceneBinding(settings, index, binding);
-                EditorUtility.SetDirty(settings);
-                m_selection = m_state.SelectSceneBinding(binding, index);
-                m_visibleSceneConfigContext = m_selection.ContextId;
-                ReleaseConfigEditor();
-                InvalidateDiagnostics();
+                UpdateSceneBinding(settings, index, nextScene, nextConfig);
+                binding = settings.SceneBindings[index];
             }
 
             using (new EditorGUI.DisabledScope(true))
@@ -888,20 +897,38 @@ namespace FrameWork_Ranger.Editor
             m_graphViewport.RequestFrameAll();
         }
 
-        private void AddSceneBinding(FrameworkProjectSettings settings)
+        /// <summary>更新覆盖关系并保持内联编辑目标同步；撤销只影响关系，不删除配置资产。</summary>
+        internal void UpdateSceneBinding(
+            FrameworkProjectSettings settings, int index, SceneAsset scene, FrameworkSceneConfig config)
+        {
+            Undo.RegisterCompleteObjectUndo(settings, "修改 Framework 场景覆盖");
+            var path = scene == null ? string.Empty : AssetDatabase.GetAssetPath(scene);
+            var guid = string.IsNullOrEmpty(path) ? string.Empty : AssetDatabase.AssetPathToGUID(path);
+            var binding = new FrameworkSceneBinding();
+            binding.SetScene(guid, path, config);
+            ReplaceSceneBinding(settings, index, binding);
+            EditorUtility.SetDirty(settings);
+            m_selection = m_state.SelectSceneBinding(binding, index);
+            m_visibleSceneConfigContext = m_selection.ContextId;
+            ReleaseConfigEditor();
+            InvalidateDiagnostics();
+        }
+
+        internal void AddSceneBinding(FrameworkProjectSettings settings)
         {
             var bindings = new List<FrameworkSceneBinding>(settings.SceneBindings)
             {
                 new FrameworkSceneBinding(),
             };
-            Undo.RecordObject(settings, "添加 Framework 场景覆盖");
+            Undo.RegisterCompleteObjectUndo(settings, "添加 Framework 场景覆盖");
             settings.SetSceneBindings(bindings);
             EditorUtility.SetDirty(settings);
             InvalidateDiagnostics();
+            m_state.ActiveTab = FrameworkConfigurationWorkspaceTab.Edit;
             Select(m_state.SelectSceneBinding(bindings[bindings.Count - 1], bindings.Count - 1));
         }
 
-        private void RemoveSceneBinding(FrameworkProjectSettings settings, int index)
+        internal void RemoveSceneBinding(FrameworkProjectSettings settings, int index)
         {
             var bindings = new List<FrameworkSceneBinding>(settings.SceneBindings);
             if (index < 0 || index >= bindings.Count)
@@ -909,7 +936,7 @@ namespace FrameWork_Ranger.Editor
                 return;
             }
 
-            Undo.RecordObject(settings, "移除 Framework 场景覆盖");
+            Undo.RegisterCompleteObjectUndo(settings, "移除 Framework 场景覆盖");
             bindings.RemoveAt(index);
             settings.SetSceneBindings(bindings);
             EditorUtility.SetDirty(settings);

@@ -70,6 +70,7 @@ Docs/
 33. [Resource Management 模块入口](./03_Architecture/FoundationModules/ResourceManagement/README.md)
 34. [Pooling 对象池/引用池模块入口](./03_Architecture/FoundationModules/Pooling/README.md)
 35. [Event Center 事件中心使用、设计与验收](./03_Architecture/FoundationModules/EventCenter/README.md)
+36. [UI 模块设计、使用与验收](./03_Architecture/FoundationModules/UI/README.md)
 
 ## 项目与历史
 

@@ -16,3 +16,4 @@ using FrameWork_Ranger;
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.Pooling.Tests.EditMode")]
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.Pooling.Tests.PlayMode")]
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.Pooling.Samples.Editor")]
+[assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.UI.Editor")]

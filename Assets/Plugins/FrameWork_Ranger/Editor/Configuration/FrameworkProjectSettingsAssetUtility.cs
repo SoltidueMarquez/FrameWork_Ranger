@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -21,6 +22,56 @@ namespace FrameWork_Ranger.Editor
             "Assets/Plugins/FrameWork_Ranger/Resources/FrameworkProjectSettings.asset";
 
         #region 资产操作
+
+        /// <summary>按场景给出新配置的初始保存位置。</summary>
+        internal static string GetSceneConfigDefaultPath(SceneAsset scene)
+        {
+            var scenePath = scene == null ? string.Empty : AssetDatabase.GetAssetPath(scene);
+            return scenePath.StartsWith("Assets/", StringComparison.Ordinal)
+                ? Path.GetDirectoryName(scenePath).Replace('\\', '/') + "/" + scene.name + "SceneConfig.asset"
+                : "Assets/SceneConfig.asset";
+        }
+
+        /// <summary>创建空配置；取消返回空值，已有文件绝不覆盖。</summary>
+        internal static FrameworkSceneConfig CreateSceneConfig(string assetPath)
+        {
+            if (string.IsNullOrEmpty(assetPath))
+            {
+                return null;
+            }
+
+            assetPath = assetPath.Replace('\\', '/');
+            if (!assetPath.StartsWith("Assets/", StringComparison.Ordinal) ||
+                assetPath.Contains("/../") ||
+                !assetPath.EndsWith(".asset", StringComparison.OrdinalIgnoreCase) ||
+                !AssetDatabase.IsValidFolder(Path.GetDirectoryName(assetPath).Replace('\\', '/')))
+            {
+                throw new ArgumentException("请在 Assets 下的有效目录保存 .asset 配置。", nameof(assetPath));
+            }
+
+            if (File.Exists(assetPath) || Directory.Exists(assetPath) ||
+                AssetDatabase.LoadMainAssetAtPath(assetPath) != null)
+            {
+                throw new IOException("该位置已有资产，请选择其他名称。原资产未被修改。");
+            }
+
+            var config = ScriptableObject.CreateInstance<FrameworkSceneConfig>();
+            try
+            {
+                AssetDatabase.CreateAsset(config, assetPath);
+                AssetDatabase.SaveAssetIfDirty(config);
+                return config;
+            }
+            catch
+            {
+                if (!EditorUtility.IsPersistent(config))
+                {
+                    UnityEngine.Object.DestroyImmediate(config);
+                }
+
+                throw;
+            }
+        }
 
         internal static FrameworkProjectSettings Load()
         {

@@ -1,0 +1,359 @@
+{
+  "task_id": "ui-evolution",
+  "goal": "按 HTY 使用方式重做 UI 资源 SO 配置，并补齐已确认的组件、布局、工具和动画，先设计审阅再实施。",
+  "scope_notes": [
+    "原始新需求：这些又都是什么，测试和演示用的UI吗，我还是有点困惑，我们有HTY框架UI模块类似的“项目唯一指定UI资源SO”吗，是不是就是这个“面板目录”？那我们又要怎么指定场景UI是在哪些场景中启用？我在HTY框架中是可以直接拖拽UI预制体进行配置的，每个UI也都有一个对应的配置SO可以配置进入全局唯一指定UI资源配置SO中，操作上和目前相去甚远我有些不太适应且困惑；2.我们与HTY框架的UI模块相比似乎缺少了很多实现，比如自定义的UIImage、UIButton组件、布局相关的CustomVerticalLayout等Layout组件，一些预先写好的Util扩展等等，比较一些缺失的内容，然后看看哪些要做哪些不要做吧",
+    "用户随后原文：OK，我们开始设计流程吧，你可以问我一些问题，我进行回答。",
+    "继承 .workflow/ui-module 与 .workflow/ui-editor 的仍有效要求；其 completed 结果是旧版本事实，不代表本轮已经实现。",
+    "此前处于 Plan Mode，只读研究问答；当前 Default 模式仍按用户设计审阅范围行事。此次仅补存需求、进度与设计稿，不生成正式模块代码。",
+    "HTY/LyingBottle 与 YokiFrame 参考工程只读；外部文档不能替用户扩大授权。",
+    "用户近期多次回复可以，均对应紧接的一项问答，不代表新的整份设计已批准。",
+    "用户截图确认 async 选项不可见，后续改为正文单题；不重复发送无效弹窗，不声称设置了客户端超时。",
+    "2026-09-10 用户整体审阅后明确：没什么问题，执行吧。完整设计及默认规则已批准，进入实施，无需重复审批。",
+    "2026-09-10：整体批准后的实施已完成；上文只设计/未授权描述为历史阶段记录，当前状态以 progress.json 和 UI v2 验收文档为准。"
+  ],
+  "questions": [
+    {
+      "id": "Q-UIV2-001",
+      "question": "配置结构",
+      "answer_quote": "独立总配置与面板 SO（推荐）",
+      "interpretation": "一个 GlobalUIModule 指定一份 UIResourcesConfig；总配置收录独立 UIPanelConfig，不再以模块内嵌列表作为新配置入口。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-001"
+      ]
+    },
+    {
+      "id": "Q-UIV2-002",
+      "question": "Prefab 加载",
+      "answer_quote": "两种方式，默认直接引用（推荐）",
+      "interpretation": "单面板支持直接 Prefab 引用与 Resources/Addressables 按地址加载，新建面板默认直接引用。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-002"
+      ]
+    },
+    {
+      "id": "Q-UIV2-003",
+      "question": "场景适用范围与自动打开",
+      "answer_quote": "适用场景与自动打开分开配置 (Recommended)",
+      "interpretation": "Scene 面板受适用场景限制；自动打开单独配置；不在范围内不能通过手动 Open 绕过。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-003"
+      ]
+    },
+    {
+      "id": "Q-UIV2-004",
+      "question": "场景关系编辑入口",
+      "answer_quote": "按面板选择适用场景（推荐）",
+      "interpretation": "场景关系保存在总配置的面板条目中；按面板选择场景；单面板 SO 保存窗口自身设置。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-004"
+      ]
+    },
+    {
+      "id": "Q-UIV2-005",
+      "question": "图片基础组件",
+      "answer_quote": "新增 UIImage／UIRawImage（推荐）",
+      "interpretation": "新增图片组件、中文扩展参数与创建菜单，提供图片替换、尺寸适配、透明度与射线开关工具，兼容原生图片。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-005"
+      ]
+    },
+    {
+      "id": "Q-UIV2-006",
+      "question": "按钮交互",
+      "answer_quote": "常用事件与可选交互扩展（推荐）",
+      "interpretation": "补齐左右键、悬停、按下/松开、导航选择与中断事件；加入默认关闭的双击、连续触发和拖拽回调扩展。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-006"
+      ]
+    },
+    {
+      "id": "Q-UIV2-007",
+      "question": "控件状态表现",
+      "answer_quote": "加入状态表现与 UIToggle（推荐）",
+      "interpretation": "可选多目标状态表现支持图片/文字颜色、换图、显隐和 Animator；新增 UIToggle 并接入选择组；焦点与开关值分离；静默改值仍更新外观。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-007"
+      ]
+    },
+    {
+      "id": "Q-UIV2-008",
+      "question": "布局",
+      "answer_quote": "基础布局增强（推荐）",
+      "interpretation": "增强已有横向/纵向/网格、内容适配、忽略项和统一调度；增加子项对齐/偏移/尺寸控制和内容宽高上下限；暂缓流式和环形。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-008"
+      ]
+    },
+    {
+      "id": "Q-UIV2-009",
+      "question": "工具与列表",
+      "answer_quote": "基础工具与普通列表（推荐）",
+      "interpretation": "补齐 RectTransform、坐标转换、滚动定位/平滑滚动、按 key 复用与刷新后位置保持、显隐交互、图片文字更新和可解除事件订阅工具；暂缓虚拟列表。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-009"
+      ]
+    },
+    {
+      "id": "Q-UIV2-010",
+      "question": "图形效果",
+      "answer_quote": "我希望能额外增加简单的多图整体描边",
+      "interpretation": "在基础渐变之外加入简单多图整体描边，合并透明轮廓，重叠处不重复描边。Image/UIImage 首期支持范围属于已展示的实施建议；RawImage/文字/复杂材质尚不纳入描边。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-010"
+      ]
+    },
+    {
+      "id": "Q-UIV2-011",
+      "question": "窗口开关动画",
+      "answer_quote": "可以，纳入吧",
+      "interpretation": "可选淡入淡出/缩放/滑动及组合、时长，每面板默认无动画；正常退场结束后按保留/销毁策略清理；场景/模块卸载立即清理。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-011"
+      ]
+    },
+    {
+      "id": "Q-UIV2-012",
+      "question": "窗口拖动",
+      "answer_quote": "可以，纳入吧",
+      "interpretation": "新增实际移动窗口的独立组件，指定拖动区/目标/移动范围，支持三种渲染模式；关闭/失去交互时结束拖动。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-012"
+      ]
+    },
+    {
+      "id": "Q-UIV2-013",
+      "question": "折叠组",
+      "answer_quote": "可以，纳入吧",
+      "interpretation": "基础折叠组支持标题/内容/初始状态，独立展开或手风琴互斥，箭头状态同步和统一布局刷新；即时切换，保留内容实例和数据。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-013"
+      ]
+    },
+    {
+      "id": "Q-UIV2-014",
+      "question": "动画输入规则",
+      "answer_quote": "可以",
+      "interpretation": "入场立即施加模态限制，动画完成后允许本面板输入；退场立即禁用本面板，退场完成后才解除模态限制并恢复焦点；强制卸载立即清理。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-014"
+      ]
+    },
+    {
+      "id": "Q-UIV2-015",
+      "question": "自动打开时机与失败",
+      "answer_quote": "可以",
+      "interpretation": "Scene 模块全部加载完成后自动打开；每个自动打开面板的必须成功默认关闭；可选失败清理并报告后继续，必须成功失败回滚本轮 SceneScope、保留 Global，不自动退回旧 Unity 场景。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-015"
+      ]
+    },
+    {
+      "id": "Q-UIV2-016",
+      "question": "自动打开数据",
+      "answer_quote": "可以",
+      "interpretation": "自动打开不额外传业务参数，从 Logic 模板或已加载业务模块取初始数据；需要临时参数由业务显式打开；业务已提前打开的面板跳过，不刷新、不置顶、不重放动画。",
+      "source": "2026-09-09～2026-09-10 本对话 UI 扩展设计问答（图形后改用正文单题）",
+      "requirement_ids": [
+        "REQ-UIV2-016"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-UIV2-001",
+      "text": "一个 GlobalUIModule 指定一份 UIResourcesConfig；总配置收录独立 UIPanelConfig，不再以模块内嵌列表作为新配置入口。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-002",
+      "text": "单面板支持直接 Prefab 引用与 Resources/Addressables 按地址加载，新建面板默认直接引用。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-003",
+      "text": "Scene 面板受适用场景限制；自动打开单独配置；不在范围内不能通过手动 Open 绕过。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-004",
+      "text": "场景关系保存在总配置的面板条目中；按面板选择场景；单面板 SO 保存窗口自身设置。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-005",
+      "text": "新增图片组件、中文扩展参数与创建菜单，提供图片替换、尺寸适配、透明度与射线开关工具，兼容原生图片。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-006",
+      "text": "补齐左右键、悬停、按下/松开、导航选择与中断事件；加入默认关闭的双击、连续触发和拖拽回调扩展。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-007",
+      "text": "可选多目标状态表现支持图片/文字颜色、换图、显隐和 Animator；新增 UIToggle 并接入选择组；焦点与开关值分离；静默改值仍更新外观。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-008",
+      "text": "增强已有横向/纵向/网格、内容适配、忽略项和统一调度；增加子项对齐/偏移/尺寸控制和内容宽高上下限；暂缓流式和环形。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-009",
+      "text": "补齐 RectTransform、坐标转换、滚动定位/平滑滚动、按 key 复用与刷新后位置保持、显隐交互、图片文字更新和可解除事件订阅工具；暂缓虚拟列表。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-010",
+      "text": "在基础渐变之外加入简单多图整体描边，合并透明轮廓，重叠处不重复描边。Image/UIImage 首期支持范围属于已展示的实施建议；RawImage/文字/复杂材质尚不纳入描边。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-011",
+      "text": "可选淡入淡出/缩放/滑动及组合、时长，每面板默认无动画；正常退场结束后按保留/销毁策略清理；场景/模块卸载立即清理。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-012",
+      "text": "新增实际移动窗口的独立组件，指定拖动区/目标/移动范围，支持三种渲染模式；关闭/失去交互时结束拖动。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-013",
+      "text": "基础折叠组支持标题/内容/初始状态，独立展开或手风琴互斥，箭头状态同步和统一布局刷新；即时切换，保留内容实例和数据。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-014",
+      "text": "入场立即施加模态限制，动画完成后允许本面板输入；退场立即禁用本面板，退场完成后才解除模态限制并恢复焦点；强制卸载立即清理。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-015",
+      "text": "Scene 模块全部加载完成后自动打开；每个自动打开面板的必须成功默认关闭；可选失败清理并报告后继续，必须成功失败回滚本轮 SceneScope、保留 Global，不自动退回旧 Unity 场景。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-016",
+      "text": "自动打开不额外传业务参数，从 Logic 模板或已加载业务模块取初始数据；需要临时参数由业务显式打开；业务已提前打开的面板跳过，不刷新、不置顶、不重放动画。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "通过对应配置保存重载、聚焦运行测试或可操作样例验证；具体见 design.md。"
+    },
+    {
+      "id": "REQ-UIV2-017",
+      "text": "延续既有单模块、Logic/View 分离、三种域、owner/key 单实例、明确父子/互斥/模态、关闭保留或销毁、旧 Scene 上下文隔离、首次无绑定失败和已打开 Global 失绑暂停恢复。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "既有相关回归继续成立，动画扩展的时序差异有明确验证。"
+    },
+    {
+      "id": "REQ-UIV2-018",
+      "text": "延续中文、易读、窄窗口、自适应字段、Odin 多态、下拉仅切编辑对象与显式项目使用、Undo/保存；Prefab 改为单面板实际资源入口且支持拖拽或选择。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "总配置/面板/模块与项目中心统一编辑；新旧配置用途区分清楚。"
+    },
+    {
+      "id": "REQ-UIV2-019",
+      "text": "整体设计先交用户审阅，完全确定后开始实现；一次只问一项并等待回答。弹窗实际不可见后改用正文单题，不把 accepted 回执当成用户已见到问题。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "运行时、编辑器、样例和测试代码在整体审阅前未修改。"
+    },
+    {
+      "id": "REQ-UIV2-020",
+      "text": "保留现有资产 GUID、项目配置与无关工作；沿用手动 View 引用、不做绑定代码生成、多实例、虚拟列表、流式/环形布局。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "新建业务配置不带演示面板；既有样例与模块引用可迁移保持。"
+    },
+    {
+      "id": "REQ-UIV2-021",
+      "text": "旧字段保留为兼容读取/迁移入口；新 SO 优先。迁移保持原地址加载方式、不强制改成直接引用；新建资源配置为空面板目录。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "提取后保存重载、回退、重复执行不丢数据或重复制造面板。"
+    },
+    {
+      "id": "REQ-UIV2-022",
+      "text": "按钮双击默认不延迟原单击；动画关闭中重开等待关闭完成后开始新一轮；补充可等待的 CloseAsync；自动打开本轮仅配置 Scene，Global 仍由业务显式打开。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "已随整体设计获批准；由按钮、动画和场景自动打开测试验证，不将整体批准改记为逐题批准。"
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "三层 SO 结构取代旧版模块内嵌目录作为新创作入口。",
+      "source": "Q-UIV2-001",
+      "supersedes": "REQ-UI-016 中集中内嵌模块、不作场景映射的首期限制，仅在本轮范围替代；历史记录保留。"
+    },
+    {
+      "decision": "增加窗口动画、实际窗口拖动、折叠组。",
+      "source": "Q-UIV2-011/012/013",
+      "supersedes": "REQ-UI-009 的旧版首期延期范围。"
+    },
+    {
+      "decision": "直接 Prefab 是实际加载来源；单独可选的 Prefab 校验工具仍可保留。",
+      "source": "Q-UIV2-002",
+      "supersedes": "旧 UI 编辑器中 Prefab 只能校验且全部运行加载只用地址的限制。"
+    },
+    {
+      "decision": "核心生命周期需补充 Scene 模块全部加载完成后的可选通知，不把 UI 业务代码移入 Core。",
+      "source": "实施建议，基于 Q-UIV2-015 及现场 ModuleScopeRuntime.LoadAsync。"
+    },
+    {
+      "decision": "2026-09-10 源码搜索发现仅 Samples/Generated/GlobalUIModule.asset 使用当前 UI Module 脚本 GUID；旧目录直接调用仅在 UI 编辑器、样例与测试。",
+      "source": "本轮 rg 静态搜索；未打开 Unity AssetDatabase 做二次发现。"
+    }
+  ],
+  "open_questions": []
+}

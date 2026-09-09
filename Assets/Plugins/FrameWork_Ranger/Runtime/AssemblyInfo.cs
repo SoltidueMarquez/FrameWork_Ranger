@@ -21,3 +21,6 @@ using FrameWork_Ranger;
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.Pooling.Samples.Editor")]
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.EventCenter.Tests.EditMode")]
 [assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.EventCenter.Tests.PlayMode")]
+[assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.UI.Editor")]
+[assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.UI.Tests.EditMode")]
+[assembly: InternalsVisibleTo("FrameWork_Ranger.BaseModules.UI.Tests.PlayMode")]

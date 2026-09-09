@@ -17,6 +17,7 @@
 8. [Pooling 对象池/引用池模块入口](./Pooling/README.md)
 9. [AI 开发工作流优化](../../00_Project/10_AI_Development_Workflow_Optimization.md)（2026-09-05 已落实自然语言入口、JSON 任务记忆与轻量验证）
 10. [Event Center 事件中心](./EventCenter/README.md)
+11. [UI 模块设计、使用与验收](./UI/README.md)（2026-09-09 首版完成；单模块、三种域、组件/Layout 与样例，EditMode 8/8、PlayMode 20/20 通过）
 
 ## 当前推进规则
 

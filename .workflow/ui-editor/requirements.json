@@ -1,0 +1,46 @@
+{
+  "task_id": "ui-editor",
+  "decisions": [],
+  "requirements": [
+    {
+      "id": "REQ-UIE-001",
+      "basis": "user_confirmed",
+      "status": "active",
+      "text": "全部 UI 资产下拉、标记生效项、记住选择、资产变化刷新"
+    },
+    {
+      "id": "REQ-UIE-002",
+      "basis": "user_confirmed",
+      "status": "active",
+      "text": "独立设为项目使用，校验依赖，保留其他模块顺序，支持撤销保存"
+    },
+    {
+      "id": "REQ-UIE-003",
+      "basis": "user_confirmed",
+      "status": "active",
+      "text": "统一中文 Inspector、全局场景页签、域与面板摘要分组、按模式显隐、域下拉、窄窗口排版"
+    },
+    {
+      "id": "REQ-UIE-004",
+      "basis": "user_confirmed",
+      "status": "active",
+      "text": "Prefab 可选工具无需拖拽、运行禁改、保留 Odin 多态与序列化兼容，完成聚焦验证文档"
+    }
+  ],
+  "open_questions": [],
+  "goal": "按用户批准计划改版 UI 配置编辑器",
+  "scope_notes": [
+    "用户原文：不要拖拽，直接下拉栏选取项目中存在的所有UI配置吧；参数用中文显示吧，排版也可以设计的更有可读性与更容易让人理解一些。",
+    "用户明确：PLEASE IMPLEMENT THIS PLAN，完整批准上轮 UI 配置编辑器改版计划。",
+    "不更改运行 API、序列化字段/枚举或 GUID；保留此前 UI 模块及无关用户修改。"
+  ],
+  "questions": [
+    {
+      "id": "Q-UIE-001",
+      "answer_quote": "选中只编辑，单独设为生效配置 (Recommended)",
+      "interpretation": "独立按钮才能修改 GlobalConfig",
+      "source": "本任务计划问答",
+      "question": "下拉选择是否同时切换生效配置"
+    }
+  ]
+}

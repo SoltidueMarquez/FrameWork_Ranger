@@ -14,6 +14,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DefaultTest.unity
     guid: a8e9c73ee8c35af4b9ed2c4037d42f89
+  - enabled: 1
+    path: Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/UI_A.unity
+    guid: b7d76ed158508264280a43dc5a257db4
+  - enabled: 1
+    path: Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/UI_B.unity
+    guid: 926d053bc6ec61b41b687338af091ed3
+  - enabled: 1
+    path: Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/UI_Components.unity
+    guid: 180308d30173c2047acb7c7f8a06a665
+  - enabled: 1
+    path: Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/UI_OptionalFailure.unity
+    guid: b06bfb04d3a016d438434c1eaaa5a1e6
+  - enabled: 1
+    path: Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/UI_RequiredFailure.unity
+    guid: 59b70fd014c8fa34e8b277cbb3663b37
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 0e3d4427c4bba8d44ac0bea7a3d72bdd, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

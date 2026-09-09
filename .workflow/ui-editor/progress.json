@@ -1,0 +1,36 @@
+{
+  "tasks": [
+    {
+      "id": "UIE-001",
+      "title": "UI 配置编辑器改版",
+      "status": "done",
+      "requirement_ids": [
+        "REQ-UIE-001",
+        "REQ-UIE-002",
+        "REQ-UIE-003",
+        "REQ-UIE-004"
+      ],
+      "result": "下拉资产目录、显式项目配置切换与 Undo、共用中文 Inspector、模式显隐、域下拉、Prefab 选择工具均已实现。保持现有 API/字段/GUID。隔离 Import 与最终 EditMode 10/10 通过。",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Editor/UIConfigurationAssets.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Editor/GlobalUIModuleInspector.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Editor/UIFrameworkCenterPage.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/README.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/06_Configuration_Editor.md"
+      ],
+      "verification": [
+        "隔离 Doctor/Import 退出码0：Logs/UIEditorValidation/Project/Logs/UnityCli/20260909-231011-import-16584/import.log",
+        "最终 EditMode 10/10：Logs/UIEditorValidation/Project/Logs/UnityCli/20260909-231827-testeditmode-37892/editmode-results.xml；覆盖安装原位替换/追加/启用/Undo/Redo、失败不写入、资产选择恢复、序列化、真实宽窄GUI。",
+        "运行时未修改；主工程 GUI 保持打开。未把测试资产/配置写回主工程。"
+      ]
+    }
+  ],
+  "recent_notes": [
+    "GUI Unity 正在运行；保持打开，验证使用 Logs 下独立副本。"
+  ],
+  "next_action": "",
+  "task_id": "ui-editor",
+  "blockers": [],
+  "status": "completed",
+  "current_task": "UIE-001"
+}

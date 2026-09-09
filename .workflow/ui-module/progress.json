@@ -1,0 +1,122 @@
+{
+  "task_id": "ui-module",
+  "status": "completed",
+  "design_docs": [
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/README.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/01_Reference_Research.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/02_Design_Starting_Point.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/03_Architecture_And_Public_Contracts.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/04_Implementation_Plan.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/05_Implementation_And_Acceptance.md"
+  ],
+  "current_task": "WI-UI-003",
+  "next_action": "",
+  "tasks": [
+    {
+      "id": "WI-UI-001",
+      "title": "参考研究与需求边界",
+      "requirement_ids": [
+        "REQ-UI-001",
+        "REQ-UI-002"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/README.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/01_Reference_Research.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/02_Design_Starting_Point.md"
+      ],
+      "result": "完成 HTY 主参考及 YokiFrame 辅助源码对照；首轮三项回答已保存，进一步公共行为问答进入 WI-UI-002。",
+      "verification": [
+        "静态检查域、生命周期、Layout 调度、列表工具与 YokiFrame 加载/缓存/绑定实现；未执行参考工程。",
+        "新文档相对链接与任务 JSON 解析通过，git diff --check 无空白错误；已补 Unity .meta，未运行 Unity（本轮仅研究与文档）。"
+      ]
+    },
+    {
+      "id": "WI-UI-002",
+      "title": "公共契约与实施计划",
+      "requirement_ids": [
+        "REQ-UI-001",
+        "REQ-UI-015"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/02_Design_Starting_Point.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/03_Architecture_And_Public_Contracts.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/04_Implementation_Plan.md"
+      ],
+      "result": "全部 19 项需求明确，最后采用上下文入口和首次无绑定直接失败，进入实施。",
+      "verification": [
+        "单模块重设计文档相对链接与 .meta 检查通过，任务 JSON 可解析且 15 项需求 ID 无重复，git diff --check 通过；确认 BaseModules/UI 尚不存在。本轮仅文档，未运行 Unity 编译或行为测试。"
+      ]
+    },
+    {
+      "id": "WI-UI-003",
+      "title": "实现与验收",
+      "requirement_ids": [
+        "REQ-UI-001",
+        "REQ-UI-002",
+        "REQ-UI-003",
+        "REQ-UI-004",
+        "REQ-UI-005",
+        "REQ-UI-006",
+        "REQ-UI-007",
+        "REQ-UI-008",
+        "REQ-UI-009",
+        "REQ-UI-010",
+        "REQ-UI-011",
+        "REQ-UI-012",
+        "REQ-UI-013",
+        "REQ-UI-014",
+        "REQ-UI-015",
+        "REQ-UI-016",
+        "REQ-UI-017",
+        "REQ-UI-018",
+        "REQ-UI-019"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI",
+        "Assets/Plugins/FrameWork_Ranger/Runtime/Abstractions/ISceneScopeLifecycle.cs",
+        "Assets/Plugins/FrameWork_Ranger/Runtime/Scope/FrameworkSceneScopeInfo.cs",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Core/ADR/ADR-007_Global_Module_Scene_Lifecycle.md",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/README.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/05_Implementation_And_Acceptance.md"
+      ],
+      "result": "已按全部 19 项确认要求完成单个 GlobalUIModule、Core 可选场景生命周期、三种域、Logic/View、关系输入、组件/Layout、Editor 创建校验、双场景样例和使用文档。EditMode 8/8、PlayMode 20/20、最终 Import 通过；图形使用离屏预览，Player/Addressables 新构建不在本轮验证范围。",
+      "verification": [
+        "EditMode 8/8：Logs/UnityCli/20260909-222919-testeditmode-12548/editmode-results.xml。",
+        "PlayMode 20/20：Logs/UnityCli/20260909-223203-testplaymode-15088/playmode-results.xml，含 UI、实际样例场景与受影响 Core 生命周期回归。",
+        "1280×720 离屏预览：Logs/UIVisuals/overlay-preview.png、camera-preview.png、world-preview.png，已逐图核对；Overlay 临时借相机预览，非原生 GameView 截图。",
+        "模块 README 与架构文档链接有效，Unity .meta 齐全，19 项需求 ID 唯一且无待答问题，git diff --check 通过。",
+        "最终 Import 退出码 0：Logs/UnityCli/20260909-223747-import-35584/import.log。最后一批只补生产类型架构元数据，运行行为沿用已通过的聚焦测试结果。"
+      ]
+    }
+  ],
+  "blockers": [],
+  "recent_notes": [
+    "已读取项目流水线和任务记忆协议；个人框架 Skills 不在主机，按 AGENTS 使用项目文档。",
+    "既有 Editor 配置修改及 scene-override-creation 记录保持不动。",
+    "已确认三种渲染域、双 Scope、Logic/View 分离、基础自定义 Layout + 调度。Core 禁止跨 Scope 同具体类型，设计使用 GlobalUIModule/SceneUIModule 复用内部实现。",
+    "第二轮三个问题已发出，尚无回答；文档中其对应行为明确为候选，未生成 Runtime。",
+    "用户询问是否漏答后，已重新呈现第二轮 1/3 面板关系、2/3 实例关闭、3/3 组件工具；尚待实际回答。",
+    "补核 HTY 的域内共享 Depend 链与 Enter/Exit，以及 YokiFrame 命名栈、ModalBlocker 和 Dialog 队列；此前父子面板绑定属于 Ranger 建议，不是 HTY 原样行为。",
+    "用户已确认 HTY 配置式关系方向，并要求保留带选项弹窗、延长或取消答题时间限制。按一次一题且不自动超时推进执行。",
+    "已确认逐面板关闭策略和模块卸载统一清理（REQ-UI-007）；继续一次一题的选项弹窗，无回答不按等待时长自动推进。",
+    "REQ-UI-008 已确认首期同 owner/key 单实例；关闭策略沿用 REQ-UI-007。",
+    "REQ-UI-009 确认基础组件与工具，拖拽/折叠/动画不纳入首期。",
+    "REQ-UI-010 确认基础 Editor 创建和校验、手动绑定；不做绑定代码生成。",
+    "REQ-UI-011 已确认 Global Camera/World 丢失绑定暂停并在重绑定后恢复，不重放 OnOpen；实例不得物理依附被卸载场景而丢失。",
+    "REQ-UI-012 确认重复打开刷新并同层置顶，不重放 OnOpen。",
+    "REQ-UI-013 已确认模态输入限制可选域内/全局，默认域内，排除游戏暂停。",
+    "已形成 03 公共契约和 04 实施计划，覆盖 REQ-UI-003~013。最后的关系选择仍明确标记待答，未生成 Runtime。",
+    "已收到最后一项显式父面板依附确认，开始正式实施。",
+    "用户要求实现前先审阅计划。已确认 BaseModules/UI 目录不存在；此前命令没有写入生产代码。文档已补齐 REQ-UI-014 并消除依附方案仍待问答的过时标记。",
+    "用户审阅提出只保留 GlobalUIModule；双模块提案已废弃，改为单模块内部区分 Global/Scene UI 生命周期。确认活动场景替换也结束旧 SceneScope，不能只监听 sceneUnloaded；通用 Scope 通知为新增工程提案，未实现。历史双 Scope 表述指生命周期隔离，不代表用户批准双模块。",
+    "单模块重新设计补核 Core：新配置预检失败会保留旧 Scope，不能直接用 Unity 事件或旧场景加载 CancellationToken 清理已建立 UI 所有者。拟议 Starting/Ending 在 Driver/Scene 模块之前配对，回滚同路；Core ADR 目录只放正式决定，因此候选契约保留在 UI/03 §1.1，尚未新增正式 ADR。",
+    "Q-UI-016 用户确认集中配置；已落 REQ-UI-016 与 DESIGN-UI-003，移除配置组织待答。下一题只讨论 Core 可选生命周期接口或项目 Driver 转接，不将配置回答视为整体实施批准。",
+    "Q-UI-017 已确认可选场景生命周期接口自动调用，新增 REQ-UI-017，DESIGN-UI-004 生效。当前只问调用入口，不提前询问首次无绑定行为，不开始生产代码。",
+    "最后两项设计已回答；按照整体确定后实施的用户授权开始 UI-0。现有用户 Editor 配置改动保持不动。",
+    "用户原文：意外中断了，我们继续吧。恢复已确认需求与实施状态，检查无运行中的 Unity；沿用既有实施授权，完成余下验证。",
+    "WI-UI-003 已完成。既有 Editor 配置工作区与 scene-override-creation 用户修改保持不动；GlobalConfig 仅追加 UI 模块，Build Settings 仅追加 UI_A/UI_B。使用步骤和验证边界已交付。"
+  ]
+}

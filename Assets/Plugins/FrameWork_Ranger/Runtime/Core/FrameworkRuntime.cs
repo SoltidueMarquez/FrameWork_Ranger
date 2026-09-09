@@ -32,6 +32,7 @@ namespace FrameWork_Ranger
         private ModuleScopeRuntime m_globalScope;
         private ModuleScopeRuntime m_sceneScope;
         private ulong m_sceneOwnerId;
+        private long m_sceneGeneration;
 
         private UniTaskCompletionSource m_readyCompletion = new UniTaskCompletionSource();
         private bool m_readyCompletionFinished;
@@ -150,7 +151,7 @@ namespace FrameWork_Ranger
                 LogCleanupErrors("替换 SceneScope", unloadErrors);
             }
 
-            await LoadSceneAsync(scene.Handle, graph.OrderedSceneNodes, sceneCancellationToken);
+            await LoadSceneAsync(scene, graph.OrderedSceneNodes, sceneCancellationToken);
         }
 
         private async UniTask DetachSceneCoreAsync(ulong sceneHandle)
@@ -276,13 +277,21 @@ namespace FrameWork_Ranger
         }
 
         private async UniTask LoadSceneAsync(
-            ulong sceneHandle,
+            FrameworkSceneDescriptor scene,
             IReadOnlyList<ModuleGraphNode> orderedNodes,
             CancellationToken sceneCancellationToken)
         {
             State = FrameworkState.LoadingScene;
-            m_sceneOwnerId = sceneHandle;
+            m_sceneOwnerId = scene.Handle;
             m_sceneScope = new ModuleScopeRuntime(this, ModuleScopeKind.Scene, orderedNodes);
+            var participants = new List<ISceneScopeLifecycle>();
+            foreach (var module in m_globalScope.Modules)
+            {
+                if (module.State == ModuleLifecycleState.Loaded && module is ISceneScopeLifecycle participant)
+                    participants.Add(participant);
+            }
+            m_sceneScope.ConfigureSceneLifecycle(
+                new FrameworkSceneScopeInfo(scene.Handle, scene.Path, ++m_sceneGeneration), participants);
 
             using (var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(
                        sceneCancellationToken,

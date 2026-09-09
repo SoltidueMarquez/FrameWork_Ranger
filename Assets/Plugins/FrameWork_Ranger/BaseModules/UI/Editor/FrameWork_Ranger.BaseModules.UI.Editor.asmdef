@@ -1,0 +1,18 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.UI.Editor",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.Editor",
+    "FrameWork_Ranger.BaseModules.UI.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+    "Unity.ugui",
+    "Unity.TextMeshPro",
+    "FrameWork_Ranger.BaseModules.UI.Samples",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.UnityResources",
+    "Unity.InputSystem"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": true
+}

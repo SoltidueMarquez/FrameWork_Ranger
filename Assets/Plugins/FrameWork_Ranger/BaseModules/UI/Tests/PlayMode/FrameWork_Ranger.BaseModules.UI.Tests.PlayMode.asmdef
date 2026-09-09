@@ -1,0 +1,20 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.UI.Tests.PlayMode",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.UI.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+    "UniTask",
+    "Unity.ugui",
+    "Unity.TextMeshPro",
+    "FrameWork_Ranger.BaseModules.UI.Samples"
+  ],
+  "includePlatforms": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "autoReferenced": false,
+  "overrideReferences": true,
+  "precompiledReferences": ["Sirenix.Serialization.dll"],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"]
+}

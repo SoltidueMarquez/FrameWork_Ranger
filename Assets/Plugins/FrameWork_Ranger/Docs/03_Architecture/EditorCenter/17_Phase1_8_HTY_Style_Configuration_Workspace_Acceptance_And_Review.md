@@ -42,3 +42,14 @@
 - HTY 最有价值的部分是信息分层和单项详情，不是其暗色像素值或 PropertyTree 基础设施。
 - Phase 1.7 的缓存与释放能力被保留并扩展为互斥组；旧 `ModuleConfigEntryDrawer` 已由共享紧凑视图取代，不再存在两套 Module 列表交互。
 - 自动化无法判断真实窗口的视觉密度、文字截断和高 DPI 手感；这些项目保留为人工验收，不将自动化通过描述为视觉确认。
+
+## 5. 2026-09-09：场景覆盖新建入口补充
+
+- “添加场景覆盖”移到导航的场景覆盖分组标题旁；窄布局的“＋覆盖”提供明确的用途提示。添加后自动选中空绑定并切回配置编辑。
+- 覆盖项 Scene Config 未关联时可点击“新建配置”。保存对话框默认使用场景所在目录和 `<场景名>SceneConfig.asset`；未选择场景时使用 `Assets/SceneConfig.asset`。新资产为空配置，成功后自动关联并展开编辑。
+- 取消保存不修改绑定；已有文件拒绝覆盖。添加、关联和移除支持 Undo/Redo，撤销关联或移除绑定不会删除保存的配置资产。
+- 共用工作台同时服务 Framework Center 和中央设置 Inspector；Runtime API、序列化结构和 Build Settings 不变。
+- 验证副本：`D:/tmp/FrameworkSceneOverride-20260909`，来源为当前工作树的 Assets、Packages、ProjectSettings；使用 `Tools/UnityCli.ps1`，Unity 6000.5.9f1。
+- Import 退出码 0；配置工作台、Center 基础设施和项目设置解析定向 EditMode **21/21 Passed**，退出码 0。新增测试覆盖自动切换编辑页签、增删关联 Undo/Redo、空配置、取消、同名资产保留以及场景身份和配置引用的保存重载。
+- 日志和结果：`D:/tmp/FrameworkSceneOverride-20260909-logs/import.log`、`editmode.log`、`editmode-results.xml`。
+- 布局源码已检查：宽布局入口随左侧导航滚动，窄布局入口位于顶部。后台窗口截图仍停留在 Scene 页，未取得配置页视觉证据；正常/窄/低窗口的实际显示和原生保存对话框交互保留为人工验收。

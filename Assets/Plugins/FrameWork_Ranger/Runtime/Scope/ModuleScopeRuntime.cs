@@ -29,6 +29,9 @@ namespace FrameWork_Ranger
         private readonly List<IModuleLateUpdate> m_lateUpdateTargets = new List<IModuleLateUpdate>();
         private bool m_canTick;
         private bool m_destroyed;
+        private FrameworkSceneScopeInfo m_sceneInfo;
+        private IReadOnlyList<ISceneScopeLifecycle> m_sceneParticipants;
+        private readonly List<ISceneScopeLifecycle> m_startedParticipants = new List<ISceneScopeLifecycle>();
 
         #endregion
 
@@ -63,12 +66,30 @@ namespace FrameWork_Ranger
 
         #region 框架生命周期
 
+        internal void ConfigureSceneLifecycle(FrameworkSceneScopeInfo info,
+            IReadOnlyList<ISceneScopeLifecycle> participants)
+        {
+            m_sceneInfo = info;
+            m_sceneParticipants = participants;
+        }
+
         internal async UniTask LoadAsync(
             FrameworkDriverHandlerBase driverHandler,
             CancellationToken cancellationToken)
         {
             try
             {
+                if (m_sceneParticipants != null)
+                {
+                    foreach (var participant in m_sceneParticipants)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        // 先登记，保证部分建立后抛错也能配对清理。
+                        m_startedParticipants.Add(participant);
+                        await participant.OnSceneScopeStartingAsync(m_sceneInfo, cancellationToken);
+                    }
+                }
+                cancellationToken.ThrowIfCancellationRequested();
                 await driverHandler.BeforeScopeLoadAsync(ScopeKind, m_modules, cancellationToken);
 
                 for (var i = 0; i < m_records.Count; i++)
@@ -86,6 +107,12 @@ namespace FrameWork_Ranger
                 }
 
                 await driverHandler.AfterScopeLoadAsync(ScopeKind, m_modules, cancellationToken);
+                foreach (var participant in m_startedParticipants)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (participant is ISceneScopeReady ready)
+                        await ready.OnSceneScopeReadyAsync(m_sceneInfo, cancellationToken);
+                }
                 BuildTickTargets();
                 m_canTick = true;
             }
@@ -116,6 +143,14 @@ namespace FrameWork_Ranger
         {
             var errors = new List<Exception>();
             m_canTick = false;
+
+            for (var i = m_startedParticipants.Count - 1; i >= 0; i--)
+            {
+                var participant = m_startedParticipants[i];
+                await CaptureUnloadErrorAsync(() => participant.OnSceneScopeEndingAsync(m_sceneInfo), errors);
+            }
+            m_startedParticipants.Clear();
+            m_sceneParticipants = null;
 
             await CaptureUnloadErrorAsync(
                 () => driverHandler.BeforeScopeUnloadAsync(ScopeKind, m_modules),

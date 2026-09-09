@@ -1,0 +1,21 @@
+{
+  "task_id": "scene-override-creation",
+  "goal": "项目配置页直接添加场景覆盖并新建、关联空的 Scene Config",
+  "scope_notes": [
+    "原始需求：项目配置编辑器页面中似乎没办法直接新建场景覆盖，不太方便。",
+    "用户已明确要求实现完整计划；只修改共用 Editor 工作台和资产工具，不变更 Runtime、序列化或 Build Settings。",
+    "保留已有模块、场景和配置改动；Unity GUI 开着时使用隔离副本验证。"
+  ],
+  "questions": [
+    { "id": "Q-001", "question": "新建流程范围", "answer_quote": "入口与资产创建一起补齐（推荐）", "interpretation": "调整添加入口并支持创建资产后自动关联", "source": "本任务计划阶段用户回答", "requirement_ids": ["REQ-001", "REQ-002"] },
+    { "id": "Q-002", "question": "初始配置", "answer_quote": "空配置（推荐）", "interpretation": "不复制默认场景模块", "source": "本任务计划阶段用户回答", "requirement_ids": ["REQ-002"] }
+  ],
+  "requirements": [
+    { "id": "REQ-001", "text": "添加按钮移到场景覆盖标题旁，窄窗口保留有明确提示的入口；新增后选中并切回配置编辑", "basis": "user_confirmed", "status": "active", "acceptance": "可从导航直接添加并编辑新绑定" },
+    { "id": "REQ-002", "text": "空引用旁可新建空 Scene Config，保存后关联并展开；默认场景目录与场景名，无场景时 Assets/SceneConfig.asset；允许自选位置，不覆盖资产，取消不修改绑定", "basis": "user_confirmed", "status": "active", "acceptance": "创建/关联/保存重载正常，取消和同名冲突保留原数据" },
+    { "id": "REQ-003", "text": "新增、关联和移除支持 Undo/Redo；撤销不删除配置资产", "basis": "user_confirmed", "status": "active", "acceptance": "聚焦 EditMode 测试通过" },
+    { "id": "REQ-004", "text": "通过 Unity CLI 执行 Import 和相关测试，检查宽/窄/低窗口入口可达", "basis": "user_confirmed", "status": "active", "acceptance": "记录真实自动化及布局检查结果，视觉未验证项如实保留" }
+  ],
+  "decisions": [],
+  "open_questions": []
+}

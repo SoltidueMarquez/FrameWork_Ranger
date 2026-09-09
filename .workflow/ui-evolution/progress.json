@@ -1,0 +1,201 @@
+{
+  "task_id": "ui-evolution",
+  "status": "completed",
+  "design_docs": [
+    ".workflow/ui-evolution/design.md"
+  ],
+  "current_task": "",
+  "next_action": "",
+  "tasks": [
+    {
+      "id": "UIV2-001",
+      "title": "参考核对、范围问答与整体设计",
+      "requirement_ids": [
+        "REQ-UIV2-001",
+        "REQ-UIV2-002",
+        "REQ-UIV2-003",
+        "REQ-UIV2-004",
+        "REQ-UIV2-005",
+        "REQ-UIV2-006",
+        "REQ-UIV2-007",
+        "REQ-UIV2-008",
+        "REQ-UIV2-009",
+        "REQ-UIV2-010",
+        "REQ-UIV2-011",
+        "REQ-UIV2-012",
+        "REQ-UIV2-013",
+        "REQ-UIV2-014",
+        "REQ-UIV2-015",
+        "REQ-UIV2-016",
+        "REQ-UIV2-017",
+        "REQ-UIV2-018",
+        "REQ-UIV2-019",
+        "REQ-UIV2-020",
+        "REQ-UIV2-021",
+        "REQ-UIV2-022"
+      ],
+      "status": "done",
+      "outputs": [
+        ".workflow/ui-evolution/requirements.json",
+        ".workflow/ui-evolution/design.md"
+      ],
+      "result": "整体设计已获用户批准；实施范围以已确认的 22 项有效要求为准。",
+      "verification": [
+        "只读核对现有 UI/Core 与 HTY 相关源码；静态搜索当前 UI 模块资产及旧 API 调用点。"
+      ]
+    },
+    {
+      "id": "UIV2-002",
+      "title": "资源 SO、资源适配与旧配置提取",
+      "requirement_ids": [
+        "REQ-UIV2-001",
+        "REQ-UIV2-002",
+        "REQ-UIV2-017",
+        "REQ-UIV2-020",
+        "REQ-UIV2-021"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Configuration/UIResourcesConfig.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Configuration/UIPanelConfig.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Editor/UIResourceAssetTools.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/Demo_UIResources.asset"
+      ],
+      "result": "独立资源 SO、直接引用/地址加载、运行快照及保存重载后的旧配置提取已实现；演示模块已迁移，保留 GUID 与旧目录。",
+      "verification": [
+        "隔离 Import 通过：20260910-014547-import-41516",
+        "相关 EditMode 21/21：20260910-014310-testeditmode-32760",
+        "相关 PlayMode 26/26：20260910-014759-testplaymode-32604；详细覆盖见 UI v2 验收文档"
+      ]
+    },
+    {
+      "id": "UIV2-003",
+      "title": "场景过滤、自动打开与就绪通知",
+      "requirement_ids": [
+        "REQ-UIV2-003",
+        "REQ-UIV2-004",
+        "REQ-UIV2-015",
+        "REQ-UIV2-016",
+        "REQ-UIV2-017"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Module/GlobalUIModule.cs",
+        "Assets/Plugins/FrameWork_Ranger/Runtime/Abstractions/ISceneScopeReady.cs",
+        "Assets/Plugins/FrameWork_Ranger/Runtime/Scope/ModuleScopeRuntime.cs"
+      ],
+      "result": "场景范围过滤、目录顺序自动打开与 Core Ready 通知已实现；实际场景可选失败继续、必须失败回滚保留 Global 已验证。",
+      "verification": [
+        "隔离 Import 通过：20260910-014547-import-41516",
+        "相关 EditMode 21/21：20260910-014310-testeditmode-32760",
+        "相关 PlayMode 26/26：20260910-014759-testplaymode-32604；详细覆盖见 UI v2 验收文档"
+      ]
+    },
+    {
+      "id": "UIV2-004",
+      "title": "开关动画、输入协调与关闭联动",
+      "requirement_ids": [
+        "REQ-UIV2-011",
+        "REQ-UIV2-014",
+        "REQ-UIV2-017",
+        "REQ-UIV2-022"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Panels/UIContext.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Panels/UIPanelPresentation.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Configuration/UIPanelAnimation.cs"
+      ],
+      "result": "独立呈现动画、输入门禁、等待关闭/排队重开/取消隔离、父子和强制清理已实现；资源退休通过共享完成源发布结果。",
+      "verification": [
+        "隔离 Import 通过：20260910-014547-import-41516",
+        "相关 EditMode 21/21：20260910-014310-testeditmode-32760",
+        "相关 PlayMode 26/26：20260910-014759-testplaymode-32604；详细覆盖见 UI v2 验收文档"
+      ]
+    },
+    {
+      "id": "UIV2-005",
+      "title": "图片、按钮、状态表现、拖动与折叠组",
+      "requirement_ids": [
+        "REQ-UIV2-005",
+        "REQ-UIV2-006",
+        "REQ-UIV2-007",
+        "REQ-UIV2-010",
+        "REQ-UIV2-012",
+        "REQ-UIV2-013"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Components",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Graphics",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Resources/RangerUIShaders"
+      ],
+      "result": "图片、按钮手势、多目标状态、静默 Toggle、拖动、折叠、渐变与整体描边已实现；三种 Canvas 的拖动/边界/输入中断与描边/遮罩已验证。",
+      "verification": [
+        "隔离 Import 通过：20260910-014547-import-41516",
+        "相关 EditMode 21/21：20260910-014310-testeditmode-32760",
+        "相关 PlayMode 26/26：20260910-014759-testplaymode-32604；详细覆盖见 UI v2 验收文档"
+      ]
+    },
+    {
+      "id": "UIV2-006",
+      "title": "布局、列表、滚动与工具",
+      "requirement_ids": [
+        "REQ-UIV2-008",
+        "REQ-UIV2-009"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Layout",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Collections/UIListController.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Components/UIScrollTools.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Runtime/Components/UIElementTools.cs"
+      ],
+      "result": "布局子项尺寸控制/对齐/偏移、内容范围、列表位置保持、滚动定位/平滑中断和常用矩形/文字/图片/订阅工具已实现。",
+      "verification": [
+        "隔离 Import 通过：20260910-014547-import-41516",
+        "相关 EditMode 21/21：20260910-014310-testeditmode-32760",
+        "相关 PlayMode 26/26：20260910-014759-testplaymode-32604；详细覆盖见 UI v2 验收文档"
+      ]
+    },
+    {
+      "id": "UIV2-007",
+      "title": "中文编辑器、样例、文档及聚焦验证",
+      "requirement_ids": [
+        "REQ-UIV2-018",
+        "REQ-UIV2-020",
+        "REQ-UIV2-021"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Editor/UIFrameworkCenterPage.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Editor/UIResourcesConfigInspector.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Editor/UIComponentEditors.cs",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/UI_Components.unity",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/UI_OptionalFailure.unity",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/Samples/Generated/UI_RequiredFailure.unity",
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/UI/README.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/UI/07_Resources_And_Components_Evolution.md"
+      ],
+      "result": "共用中文编辑器、总配置选择与显式使用、空白业务目录、3 个扩展演示及文档已交付；回写 22 个明确资产，保留主工程未保存场景和无关修改。",
+      "verification": [
+        "隔离 Import 通过：20260910-014547-import-41516",
+        "相关 EditMode 21/21：20260910-014310-testeditmode-32760",
+        "相关 PlayMode 26/26：20260910-014759-testplaymode-32604；详细覆盖见 UI v2 验收文档"
+      ]
+    }
+  ],
+  "blockers": [],
+  "recent_notes": [
+    "继承旧工作区已有未提交 UI 模块与编辑器改版，以及用户无关配置工作；不重置、不清理。",
+    "本轮未运行 Unity Import/EditMode/PlayMode；历史通过结果不代表新设计已验证。",
+    "保持用户 GUI Unity 打开；实施验证遵循 Tools/UnityCli.ps1 与项目规则，避免操作用户当前未保存场景。",
+    "当前待用户整体审阅；设计文件中实施默认值不是逐题批准记录。",
+    "题目按回复逐一确认；上一条可以对应自动打开数据来源与已打开面板跳过。",
+    "整体设计已批准；开始实施，保留原工作区其他修改。",
+    "2026-09-10：隔离 Import 通过；配置/依赖/Undo 测试通过。关闭释放改用可共享完成源后，PlayMode 19 项中 18 通过；描边合成纹理为空，继续定位。新增测试与样例仍在验证。",
+    "已回写 22 个明确生成的 UI 资产及 .meta；Demo_UIResources 被原 GlobalUIModule 指定，旧域/面板数据及 GUID 保留。新增 3 个演示场景，仅追加 Build Settings。",
+    "2026-09-10：PlayMode 25/25 通过，包括真实场景自动打开成功/可选失败继续/必须失败回滚、入场取消重开、自关闭回调、三种 Canvas 描边像素。Editor 删除场景 GUID 缓存问题已修复，等待最后验证。",
+    "最终逐项核对 22 项有效要求，所有工作项完成。Import 通过、EditMode 21/21、PlayMode 26/26；组件渲染预览已查看。未执行 Player/其他平台/全框架回归，详见验收边界。"
+  ]
+}

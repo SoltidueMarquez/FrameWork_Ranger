@@ -19,6 +19,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 9fa205e95fe4f3e4a9b1952c095fd61a, type: 2}
     - {fileID: 11400000, guid: 342ec895bbfa32c41b493ed16faa3a2a, type: 2}
     - {fileID: 11400000, guid: 187b0d76822e4caeba587f500e076d9b, type: 2}
+    - {fileID: 11400000, guid: 73933ef64bc0aa847b169b17e6a5c6ab, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -30,7 +31,7 @@ MonoBehaviour:
         FrameWork_Ranger.Runtime]], mscorlib
     - Name: 
       Entry: 12
-      Data: 3
+      Data: 4
     - Name: 
       Entry: 7
       Data: 1|FrameWork_Ranger.ModuleConfigEntry, FrameWork_Ranger.Runtime
@@ -68,6 +69,18 @@ MonoBehaviour:
       Entry: 8
       Data:
     - Name:
+      Entry: 7
+      Data: 4|FrameWork_Ranger.ModuleConfigEntry, FrameWork_Ranger.Runtime
+    - Name: m_enabled
+      Entry: 5
+      Data: true
+    - Name: m_module
+      Entry: 10
+      Data: 3
+    - Name:
+      Entry: 8
+      Data:
+    - Name:
       Entry: 13
       Data: 
     - Name: 
@@ -75,7 +88,7 @@ MonoBehaviour:
       Data: 
     - Name: m_driverHandler
       Entry: 7
-      Data: 4|FrameWork_Ranger.DefaultFrameworkDriverHandler, FrameWork_Ranger.Runtime
+      Data: 5|FrameWork_Ranger.DefaultFrameworkDriverHandler, FrameWork_Ranger.Runtime
     - Name: 
       Entry: 8
       Data:

@@ -1,0 +1,12 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.UI.Runtime",
+  "rootNamespace": "FrameWork_Ranger.UI",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.ResourceManagement.Runtime",
+    "UniTask",
+    "Unity.ugui",
+    "Unity.TextMeshPro"
+  ],
+  "autoReferenced": true
+}

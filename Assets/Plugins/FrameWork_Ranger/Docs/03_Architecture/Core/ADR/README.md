@@ -8,3 +8,4 @@
 4. [ADR-004：只读模块访问与显式 Tick 能力](./ADR-004_Module_Access_And_Explicit_Tick.md)
 5. [ADR-005：固定 Runtime 算法与受限 Driver 钩子](./ADR-005_Fixed_Runtime_And_Driver_Hooks.md)
 6. [ADR-006：中央项目设置与活动场景所有权](./ADR-006_Central_Project_Settings_And_Scene_Ownership.md)
+7. [ADR-007：Global 模块的可选 SceneScope 生命周期](./ADR-007_Global_Module_Scene_Lifecycle.md)

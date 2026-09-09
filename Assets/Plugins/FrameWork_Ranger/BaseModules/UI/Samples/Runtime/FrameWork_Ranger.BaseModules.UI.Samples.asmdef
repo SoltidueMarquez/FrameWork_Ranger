@@ -1,0 +1,10 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.UI.Samples",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.UI.Runtime",
+    "UniTask",
+    "Unity.ugui"
+  ],
+  "autoReferenced": true
+}

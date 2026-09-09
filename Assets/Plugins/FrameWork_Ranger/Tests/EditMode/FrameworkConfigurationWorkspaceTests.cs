@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using FrameWork_Ranger.Editor;
 using NUnit.Framework;
 using UnityEditor;
@@ -15,6 +16,7 @@ namespace FrameWork_Ranger.Tests
         private TestModuleA m_moduleA;
         private TestModuleB m_moduleB;
         private FrameworkConfigurationWorkspaceState m_state;
+        private string m_assetFolder;
 
         [SetUp]
         public void SetUp()
@@ -25,7 +27,8 @@ namespace FrameWork_Ranger.Tests
             m_moduleA = ScriptableObject.CreateInstance<TestModuleA>();
             m_moduleB = ScriptableObject.CreateInstance<TestModuleB>();
             m_settings.SetGlobalConfig(m_global);
-            m_state = new FrameworkConfigurationWorkspaceState($"Test:{Guid.NewGuid():N}");
+            m_state = new FrameworkConfigurationWorkspaceState(
+                FrameworkInlineInspectorHost.BuildObjectIdentity(m_settings));
         }
 
         [TearDown]
@@ -33,11 +36,120 @@ namespace FrameWork_Ranger.Tests
         {
             m_state.Clear();
             Undo.ClearAll();
+            if (!string.IsNullOrEmpty(m_assetFolder))
+            {
+                AssetDatabase.DeleteAsset(m_assetFolder);
+                m_assetFolder = null;
+            }
             UnityEngine.Object.DestroyImmediate(m_moduleB);
             UnityEngine.Object.DestroyImmediate(m_moduleA);
             UnityEngine.Object.DestroyImmediate(m_scene);
             UnityEngine.Object.DestroyImmediate(m_global);
             UnityEngine.Object.DestroyImmediate(m_settings);
+        }
+
+        [Test]
+        public void Workspace_AddFromGraph_SelectsNewBindingInEditTab_AndSupportsUndoRedo()
+        {
+            using var workspace = new FrameworkConfigurationWorkspace(m_settings);
+            m_state.ActiveTab = FrameworkConfigurationWorkspaceTab.DependencyGraph;
+            workspace.AddSceneBinding(m_settings);
+
+            Assert.That(m_settings.SceneBindings.Count, Is.EqualTo(1));
+            Assert.That(m_state.Resolve(m_settings).BindingIndex, Is.Zero);
+            Assert.That(m_state.ActiveTab, Is.EqualTo(FrameworkConfigurationWorkspaceTab.Edit));
+            Assert.That(m_settings.SceneBindings[0].SceneConfig, Is.Null);
+            Undo.PerformUndo();
+            Assert.That(m_settings.SceneBindings.Count, Is.Zero);
+            Undo.PerformRedo();
+            Assert.That(m_settings.SceneBindings.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Workspace_NewConfigBinding_UndoRedoAndRemovalPreserveSavedAsset()
+        {
+            var path = CreateAssetFolder() + "/SceneConfig.asset";
+            var config = FrameworkProjectSettingsAssetUtility.CreateSceneConfig(path);
+            using var workspace = new FrameworkConfigurationWorkspace(m_settings);
+            workspace.AddSceneBinding(m_settings);
+            Undo.IncrementCurrentGroup();
+            workspace.UpdateSceneBinding(m_settings, 0, null, config);
+            Assert.That(m_settings.SceneBindings[0].SceneConfig, Is.SameAs(config));
+            Assert.That(config.Modules.Count, Is.Zero);
+
+            Undo.PerformUndo();
+            Assert.That(m_settings.SceneBindings[0].SceneConfig, Is.Null);
+            Assert.That(AssetDatabase.LoadAssetAtPath<FrameworkSceneConfig>(path), Is.SameAs(config));
+            Undo.PerformRedo();
+            Assert.That(m_settings.SceneBindings[0].SceneConfig, Is.SameAs(config));
+
+            Undo.IncrementCurrentGroup();
+            workspace.RemoveSceneBinding(m_settings, 0);
+            Assert.That(m_settings.SceneBindings.Count, Is.Zero);
+            Undo.PerformUndo();
+            Assert.That(m_settings.SceneBindings[0].SceneConfig, Is.SameAs(config));
+            Undo.PerformRedo();
+            Assert.That(m_settings.SceneBindings.Count, Is.Zero);
+            Assert.That(AssetDatabase.LoadAssetAtPath<FrameworkSceneConfig>(path), Is.SameAs(config));
+        }
+
+        [Test]
+        public void SceneConfigCreation_CancelDoesNotCreateAsset_AndExistingAssetIsPreserved()
+        {
+            using var workspace = new FrameworkConfigurationWorkspace(m_settings);
+            workspace.AddSceneBinding(m_settings);
+            var binding = m_settings.SceneBindings[0];
+            Assert.That(FrameworkProjectSettingsAssetUtility.CreateSceneConfig(string.Empty), Is.Null);
+            Assert.That(m_settings.SceneBindings[0], Is.SameAs(binding));
+            Assert.That(binding.SceneConfig, Is.Null);
+
+            var path = CreateAssetFolder() + "/Existing.asset";
+            var existing = FrameworkProjectSettingsAssetUtility.CreateSceneConfig(path);
+            var guid = AssetDatabase.AssetPathToGUID(path);
+            var contents = File.ReadAllBytes(path);
+            Assert.Throws<IOException>(() => FrameworkProjectSettingsAssetUtility.CreateSceneConfig(path));
+            Assert.That(AssetDatabase.LoadAssetAtPath<FrameworkSceneConfig>(path), Is.SameAs(existing));
+            Assert.That(AssetDatabase.AssetPathToGUID(path), Is.EqualTo(guid));
+            CollectionAssert.AreEqual(contents, File.ReadAllBytes(path));
+        }
+
+        [Test]
+        public void SceneConfigCreation_SuggestsSceneDirectory_AndBindingSurvivesSerialization()
+        {
+            var folder = CreateAssetFolder();
+            // 使用已有场景的副本，避免打开或改动当前编辑场景。
+            var sceneGuids = AssetDatabase.FindAssets("t:Scene", new[] { "Assets" });
+            Assert.That(sceneGuids.Length, Is.GreaterThan(0));
+            var scenePath = folder + "/OverrideTest.unity";
+            Assert.That(AssetDatabase.CopyAsset(AssetDatabase.GUIDToAssetPath(sceneGuids[0]), scenePath), Is.True);
+            var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
+            Assert.That(FrameworkProjectSettingsAssetUtility.GetSceneConfigDefaultPath(null),
+                Is.EqualTo("Assets/SceneConfig.asset"));
+            var configPath = FrameworkProjectSettingsAssetUtility.GetSceneConfigDefaultPath(scene);
+            Assert.That(configPath, Is.EqualTo(folder + "/OverrideTestSceneConfig.asset"));
+            var config = FrameworkProjectSettingsAssetUtility.CreateSceneConfig(configPath);
+            AssetDatabase.CreateAsset(m_settings, folder + "/Settings.asset");
+            using (var workspace = new FrameworkConfigurationWorkspace(m_settings))
+            {
+                workspace.AddSceneBinding(m_settings);
+                workspace.UpdateSceneBinding(m_settings, 0, scene, config);
+            }
+
+            AssetDatabase.SaveAssetIfDirty(m_settings);
+            var copyPath = folder + "/SettingsCopy.asset";
+            Assert.That(AssetDatabase.CopyAsset(folder + "/Settings.asset", copyPath), Is.True);
+            var copy = AssetDatabase.LoadAssetAtPath<FrameworkProjectSettings>(copyPath);
+            Assert.That(copy.SceneBindings.Count, Is.EqualTo(1));
+            Assert.That(copy.SceneBindings[0].SceneConfig, Is.SameAs(config));
+            Assert.That(copy.SceneBindings[0].ScenePath, Is.EqualTo(scenePath));
+            Assert.That(copy.SceneBindings[0].SceneGuid, Is.EqualTo(AssetDatabase.AssetPathToGUID(scenePath)));
+        }
+
+        private string CreateAssetFolder()
+        {
+            m_assetFolder = "Assets/FrameworkSceneOverrideTest_" + Guid.NewGuid().ToString("N");
+            AssetDatabase.CreateFolder("Assets", m_assetFolder.Substring("Assets/".Length));
+            return m_assetFolder;
         }
 
         [Test]

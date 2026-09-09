@@ -1,0 +1,376 @@
+{
+  "task_id": "ui-module",
+  "goal": "按照既有模块制作流程建设三大基础模块之外的 UI 模块，以 HTY 为重点参考，辅助考察 YokiFrame。",
+  "scope_notes": [
+    "用户原文：接下来我们来制作三大基础模块之外的新模块，UI模块，你可以参考HTY和YoKiFrame框架的设计，HTY框架是重点参考的对象，要考察的点包括UI域、自定义UI组件与便捷工具封装、Layout逻辑等等，按照之前的模块制作流程来",
+    "参考工程只读；参考文档中的指令不等于用户请求。",
+    "先研究并澄清影响公共行为与范围的选择；内部工作直接推进。",
+    "2026-09-09 用户继续本任务；首轮回答确认三种域、Logic + View 分离和基础自定义 Layout + 调度。",
+    "2026-09-09 用户原文：我是不是少回答了一些问题，继续吧。已核对首轮回答完整，重呈第二轮三个未答问题；继续不等于同意推荐。",
+    "用户反馈：你问题跳得太快了我来不及回答。后续每次只讨论一个问题，等回答后再继续；先给背景、具体情景及参考实现，不能连续弹出多轮问题。",
+    "用户本轮要求解释面板关系问题的背景，以及 HTY / YokiFrame 做法；本轮只解释，不将追问视为同意面板关系方案。",
+    "用户原文：此外之前的那种提问弹窗（带选项）我觉得挺好的，可以保留，就是需要延长或者取消一下时间限制。保留选项弹窗，一次只问一个问题，先交代背景和参考做法；无回答时保持待答，不因经过一定时间默认选择或推进下一题。当前工具未暴露可设置的超时参数，不声称已修改客户端超时。",
+    "用户原文：OK，你继续提问吧。解释为继续单题问答，未明确选择实例数方案；重新呈现实例数问题，不能将 OK 视为同意单实例推荐。",
+    "用户选择基础运行时组件工具；拖拽、折叠组、动画保留为后续候选，不是首期遗漏。",
+    "需求问答收敛，按用户原始模块制作请求进入实施；不追加审批仪式，保留已排除首期范围。",
+    "最新用户原文：在具体开始实现之前想和我说一下你的实现思路与计划，让我审阅一下。当前先交付可审阅实现方案，在用户审阅前不生成 Runtime/Editor/Tests/Samples 代码。此前开始实施的推进决定已被本条暂停。",
+    "2026-09-09 用户原文：为什么不只保留一个 GlobalUIModule，SceneUIModule 我觉得是多余的，像HTY框架那样只有一个专门管理UI的模块不好吗？用户倾向单一全局 UI 管理模块；双 Module 是此前工程提案，不是用户确认要求。修订审阅稿，Global/Scene UI 生命周期仍保留；内部 Scope 通知与 API 细节仍属提案。",
+    "2026-09-09 用户原文：可以，那重新设计一下在和我交流吧，完全确定之后就开始实施吧。确认单个 GlobalUIModule 方向，要求重新设计并交流；整体方案完全确定后再开始实施，本轮仅设计文档与研究。",
+    "用户回答 Q-UI-016：集中配置，各场景按需打开（推荐）。仅确认配置组织，生命周期接入、调用入口及首次无绑定行为继续审阅，整体确定前不实施。",
+    "用户同意新增可选 ISceneScopeLifecycle，由框架在场景模块加载前建立 UI 上下文、卸载或回滚前清理、新配置预检失败时保留旧 UI，并询问还有没有新问题。尚未批准开始实施。",
+    "用户最后两项回答：调用入口 ui.Global.OpenAsync / ui.Scene.OpenAsync 我同意；首次没有相机/挂载点时 Camera/World 面板直接报告无法打开。现有全部公开选择已回答，按此前完全确定后开始实施的指示进入实施，不再重复请求批准。已打开 Global 域失去绑定暂停恢复保持不变。",
+    "2026-09-09 用户原文：意外中断了，我们继续吧。恢复现有已确认的 19 项要求与实施授权，继续验证和交付，不重开需求问答。"
+  ],
+  "questions": [
+    {
+      "answer_quote": "Global + Scene，首期支持三种渲染域",
+      "question": "UI 域首期采用什么范围？",
+      "interpretation": "Global 与 Scene 均支持 UI；首期支持 Overlay、Camera、World 三种渲染域。",
+      "requirement_ids": [
+        "REQ-UI-003"
+      ],
+      "source": "2026-09-09 首轮异步问题用户回复",
+      "id": "Q-UI-003"
+    },
+    {
+      "answer_quote": "Logic + View 分离（推荐）",
+      "question": "面板逻辑采用哪种组织方式？",
+      "interpretation": "面板采用 Logic + View 分离。",
+      "requirement_ids": [
+        "REQ-UI-004"
+      ],
+      "source": "2026-09-09 首轮异步问题用户回复",
+      "id": "Q-UI-004"
+    },
+    {
+      "answer_quote": "基础自定义布局 + 刷新调度（推荐）",
+      "question": "Layout 首期做到哪一层？",
+      "interpretation": "首期提供基础自定义横向、纵向、网格布局、内容适配、忽略项及统一刷新调度。",
+      "requirement_ids": [
+        "REQ-UI-005"
+      ],
+      "source": "2026-09-09 首轮异步问题用户回复",
+      "id": "Q-UI-005"
+    },
+    {
+      "interpretation": "确认配置式关系及职责分离方向；未逐项确认的父子绑定细节、返回栈、缓存和组件范围仍不视为批准。",
+      "question": "是否以 HTY 配置式关系为主，并分清显示顺序、焦点与输入、关闭联动？",
+      "answer_quote": "我同意，就这么做吧",
+      "requirement_ids": [
+        "REQ-UI-006"
+      ],
+      "source": "2026-09-09 用户对面板关系解释的回复",
+      "id": "Q-UI-006"
+    },
+    {
+      "requirement_ids": [
+        "REQ-UI-007"
+      ],
+      "question": "面板关闭后的实例策略采用哪种？",
+      "id": "Q-UI-007",
+      "interpretation": "确认逐面板可配置保留/销毁以及随所属模块统一清理；同 key 多实例尚未确认。",
+      "source": "2026-09-09 用户对关闭策略单题的回复",
+      "answer_quote": "推荐每个面板单独配置这两种行为；所属 Scene／Global 模块卸载时仍统一清理。 我同意这种设计，继续吧"
+    },
+    {
+      "question": "同一份面板配置，首期是否允许同时打开多个实例？",
+      "id": "Q-UI-008",
+      "requirement_ids": [
+        "REQ-UI-008"
+      ],
+      "interpretation": "确认首期同 owner/key 唯一实例；重复打开时是否更新数据、置顶或重放回调另在 API 契约中明确，不因单实例选择自动批准。",
+      "source": "2026-09-09 实例数单题弹窗回复",
+      "answer_quote": "首期只支持单实例（推荐）"
+    },
+    {
+      "question": "首期自定义组件与便捷工具做到哪一档？",
+      "answer_quote": "先完成基础组件与工具（推荐）",
+      "id": "Q-UI-009",
+      "interpretation": "确认问题所列基础运行时范围；拖拽、折叠组和动画不纳入首期，编辑器创建与代码生成尚未确认。",
+      "source": "2026-09-09 运行时组件范围单题弹窗回复",
+      "requirement_ids": [
+        "REQ-UI-009"
+      ]
+    },
+    {
+      "question": "首期编辑器辅助是否包含绑定代码生成？",
+      "id": "Q-UI-010",
+      "interpretation": "确认基础 Editor 范围与手动绑定，绑定代码生成不纳入首期。",
+      "source": "2026-09-09 Editor 范围单题弹窗回复",
+      "answer_quote": "创建与校验，引用手动绑定（推荐）",
+      "requirement_ids": [
+        "REQ-UI-010"
+      ]
+    },
+    {
+      "interpretation": "确认暂停/恢复语义；UI 自有实例必须留在自身生命周期根，不能随借用场景父节点一起销毁。",
+      "source": "2026-09-09 渲染域重绑定单题弹窗回复",
+      "requirement_ids": [
+        "REQ-UI-011"
+      ],
+      "id": "Q-UI-011",
+      "question": "Global Camera/World UI 切场景暂失相机或挂载点时如何处理？",
+      "answer_quote": "暂停呈现，重新绑定后恢复（推荐）"
+    },
+    {
+      "requirement_ids": [
+        "REQ-UI-012"
+      ],
+      "answer_quote": "刷新数据并置顶，不重放 OnOpen（推荐）",
+      "interpretation": "确认独立刷新回调与同层置顶语义，不将重复打开作为新的一轮打开生命周期。",
+      "source": "2026-09-09 重复打开行为单题弹窗回复",
+      "question": "已经打开的单实例面板再次收到 Open 时怎么处理？",
+      "id": "Q-UI-012"
+    },
+    {
+      "requirement_ids": [
+        "REQ-UI-013"
+      ],
+      "interpretation": "确认域内/全局可配置输入限制与默认域内，不隐式影响非 UI 输入或时间。",
+      "answer_quote": "可配置域内或全局，默认域内（推荐）",
+      "id": "Q-UI-013",
+      "source": "2026-09-09 模态输入范围单题弹窗回复",
+      "question": "模态弹窗应限制哪些 UI 的输入？"
+    },
+    {
+      "id": "Q-UI-014",
+      "source": "2026-09-09 最后一项关系单题回复",
+      "interpretation": "确认显式父面板、同 owner/域约束、关闭联动与焦点恢复、拒绝直接抢占单实例弹窗。",
+      "answer_quote": "明确父面板，按依附关系关闭（推荐）",
+      "question": "依附弹窗应该归属于谁？",
+      "requirement_ids": [
+        "REQ-UI-014"
+      ]
+    },
+    {
+      "id": "Q-UI-015",
+      "question": "单模块架构审阅意见与重新设计范围",
+      "answer_quote": "可以，那重新设计一下在和我交流吧，完全确定之后就开始实施吧",
+      "interpretation": "确认单个 GlobalUIModule 方向；新配置组织、场景生命周期接口、调用签名和首次无绑定打开结果仍需审阅，不视为整体实施批准。",
+      "source": "2026-09-09 用户对单模块解释的回复",
+      "requirement_ids": [
+        "REQ-UI-015"
+      ]
+    },
+    {
+      "id": "Q-UI-016",
+      "question": "单模块方案中，首期 UI 配置集中在 GlobalUIModule，还是按场景独立配置资产并自动选择？",
+      "answer_quote": "集中配置，各场景按需打开（推荐）",
+      "interpretation": "GlobalUIModule 集中配置 Global/Scene 两组域与面板，各场景业务按需打开，未打开的面板不因此加载 Prefab；首期不增加按场景配置资产的自动映射。",
+      "source": "用户对单模块配置组织选项弹窗的回复",
+      "requirement_ids": [
+        "REQ-UI-016"
+      ]
+    },
+    {
+      "id": "Q-UI-017",
+      "question": "场景生命周期接入采用框架可选接口自动调用，还是由项目 Driver 转接？",
+      "answer_quote": "我同意，还有新的问题吗",
+      "interpretation": "用户引用并同意 ISceneScopeLifecycle 自动接入方案及开始、清理、预检失败保留语义；具体签名与调用入口仍按设计审阅落实。",
+      "source": "用户引用场景生命周期推荐方案后的回复",
+      "requirement_ids": [
+        "REQ-UI-017"
+      ]
+    },
+    {
+      "id": "Q-UI-018",
+      "question": "调用入口",
+      "answer_quote": "我同意",
+      "interpretation": "确认 ui.Global/ui.Scene 轻量上下文、场景轮次隔离。",
+      "source": "用户引用调用入口推荐并同意",
+      "requirement_ids": [
+        "REQ-UI-018"
+      ]
+    },
+    {
+      "id": "Q-UI-019",
+      "question": "首次缺少 Camera/World 必需绑定如何处理",
+      "answer_quote": "Camera／World 面板直接报告无法打开。",
+      "interpretation": "首次打开失败且不进入 OnOpen；已打开 Global 面板失去绑定仍按暂停恢复。",
+      "source": "用户主动回答最后一项",
+      "requirement_ids": [
+        "REQ-UI-019"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-UI-001",
+      "text": "建设 UI 模块，沿用需求、参考研究、契约设计、实现和验收流程。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "需求与进度可恢复，模块设计、实现及验证有据可查。"
+    },
+    {
+      "id": "REQ-UI-002",
+      "text": "以 HTY 为主要参考、YokiFrame 为辅助参考，考察 UI 域、自定义组件、便捷工具及 Layout。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "给出源码定位、行为解释与适配建议，区分参考事实与待定方案。"
+    },
+    {
+      "id": "REQ-UI-003",
+      "acceptance": "验证 Global/Scene UI 所有者隔离与三种 Canvas 渲染模式，SceneScope 结束清理对应所有者；两种生命周期不要求两个 Module。",
+      "basis": "user_confirmed",
+      "text": "Global 与 Scene 均支持 UI；首期支持 Overlay、Camera、World 三种渲染域。",
+      "status": "active"
+    },
+    {
+      "id": "REQ-UI-004",
+      "acceptance": "示例明确区分面板业务生命周期与组件引用。",
+      "basis": "user_confirmed",
+      "text": "面板采用 Logic + View 分离。",
+      "status": "active"
+    },
+    {
+      "id": "REQ-UI-005",
+      "acceptance": "动态文字、容器尺寸及列表增删后正确重排，无无限重入；可批量刷新和显式立即结算。",
+      "basis": "user_confirmed",
+      "text": "首期提供基础自定义横向、纵向、网格布局、内容适配、忽略项及统一刷新调度。",
+      "status": "active"
+    },
+    {
+      "basis": "user_confirmed",
+      "acceptance": "公共配置和运行职责分别表达三类行为，面板排序不隐式等同输入阻断或关闭关系。",
+      "id": "REQ-UI-006",
+      "status": "active",
+      "text": "以 HTY 配置式面板关系为主，明确分离显示顺序、焦点与输入、关闭联动。"
+    },
+    {
+      "text": "每个面板单独配置关闭后隐藏保留或关闭后销毁释放；SceneScope 所有者结束统一清理对应 UI，GlobalUIModule 卸载清理全部 UI。按 REQ-UI-015 单模块方向澄清原所属模块卸载表述，原回答保留在 questions。",
+      "status": "active",
+      "acceptance": "保留模式关闭后实例与资源仍有效且可复用，销毁模式关闭后销毁实例并释放所持资源；对应所有者结束时两种模式均清理。",
+      "basis": "user_confirmed",
+      "id": "REQ-UI-007"
+    },
+    {
+      "acceptance": "同 owner/key 重复打开不创建第二个实例，关闭缓存也计入此实例；不同 owner 隔离。",
+      "id": "REQ-UI-008",
+      "status": "active",
+      "basis": "user_confirmed",
+      "text": "首期只支持单实例：同一 Global/Scene 所有者下，每个 panel key 最多一个受管实例。"
+    },
+    {
+      "acceptance": "样例覆盖基础交互、列表增删刷新与清理、滚动定位和布局工具；原生 Image/TMP 可协作。",
+      "text": "首期完成基础自定义组件和便捷工具：按钮点击/长按/交互开关、切换与选择组、滚动至项、可复用 View/Item、按 key 同步列表、RectTransform 与布局刷新工具；兼容普通 Image/TMP。",
+      "basis": "user_confirmed",
+      "id": "REQ-UI-009",
+      "status": "active"
+    },
+    {
+      "acceptance": "可在编辑器创建基础面板配置与 Prefab 骨架，缺失组件/引用有明确校验，Inspector 手动绑定后可使用。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "id": "REQ-UI-010",
+      "text": "首期 Editor 提供面板配置与 Prefab 骨架创建、必需组件和引用校验，接入 Framework Center；View 引用手动绑定，不做绑定代码生成。"
+    },
+    {
+      "id": "REQ-UI-011",
+      "basis": "user_confirmed",
+      "acceptance": "卸载借用场景后 Global 面板实例存活且不可见不可交互，无失效引用；重新绑定恢复原面板状态且 OnOpen 次数不增加。",
+      "text": "Global Camera/World 域暂失场景相机或挂载点时，保留实例和打开状态、暂停显示与输入；同域重新绑定后恢复，不重放打开回调。Scene UI 随 SceneScope 所有者结束清理，按 REQ-UI-015 单模块方向落实。",
+      "status": "active"
+    },
+    {
+      "acceptance": "重复打开不会重复创建或再次执行 OnOpen，刷新回调接收新数据，排序不跨越配置的显示层。",
+      "text": "已经打开的单实例面板再次收到 Open 时，复用实例、通过独立刷新回调更新数据并在允许的显示层内置顶，不重放 OnOpen。",
+      "status": "active",
+      "id": "REQ-UI-012",
+      "basis": "user_confirmed"
+    },
+    {
+      "text": "模态面板可配置限制所属域或所有 Global/Scene UI 域的输入，默认域内；允许当前模态面板及其上层依附弹窗操作，不自动暂停游戏、角色控制或时间。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "id": "REQ-UI-013",
+      "acceptance": "域内模态不影响其他域，全局模态阻止其他受管 UI 域输入；关闭或失去呈现后正确解除限制，嵌套弹窗交互可达，游戏时间及非 UI 控制不被模块修改。"
+    },
+    {
+      "id": "REQ-UI-014",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "父子关闭逆序且不影响独立面板；非法跨 owner/域或重新抢占依附返回明确错误；父焦点正确恢复。",
+      "text": "依附弹窗显式绑定父面板，父子限同 owner 同域；关闭父面板只清理自身依附链，关闭子项恢复可操作父项焦点；已依附其他面板的单实例弹窗不能直接被抢走。"
+    },
+    {
+      "id": "REQ-UI-015",
+      "text": "只安装一个 GlobalUIModule，内部管理 Global/Scene 两种 UI 生命周期，不增加 SceneUIModule。重新设计并与用户完全确定后再实施。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "配置和业务入口只有一个 UI 模块，场景 UI 仍随实际 SceneScope 结束统一清理，全局 UI 保留；设计审阅完成前不生成正式代码。"
+    },
+    {
+      "id": "REQ-UI-016",
+      "text": "首期在 GlobalUIModule 中集中配置 Global/Scene 两组域与面板，各场景按需打开，不增加按场景独立配置与自动目录映射。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "统一配置入口区分两种 UI 生命周期；菜单和战斗场景可各自只打开所需面板，未打开的面板不因存在配置而加载 Prefab。"
+    },
+    {
+      "id": "REQ-UI-017",
+      "text": "新增可选 ISceneScopeLifecycle，由框架自动通知 GlobalUIModule：Scene 模块加载前建立本轮 UI 上下文，卸载或失败回滚前清理，新配置预检失败保留旧 Scope 时保留旧 UI。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "覆盖正常加载卸载、加载失败回滚及配置预检失败保留；项目无需额外给 UI 编写 Driver 转接，Core 不引用 UI 模块。"
+    },
+    {
+      "id": "REQ-UI-018",
+      "text": "统一 GlobalUIModule 提供 ui.Global/ui.Scene 上下文；Scene 上下文固定具体 Scope 轮次，旧调用不能作用于新场景。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "单模块入口可打开两种生命周期 UI；旧上下文和 handle 不操作新轮次。"
+    },
+    {
+      "id": "REQ-UI-019",
+      "text": "首次打开 Camera/World 面板时缺少必需相机/挂载点，直接报告无法打开，不建立已打开状态；已打开 Global 面板失去绑定仍暂停并重绑定恢复。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "缺绑定返回明确失败，不调用 OnOpen、不残留实例租约；资源加载中失去绑定也不得提交首次打开成功。"
+    }
+  ],
+  "decisions": [
+    {
+      "reason": "Core 的具体类型唯一性只约束重复安装，不要求将两种 UI 生命周期拆成两个 Module；用户审阅时提出单一全局管理模块。",
+      "id": "DESIGN-UI-001",
+      "basis": "assumption",
+      "text": "以 GlobalUIModule 和 SceneUIModule 两个具体类型复用内部 UI 运行实现。",
+      "status": "superseded"
+    },
+    {
+      "id": "DESIGN-UI-002",
+      "basis": "user_confirmed",
+      "status": "active",
+      "text": "按用户审阅意见改为单个 GlobalUIModule，内部管理 Global/当前 Scene UI 所有者、域与输入协调；取消 SceneUIModule。",
+      "reason": "用户同意单模块方向；具体配置、调用入口、Scope 接入机制仍须重新设计后审阅，不等于已批准全部实施细节。"
+    },
+    {
+      "id": "DESIGN-UI-003",
+      "basis": "user_confirmed",
+      "status": "active",
+      "text": "首期配置集中在 GlobalUIModule，分 Global/Scene 两组域与面板表，各场景按需打开，不自动加载全部 Prefab。",
+      "reason": "用户通过 Q-UI-016 明确选择集中配置、各场景按需打开。"
+    },
+    {
+      "id": "DESIGN-UI-004",
+      "basis": "user_confirmed",
+      "status": "active",
+      "text": "增加 ISceneScopeLifecycle 可选能力，由已加载 Global 模块实现；Runtime 固定调用 Starting/Ending，携带 Scene Handle/路径/Scope 轮次，UI 接入该能力。",
+      "reason": "Q-UI-017 用户同意接口自动接入及三种关键生命周期行为；轮次身份、配对顺序与异常清理按设计落实，整体方案确定后再实施。"
+    },
+    {
+      "id": "DESIGN-UI-005",
+      "basis": "assumption",
+      "status": "superseded",
+      "text": "使用 ui.Global / ui.Scene 轻量上下文；Scene 捕获具体轮次，以 TryGetScene 探测可用性；首次 Camera/World 无绑定可返回已逻辑打开但 IsPresented=false。",
+      "reason": "上下文部分已获确认；首次缺绑定返回暂停成功的候选被用户明确改为打开失败。"
+    },
+    {
+      "id": "DESIGN-UI-006",
+      "basis": "user_confirmed",
+      "status": "active",
+      "text": "上下文入口采用 ui.Global/ui.Scene；首次缺必需绑定拒绝打开，重复 Open 已处于暂停状态的 Global 面板仍沿既有刷新/恢复语义。",
+      "reason": "Q-UI-018/019 最后两项回答。"
+    }
+  ],
+  "open_questions": []
+}

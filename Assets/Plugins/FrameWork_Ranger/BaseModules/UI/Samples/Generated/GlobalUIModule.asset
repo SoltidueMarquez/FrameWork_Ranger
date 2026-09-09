@@ -1,0 +1,998 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae7de938dc56d504687dac8ddfca75ce, type: 3}
+  m_Name: GlobalUIModule
+  m_EditorClassIdentifier: FrameWork_Ranger.BaseModules.UI.Runtime::FrameWork_Ranger.UI.GlobalUIModule
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  m_loadPriority: 0
+  UIResources: {fileID: 11400000, guid: 756782bdad0c7e04da4c5f8678056663, type: 2}
+  GlobalConfiguration:
+    Domains:
+    - Key: Main
+      RenderMode: 0
+      SortingOrder: 100
+      ReferenceResolution: {x: 1920, y: 1080}
+      MatchWidthOrHeight: 0.5
+      PlaneDistance: 5
+      WorldSize: {x: 640, y: 420}
+      WorldScale: 0.005
+    - Key: World
+      RenderMode: 2
+      SortingOrder: 0
+      ReferenceResolution: {x: 1920, y: 1080}
+      MatchWidthOrHeight: 0.5
+      PlaneDistance: 5
+      WorldSize: {x: 640, y: 420}
+      WorldScale: 0.005
+    Panels:
+    - Key: GlobalNotice
+      DomainKey: Main
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/Notice
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644263022592
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 0
+    - Key: GlobalModal
+      DomainKey: Main
+      Layer: 10
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644263022593
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 2
+    - Key: GlobalWorld
+      DomainKey: World
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644263022594
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 0
+    - Key: Confirm
+      DomainKey: Main
+      Layer: 10
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644527788032
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 1
+    - Key: WorldConfirm
+      DomainKey: World
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644527788033
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 1
+  SceneConfiguration:
+    Domains:
+    - Key: Main
+      RenderMode: 0
+      SortingOrder: 0
+      ReferenceResolution: {x: 1920, y: 1080}
+      MatchWidthOrHeight: 0.5
+      PlaneDistance: 5
+      WorldSize: {x: 640, y: 420}
+      WorldScale: 0.005
+    - Key: Camera
+      RenderMode: 1
+      SortingOrder: 0
+      ReferenceResolution: {x: 1920, y: 1080}
+      MatchWidthOrHeight: 0.5
+      PlaneDistance: 5
+      WorldSize: {x: 640, y: 420}
+      WorldScale: 0.005
+    - Key: World
+      RenderMode: 2
+      SortingOrder: 1
+      ReferenceResolution: {x: 1920, y: 1080}
+      MatchWidthOrHeight: 0.5
+      PlaneDistance: 5
+      WorldSize: {x: 640, y: 420}
+      WorldScale: 0.005
+    Panels:
+    - Key: Inventory
+      DomainKey: Main
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644263022595
+      ClosePolicy: 0
+      MutexGroup: Window
+      Modal: 0
+    - Key: Shop
+      DomainKey: Main
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644263022596
+      ClosePolicy: 0
+      MutexGroup: Window
+      Modal: 0
+    - Key: Confirm
+      DomainKey: Main
+      Layer: 10
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644263022597
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 1
+    - Key: CameraPanel
+      DomainKey: Camera
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644263022598
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 0
+    - Key: WorldPanel
+      DomainKey: World
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644263022599
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 0
+    - Key: CameraConfirm
+      DomainKey: Camera
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644527788034
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 1
+    - Key: WorldConfirm
+      DomainKey: World
+      Layer: 0
+      Backend: 0
+      PrefabAddress: RangerUI/SamplePanel
+      UseDirectPrefab: 0
+      DirectPrefab: {fileID: 0}
+      EnterAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      ExitAnimation:
+        Fade: 0
+        Scale: 0
+        Slide: 0
+        Duration: 0.2
+        Offset: {x: 0, y: -80}
+        HiddenScale: {x: 0.85, y: 0.85, z: 1}
+        Curve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      Logic:
+        rid: 2379191644527788035
+      ClosePolicy: 0
+      MutexGroup: 
+      Modal: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 2379191644263022592
+      type: {class: UILogic, ns: FrameWork_Ranger.UI, asm: FrameWork_Ranger.BaseModules.UI.Runtime}
+      data: 
+    - rid: 2379191644263022593
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644263022594
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644263022595
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644263022596
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644263022597
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644263022598
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644263022599
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644527788032
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644527788033
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644527788034
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
+    - rid: 2379191644527788035
+      type: {class: UISampleLogic, ns: FrameWork_Ranger.UI.Samples, asm: FrameWork_Ranger.BaseModules.UI.Samples}
+      data: 
