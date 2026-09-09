@@ -1,0 +1,18 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.EventCenter.Runtime",
+  "rootNamespace": "FrameWork_Ranger.Events",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.Pooling.Reference.Runtime",
+    "UniTask"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

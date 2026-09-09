@@ -34,7 +34,7 @@ MonoBehaviour:
       Data: 1|FrameWork_Ranger.ModuleConfigEntry, FrameWork_Ranger.Runtime
     - Name: m_enabled
       Entry: 5
-      Data: true
+      Data: false
     - Name: m_module
       Entry: 10
       Data: 0

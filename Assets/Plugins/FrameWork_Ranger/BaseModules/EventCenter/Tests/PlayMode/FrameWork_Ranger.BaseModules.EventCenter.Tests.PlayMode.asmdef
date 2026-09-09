@@ -1,0 +1,27 @@
+{
+  "name": "FrameWork_Ranger.BaseModules.EventCenter.Tests.PlayMode",
+  "rootNamespace": "FrameWork_Ranger.Events",
+  "references": [
+    "FrameWork_Ranger.Runtime",
+    "FrameWork_Ranger.BaseModules.Pooling.Reference.Runtime",
+    "UniTask",
+    "FrameWork_Ranger.BaseModules.EventCenter.Runtime",
+    "FrameWork_Ranger.BaseModules.EventCenter.Samples"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.Serialization.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

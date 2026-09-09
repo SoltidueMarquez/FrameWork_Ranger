@@ -69,7 +69,7 @@ Docs/
 32. [Unity 6000 与仓库迁移验收](./03_Architecture/Distribution/01_Unity6_Migration_Acceptance.md)
 33. [Resource Management 模块入口](./03_Architecture/FoundationModules/ResourceManagement/README.md)
 34. [Pooling 对象池/引用池模块入口](./03_Architecture/FoundationModules/Pooling/README.md)
-35. [Event Center 事件中心需求与参考研究](./03_Architecture/FoundationModules/EventCenter/README.md)
+35. [Event Center 事件中心使用、设计与验收](./03_Architecture/FoundationModules/EventCenter/README.md)
 
 ## 项目与历史
 

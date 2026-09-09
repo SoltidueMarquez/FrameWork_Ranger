@@ -1,6 +1,6 @@
 # Event Center 架构与公共契约
 
-本页汇总截至第六轮已确认的公共行为，并给出实现这些行为的具体设计。问答与来源以 [requirements.json](../../../../../../../.workflow/event-center/requirements.json) 为准，执行状态以 [progress.json](../../../../../../../.workflow/event-center/progress.json) 为准。本文是实现依据，不是已经存在的 Runtime API 或测试通过记录。
+本页汇总截至第六轮已确认的公共行为，并给出实现这些行为的具体设计。问答与来源以 [requirements.json](../../../../../../../.workflow/event-center/requirements.json) 为准，执行状态以 [progress.json](../../../../../../../.workflow/event-center/progress.json) 为准。本文是实现依据；2026-09-09 已按此落盘 Runtime，实际使用与验证结果见[使用与验收](./05_Usage_And_Acceptance.md)。
 
 主要依据：REQ-005/006 的 HTY 业务用法与独立事件类，REQ-008 至 REQ-016 的作用域、订阅、发送和生命周期决定。参考证据见[源码研究](./01_Reference_Research_And_Design_Starting_Point.md)和 [HTY 使用场景](./02_Event_Class_API_And_HTY_Usage.md)。
 
@@ -8,7 +8,7 @@
 
 EventModule 仅安装于 GlobalScope。事件类静态入口查询当前已经加载的模块；订阅表、引用池依赖和派发状态全部属于模块运行实例。Core 继续负责 SO 克隆、依赖排序和卸载。
 
-拟用命名空间 `FrameWork_Ranger.Events`，Runtime 程序集为 `FrameWork_Ranger.BaseModules.EventCenter.Runtime`。直接程序集依赖为 Framework Runtime、Pooling Reference Runtime 和 UniTask；不会通过 GameObject Pool 或 Resource 获取事件能力。
+使用命名空间 `FrameWork_Ranger.Events`，Runtime 程序集为 `FrameWork_Ranger.BaseModules.EventCenter.Runtime`。直接程序集依赖为 Framework Runtime、Pooling Reference Runtime 和 UniTask；不会通过 GameObject Pool 或 Resource 获取事件能力。
 
 ```mermaid
 flowchart LR
@@ -32,7 +32,7 @@ EventModule 采用现有 `DirectModuleBase`。当前只有一种派发策略，�
 `EventBase` 实现 `IReferencePoolItem`，默认 OnRent 为空，OnReturn 由具体事件重写以清理本次数据。业务事件为可实例化、具有公共无参构造函数的独立 class，推荐 sealed；一个事件类型一个文件。
 
 ```csharp
-// 拟实现的基类契约。
+// 事件基类契约。
 public abstract class EventBase : IReferencePoolItem
 {
     public virtual void OnRent() { }
@@ -44,7 +44,7 @@ public abstract class EventBase : IReferencePoolItem
 
 ### 事件中心
 
-拟公开的核心方法签名为：
+公开的核心方法签名为：
 
 ```csharp
 void Subscribe<T>(Action<T> callback) where T : EventBase;
@@ -55,7 +55,7 @@ void Publish<T>(Action<T> initialize = null) where T : EventBase, new();
 具体事件类按以下方式包装这些方法，业务不需要重复填写泛型类型：
 
 ```csharp
-// 以 LevelChangedEvent 为例；这些调用为设计示意。
+// 以 Samples 中的 LevelChangedEvent 为例。
 LevelChangedEvent.Subscribe(OnLevelChanged);
 LevelChangedEvent.Throw(entityId, previousLevel, currentLevel);
 LevelChangedEvent.Unsubscribe(OnLevelChanged);

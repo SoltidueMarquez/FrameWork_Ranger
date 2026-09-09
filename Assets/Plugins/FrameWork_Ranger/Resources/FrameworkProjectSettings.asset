@@ -36,25 +36,10 @@ MonoBehaviour:
         FrameWork_Ranger.Runtime]], mscorlib
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 1
     - Name: 
       Entry: 7
       Data: 1|FrameWork_Ranger.FrameworkSceneBinding, FrameWork_Ranger.Runtime
-    - Name: m_sceneGuid
-      Entry: 1
-      Data: 99c9720ab356a0642a771bea13969a05
-    - Name: m_scenePath
-      Entry: 1
-      Data: Assets/Plugins/FrameWork_Ranger/BaseModules/ResourceManagement/Samples/Scenes/ResourceManagementSample.unity
-    - Name: m_sceneConfig
-      Entry: 10
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 2|FrameWork_Ranger.FrameworkSceneBinding, FrameWork_Ranger.Runtime
     - Name: m_sceneGuid
       Entry: 1
       Data: 5decf861a988016499893aa3fdadd8e9

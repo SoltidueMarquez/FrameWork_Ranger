@@ -1,15 +1,16 @@
 {
   "task_id": "event-center",
-  "status": "planning",
+  "status": "completed",
   "design_docs": [
     "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/README.md",
     "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/01_Reference_Research_And_Design_Starting_Point.md",
     "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/02_Event_Class_API_And_HTY_Usage.md",
     "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/03_Architecture_And_Public_Contracts.md",
-    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/04_Implementation_Plan.md"
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/04_Implementation_Plan.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/05_Usage_And_Acceptance.md"
   ],
   "current_task": "",
-  "next_action": "本轮设计交付完成。进入实施阶段时从 WI-004 开始，恢复全部 active 要求和完整契约；按用户后续输入执行，不重问已经确认的行为。",
+  "next_action": "",
   "tasks": [
     {
       "id": "WI-001",
@@ -98,10 +99,15 @@
         "REQ-015",
         "REQ-016"
       ],
-      "status": "pending",
-      "outputs": [],
-      "result": "已在 04_Implementation_Plan.md 中具体化；当前会话范围仍为设计，Runtime 尚未创建。",
-      "verification": []
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/EventCenter",
+        "Assets/Plugins/FrameWork_Ranger/Resources/FrameworkGlobalConfig.asset"
+      ],
+      "result": "已完成 Event Runtime、Global 模板接线、独立事件类和可挂载示例组件，Import 通过，EditMode 7/7 通过。",
+      "verification": [
+        "当前工作区 Import 通过；Event EditMode 7/7、PlayMode 11/11；配置模板读取与启用引用验证通过。"
+      ]
     },
     {
       "id": "WI-005",
@@ -120,10 +126,20 @@
         "REQ-015",
         "REQ-016"
       ],
-      "status": "pending",
-      "outputs": [],
-      "result": "等待相应实现，按计划运行 Import 与 Event 聚焦测试；不使用历史 Pooling 结果代替 Event 验证。",
-      "verification": []
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/BaseModules/EventCenter/Tests",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/FoundationModules/EventCenter/05_Usage_And_Acceptance.md"
+      ],
+      "result": "WI-004/005 首版交付完成；19 个非零聚焦用例通过（Event EditMode 7、PlayMode 11、既有架构目录 1），覆盖全部有效行为要求。未运行 Player/Addressables 或历史 Pooling 全验收。",
+      "verification": [
+        "Doctor 通过：Unity 6000.5.9f1，当前工作区未占用。",
+        "Import 通过：Logs/UnityCli/20260909-145115-import-12172/import.log",
+        "Event EditMode 7/7：Logs/UnityCli/20260909-145210-testeditmode-33916/editmode-results.xml",
+        "Event PlayMode 11/11：Logs/UnityCli/20260909-145331-testplaymode-4832/playmode-results.xml",
+        "既有 FrameworkArchitectureCatalogTests.Build_CoversRuntimeAndEditorTypes_AndCreatesExpectedRelations 1/1：Logs/UnityCli/20260909-145442-testeditmode-33980/editmode-results.xml",
+        "新资产 .meta、asmdef JSON、使用文档链接检查通过。"
+      ]
     }
   ],
   "blockers": [],
@@ -137,6 +153,10 @@
     "第四轮：用户“我同意”已映射为 REQ-008/009/010；复合建议 REQ-007 拆分保留历史，尚未问过的行为继续待定。",
     "第五轮：上一轮三项推荐已转为 REQ-011/012/013；用户要求问题描述稍详细，后续附执行顺序示例。",
     "第六轮：用户确认派发中增删、同步嵌套、未加载调用规则，新增 REQ-014/015/016；不再逐项询问内部存储细节。",
-    "第六轮收尾：新增 03_Architecture_And_Public_Contracts.md 与 04_Implementation_Plan.md；WI-002 设计完成，WI-004/005 为后续未实施工作。"
+    "第六轮收尾：新增 03_Architecture_And_Public_Contracts.md 与 04_Implementation_Plan.md；WI-002 设计完成，WI-004/005 为后续未实施工作。",
+    "2026-09-09：恢复全部有效要求，Git 工作区起始干净；个人 Skills 当前不存在，按项目内路由文档继续。",
+    "2026-09-09：Runtime、两个事件类、样例组件和配置接线已写入；新增通道与生命周期测试。Doctor 通过，Unity 6000.5.9f1，开始 Import。Core 仅增加测试友元程序集，无生命周期行为改动。",
+    "首轮 Import 编译失败：两个测试程序集缺少 Sirenix.Serialization.dll 显式引用（CS0012，日志 Logs/UnityCli/20260909-144831-import-30144/import.log）；已按既有 Pooling 测试程序集方式修正引用。",
+    "2026-09-09 收尾：WI-004/005 完成，实际结果见使用与验收。Core 仅新增测试友元，原配置条目和资产 GUID 保留；无参考项目改动。后续需求从此已交付基线继续。"
   ]
 }

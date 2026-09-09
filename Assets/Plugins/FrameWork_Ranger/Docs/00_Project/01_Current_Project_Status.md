@@ -1,6 +1,6 @@
 # FrameWork_Ranger 当前项目状态
 
-> 盘点时间：2026-08-31<br>
+> 盘点时间：2026-08-31；事件中心进展更新于 2026-09-09（下方历史快照保持原日期）<br>
 > Unity 项目外层目录：`D:\unityhub\UnityProjects\FrameWork\FrameWork_WWJ`  
 > 框架目录：`Assets/Plugins/FrameWork_Ranger`
 
@@ -8,7 +8,7 @@
 
 FrameWork_Ranger 已迁入 Unity 6000.5.9f1 URP 工程与同名 GitHub 仓库工作树，同时保留原框架完整 Git 历史。2026-08-25 起现行产品身份、命名空间、插件目录与 Skills 统一为 `FrameWork_Ranger`；旧名 `Framework_WWJ` 只保留在历史文档中，见 [ADR-DIST-002](../03_Architecture/Distribution/ADR-DIST-002_Identity_Rename_To_FrameWork_Ranger.md)。框架已完成核心骨架、Editor Center Phase 1.1–1.8、Resource Management，并已按批准计划实施 Pooling 对象池/引用池模块。当前代码通过固定项目设置装配 GlobalScope 与活动场景的 SceneScope，并提供配置校验、确定性生命周期、模块查询、Tick 驱动、失败回滚、统一编辑器中心、Resource 双后端，以及 Global Reference Pool + Scene GameObject Pool 的严格所有权实现。
 
-Resource Management 已按批准契约实现并验收关闭。Pooling 的 Runtime、Editor、Tests、Sample、CLI 与文档已落盘，真实 Unity Import、首轮聚焦测试和 Sample 资产生成已通过；代码审计后的最新改动、全回归、Addressables、Player 与双 Smoke 仍待当前 GUI Editor 关闭后复验。Event Center、音频、输入、UI、存档等代码尚未在此记录中启动。2026-09-05 用户指定下一次新对话以事件中心试用优化流程：可开始需求与设计，并按实际 Reference Pool 依赖选择必要检查；Pooling 未验收结果继续保留。
+Resource Management 已按批准契约实现并验收关闭。Pooling 的 Runtime、Editor、Tests、Sample、CLI 与文档已落盘，真实 Unity Import、首轮聚焦测试和 Sample 资产生成已通过；代码审计后的最新改动、全回归、Addressables、Player 与双 Smoke 的历史待验收项继续保留。2026-09-09 [Event Center](../03_Architecture/FoundationModules/EventCenter/README.md) 已按确认设计完成 Global 同步事件中心、引用池载荷借还、独立事件类、模板接线和组件样例；当前工作区 Import、Event EditMode 7/7 与 PlayMode 11/11 通过。音频、输入、UI、存档等模块尚未启动，本次 Event 检查不替代 Pooling 无关范围的验收。
 
 ## 2. 环境与依赖
 

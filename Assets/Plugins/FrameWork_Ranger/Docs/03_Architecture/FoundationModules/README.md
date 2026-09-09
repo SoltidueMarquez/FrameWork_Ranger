@@ -1,6 +1,6 @@
 # 基础模块建设入口
 
-> 状态：Resource Management 已关闭；Pooling 已实施并等待最终 Unity 全门禁；Event Center 于 2026-09-05 重新进入需求与参考研究，尚未实现。<br>
+> 状态：Resource Management 已关闭；Pooling 保留历史待验收项；Event Center 于 2026-09-09 完成首版 Runtime、配置和样例，Import、7 项 EditMode 与 11 项 PlayMode 聚焦测试通过。<br>
 > 已确认顺序：Resource → Pooling → Event，一次只推进一个模块。
 
 本目录管理基础模块的共同计划、AI 开发流水线、交付契约，以及后续每个模块自己的需求、ADR、实施计划和验收复盘。

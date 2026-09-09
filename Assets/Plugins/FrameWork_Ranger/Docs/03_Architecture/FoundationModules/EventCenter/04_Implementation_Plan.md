@@ -1,6 +1,6 @@
 # Event Center 最小实施计划
 
-本计划承接[完整公共契约](./03_Architecture_And_Public_Contracts.md)。用户目前完成了需求与设计问答，本轮产物为契约和实施说明；以下 Runtime、资产与测试是后续实施工作，尚未创建或运行。
+本计划承接[完整公共契约](./03_Architecture_And_Public_Contracts.md)。2026-09-05 完成需求与设计问答，2026-09-09 恢复以下实施工作；实际交付与验证见[使用与验收](./05_Usage_And_Acceptance.md)。
 
 ## 1. 实现文件与职责
 
@@ -56,7 +56,7 @@
 
 ## 4. 聚焦验证
 
-使用 `Tools/UnityCli.ps1`，遵守[Unity CLI 规则](../../../04_Standards/Unity_CLI_Development_Rules.md)。当前仅为计划，以下检查均未运行。
+使用 `Tools/UnityCli.ps1`，遵守[Unity CLI 规则](../../../04_Standards/Unity_CLI_Development_Rules.md)。下表保留计划要求，实际执行结果见使用与验收文档。
 
 | 验证范围 | 必须证明的结果 |
 | --- | --- |
@@ -85,4 +85,4 @@
 
 实现完成后更新模块入口、实际 API 使用说明与验收结果，并在任务 JSON 中逐项关联需求和真实结果。事件监听、载荷归还和作用域清理三条链都应有实际证据。
 
-本轮只完成设计整理和文件检查。Runtime、SO 模板、配置接线、示例与 Unity 验证仍属于待实施工作，不能依据本文宣称模块已经可用。
+实施产物已于 2026-09-09 落盘；本页保留计划与检查目标，运行结果以使用与验收及任务 JSON 为准。
