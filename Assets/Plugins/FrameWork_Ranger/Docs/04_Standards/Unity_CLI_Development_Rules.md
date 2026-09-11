@@ -11,6 +11,8 @@ FrameWork_Ranger 的 Unity 导入、编译、测试、内容构建、Player 构�
 
 MCP/EditorMcpAdapter 不再是当前项目开发链路的依赖：不要求安装、启动或连接 MCP 服务，不以 MCP 调用结果作为 Unity 编译或测试证据。历史 MCP 研究资料仍按历史证据保留，但不自动形成现行实现约束。
 
+2026-09-11 已按用户要求导入官方 `com.unity.pipeline`，并配置 `unity-framework` MCP，作为现场 Editor 查询与编辑的可选工具，见 [Unity 官方 AI 调用指南](./Unity_Official_AI.md)。本页的统一 CLI 入口约束用于导入、编译、测试和构建验收；现场操作按调用指南执行。
+
 日常命令见 [Unity 6000 CLI 开发与验证](./Unity_6000_CLI.md)，脚本内部设计与排障见 [Unity CLI 技术参考](./Unity_CLI_Technical_Reference.md)。
 
 ## 2. 规范用语

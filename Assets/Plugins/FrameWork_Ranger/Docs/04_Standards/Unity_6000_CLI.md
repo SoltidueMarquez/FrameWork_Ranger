@@ -9,6 +9,8 @@
 
 本文只提供命令速查。所有开发与验收必须遵守 [Unity CLI 开发规则](./Unity_CLI_Development_Rules.md)；版本解析、进程等待、测试判定、隔离验证和排障原理见 [Unity CLI 技术参考](./Unity_CLI_Technical_Reference.md)。
 
+需要通过官方技能、MCP 或 `unity command` 操作已打开的 Editor 时，见 [Unity 官方 AI 接入与调用指南](./Unity_Official_AI.md)。该工具通道与本文的批处理验收入口分别使用。
+
 ## 1. 首次检查
 
 从项目根目录运行：

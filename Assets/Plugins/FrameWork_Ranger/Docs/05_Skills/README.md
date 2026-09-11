@@ -1,13 +1,13 @@
 # FrameWork_Ranger Skill 路由
 
-> 更新：2026-09-05。自然语言启动与 JSON 任务记忆已接入。
+> 更新：2026-09-11。已接入自然语言启动、JSON 任务记忆与 Unity 官方技能/工具路由。
 > 用户在本项目新建对话后直接描述需求即可，无需输入 Skill 名称或粘贴工作流。
 
 ## 项目入口
 
 根目录 [AGENTS.md](../../../../../AGENTS.md)指向本页和[任务记忆协议](./01_Task_Memory_And_Recovery.md)。个人 Skills 提供简短路由，项目文档保存实际工作流程与稳定设计；不在两处维护模块进度副本。
 
-当前主机的个人 Skills 位于 `C:\Users\Maugham\.codex\skills`，本会话可发现这些技能。工程路径由当前工作目录确定，外层名字可能仍为 `FrameWork_WWJ`，不跳转到旧的绝对路径。
+当前主机的个人 Skills 位于 `C:\Users\Maugham\.codex\skills`；Unity 官方技能由 `unity@unity-agent-plugin` 插件提供。实际可用性以当前会话技能列表为准，个人 Skill 不可用时按下表读取项目文档。工程路径由当前工作目录确定，外层名字可能仍为 `FrameWork_WWJ`，不跳转到旧的绝对路径。
 
 ## 自然语言路由
 
@@ -17,6 +17,9 @@
 | 新模块、模块功能、设计、实现、修复 | `$build-framework-ranger-module` | [流水线](../03_Architecture/FoundationModules/01_AI_Module_Development_Pipeline.md)、[交付契约](../03_Architecture/FoundationModules/02_Module_Delivery_Contract_And_Templates.md) |
 | 核心生命周期、Module/Handler、Scope 或共享 Editor 基础设施 | 再加 `$framework-ranger-lightweight-refactor` | [Core 入口](../03_Architecture/Core/README.md)、[Editor 入口](../03_Architecture/EditorCenter/README.md)及相关现行 ADR |
 | 仓库、安装、分发、跨项目同步或管理工具 | `$plan-framework-ranger-distribution` | [分发入口](../03_Architecture/Distribution/README.md)，按研究/设计/实施请求范围执行 |
+| Unity 现场操作、官方 CLI/MCP 接入与排障 | `unity:unity-cli` | [官方 AI 调用指南](../04_Standards/Unity_Official_AI.md) |
+| 具体资产或场景对象查找 | `unity:generate-editor-search-query` | [官方 AI 调用指南](../04_Standards/Unity_Official_AI.md)中的工具导航 |
+| Unity UI、音频、URP、导航等专项任务 | 对应 `unity:*` 技能 | [官方技能选择表](../04_Standards/Unity_Official_AI.md#官方技能选择)，同时遵守本项目模块设计 |
 
 “事件中心”“想做一个音频模块”“继续昨天的功能”等表达均可匹配，不要求包含 `FrameWork_Ranger` 字样。若个人 Skill 未加载或另一台机器未安装，直接读取表中项目文档继续工作；项目入口不依赖用户先修复个人技能安装。
 
@@ -34,7 +37,7 @@
 
 ## 工具与验证
 
-Unity 操作使用 `Tools/UnityCli.ps1`，遵守[按改动选择验证的规则](../04_Standards/Unity_CLI_Development_Rules.md)。不默认添加指纹、完整环境快照、复杂失效图或全量测试；参考包中的飞书和监督命令不自动执行。
+Unity 导入、编译、测试与构建验收使用 `Tools/UnityCli.ps1`，遵守[按改动选择验证的规则](../04_Standards/Unity_CLI_Development_Rules.md)。现场 Editor 查询与编辑通过官方 Pipeline/MCP 或 `unity command`，按[调用指南](../04_Standards/Unity_Official_AI.md)核对项目路径与就绪状态。MCP 成功不替代 CLI 编译和测试证据。不默认添加指纹、完整环境快照、复杂失效图或全量测试；参考包中的飞书和监督命令不自动执行。
 
 JSON 模板位于项目根 `.workflow/_templates/`，当前没有额外 CLI 结果摘要或自动监督器。是否扩展工具依据实际使用成本决定。
 

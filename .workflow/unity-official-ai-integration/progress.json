@@ -1,0 +1,79 @@
+{
+  "task_id": "unity-official-ai-integration",
+  "status": "completed",
+  "design_docs": [
+    "Assets/Plugins/FrameWork_Ranger/Docs/04_Standards/Unity_CLI_Development_Rules.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/04_Standards/Unity_Official_AI.md"
+  ],
+  "current_task": "",
+  "next_action": "",
+  "tasks": [
+    {
+      "id": "WI-001",
+      "title": "官方来源及兼容性核实",
+      "requirement_ids": [
+        "REQ-001"
+      ],
+      "status": "completed",
+      "outputs": [],
+      "result": "Unity-Technologies/unity-agent-plugin 为 skills 插件；Unity-Technologies/skills 的 unity-cli 文档提供 com.unity.pipeline 与 unity mcp 官方接入方式。",
+      "verification": [
+        "ProjectVersion 6000.5.9f1；Tools/UnityCli.ps1 Doctor 通过；项目当前未被 Unity 占用。"
+      ]
+    },
+    {
+      "id": "WI-002",
+      "title": "安装、编译和工具冒烟",
+      "requirement_ids": [
+        "REQ-002"
+      ],
+      "status": "completed",
+      "outputs": [
+        "Packages/manifest.json",
+        "Packages/packages-lock.json",
+        "Tools/UnityOfficialAi.md"
+      ],
+      "result": "官方 Codex 插件 0.1.4-beta 已启用（31 skills）；Pipeline 0.6.0-exp.1 导入成功；unity-framework MCP 已启用并固定目标路径。",
+      "verification": [
+        "Tools/UnityCli.ps1 Import 退出码 0：Logs/UnityCli/20260911-234021-import-15720/import.log",
+        "stdio MCP 握手与 149 个工具发现；editor_status、list_open_scenes、get_scene_hierarchy、eval 调用成功：Logs/UnityOfficialAi/mcp-smoke-result.json",
+        "CLI/Pipeline 创建、查找、删除临时 Cube，数量 1→0；未保存场景。",
+        "临时后台 Editor PID 13676 正常退出 0：Logs/UnityOfficialAi/exit-code.txt"
+      ]
+    },
+    {
+      "id": "WI-003",
+      "title": "整理官方 AI 调用文档与发现入口",
+      "requirement_ids": [
+        "REQ-003"
+      ],
+      "status": "completed",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/04_Standards/Unity_Official_AI.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/04_Standards/Unity_Official_AI.md.meta",
+        "AGENTS.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/README.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/05_Skills/README.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/04_Standards/Unity_CLI_Development_Rules.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/04_Standards/Unity_6000_CLI.md",
+        "Tools/UnityOfficialAi.md"
+      ],
+      "result": "已统一调用指南并接入 AGENTS、Docs、技能路由与 CLI 文档；Tools 旧入口保留跳转。整理 31 技能映射、常用工具、目标路径与状态检查、排障、迁移、撤销和原始冒烟证据。",
+      "verification": [
+        "指南/兼容入口的本地链接均存在。",
+        "31 个已安装技能均被选择表覆盖；工具名与保存的 149 工具实测目录一致。",
+        "新 .meta GUID 格式正确且在 Assets 中唯一。",
+        "git diff --check 通过；unity command --help 核对语法。",
+        "仅文档与任务记录变更；本轮未运行 Unity 编译/测试。"
+      ]
+    }
+  ],
+  "blockers": [],
+  "recent_notes": [
+    "初次导入因任务中断未完成；恢复后重新 Import 通过。",
+    "本轮直接验证 MCP 服务传输与工具调用；桌面任务原生工具重新加载后尚未验证。",
+    "用户已有管理 App 文档及其他任务同期新增文档均保留。",
+    "使用说明：Tools/UnityOfficialAi.md",
+    "用户要求整理后续调用文档；正文迁至 Docs/04_Standards/Unity_Official_AI.md。当前官方技能已可发现，桌面原生 MCP 调用仍保持未验证状态。"
+  ]
+}

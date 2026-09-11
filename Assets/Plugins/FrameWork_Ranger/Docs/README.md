@@ -33,6 +33,8 @@ Docs/
 
 根 [AGENTS.md](../../../../AGENTS.md)自动引导新对话；用户直接描述需求即可。多轮任务按[JSON 任务记忆协议](./05_Skills/01_Task_Memory_And_Recovery.md)保存和恢复，[Skill 路由](./05_Skills/README.md)负责按范围选读文档。实现授权不重复确认，验证按实际改动选择。
 
+需要调用 Unity 官方技能、读取或操作现场 Editor 时，使用 [Unity 官方 AI 接入与调用指南](./04_Standards/Unity_Official_AI.md)。该入口包含技能选择、MCP/CLI 常用调用、排障与实测记录；编译测试验收仍遵守现行 Unity CLI 规则。
+
 ## 当前设计入口
 
 1. [Editor Center 与中央启动入口](./03_Architecture/EditorCenter/README.md)
@@ -71,6 +73,7 @@ Docs/
 34. [Pooling 对象池/引用池模块入口](./03_Architecture/FoundationModules/Pooling/README.md)
 35. [Event Center 事件中心使用、设计与验收](./03_Architecture/FoundationModules/EventCenter/README.md)
 36. [UI 模块设计、使用与验收](./03_Architecture/FoundationModules/UI/README.md)
+37. [管理 App 准备：需求、参考程序、模块拆分与新仓库路线](./03_Architecture/Distribution/02_Manager_App_Preparation.md)
 
 ## 项目与历史
 

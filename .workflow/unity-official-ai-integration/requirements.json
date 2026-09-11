@@ -1,0 +1,62 @@
+{
+  "task_id": "unity-official-ai-integration",
+  "goal": "核实 Unity 官方 AI/Codex 接入工具，并在框架工程导入及冒烟测试。",
+  "scope_notes": [
+    "保留已有管理 App 准备文档改动。",
+    "沿用 Tools/UnityCli.ps1 的编译验证；本次增加官方工具实验接入。"
+  ],
+  "questions": [
+    {
+      "id": "Q-001",
+      "question": "用户原始需求",
+      "answer_quote": "据说Unity官方在github上发布了专门给Unity6000用的codex的AI接入插件，提供了很多有用的工具，这是真的吗？如果是的话我们可以导入到框架项目中测试一下",
+      "interpretation": "核实官方来源与版本兼容性，确认后安装并测试。",
+      "source": "2026-09-11 当前对话",
+      "requirement_ids": [
+        "REQ-001",
+        "REQ-002"
+      ]
+    },
+    {
+      "id": "Q-002",
+      "question": "后续文档整理需求",
+      "answer_quote": "OK，整理一下相关的文档吧，方便之后的调用",
+      "interpretation": "整理可复用的调用说明并接入项目文档发现入口。",
+      "source": "当前对话后续消息",
+      "requirement_ids": [
+        "REQ-003"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "text": "区分官方 Codex 技能插件与编辑器工具桥接，给出官方依据。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "提供可核对的官方仓库、用途及版本要求。"
+    },
+    {
+      "id": "REQ-002",
+      "text": "导入适用于当前 Unity 6000.5.9f1 工程的官方接入工具，并实际测试。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "包解析和编译成功，工具发现及编辑器读取冒烟有真实结果；Codex 接入状态如实说明。"
+    },
+    {
+      "id": "REQ-003",
+      "text": "整理官方 Unity 技能与工具的调用文档，便于之后任务发现和使用。",
+      "basis": "user_confirmed",
+      "status": "active",
+      "acceptance": "项目 AGENTS、Docs 索引与 Skill 路由能定位使用指南；包含调用、前置条件、排障、验证边界和已有证据。"
+    }
+  ],
+  "decisions": [
+    {
+      "text": "使用 Unity CLI 提供的 com.unity.pipeline 与 MCP 通道测试编辑器工具能力。",
+      "basis": "assumption",
+      "reason": "官方技能文档明确该包支持 Unity 6.0+；本机 CLI 1.0.0-beta.5 已安装。"
+    }
+  ],
+  "open_questions": []
+}

@@ -1,0 +1,82 @@
+{
+  "task_id": "framework-manager-preparation",
+  "status": "completed",
+  "design_docs": [
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/02_Manager_App_Preparation.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/03_Reference_Apps_Research.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/04_Manager_App_Requirements.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/05_Modules_And_Sync_Design.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/06_Technology_And_References.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/07_Repository_And_Roadmap.md",
+    "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/08_AI_Workflow_And_Wisp_Review.md"
+  ],
+  "current_task": "",
+  "next_action": "",
+  "tasks": [
+    {
+      "id": "WI-001",
+      "title": "参考程序与框架现状研究",
+      "requirement_ids": [
+        "REQ-001",
+        "REQ-003"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/03_Reference_Apps_Research.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/05_Modules_And_Sync_Design.md"
+      ],
+      "result": "检查 ASAR 元数据与功能代码、EXE 版本及符号、框架生产程序集和配置路径。三方合并确认在 HtyApp Skill 更新/发布链路，未误标为目录同步。",
+      "verification": [
+        "只读静态检查；未运行参考应用或网络端点。"
+      ]
+    },
+    {
+      "id": "WI-002",
+      "title": "需求、技术路线与仓库准备文档",
+      "requirement_ids": [
+        "REQ-002",
+        "REQ-003",
+        "REQ-004"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/02_Manager_App_Preparation.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/03_Reference_Apps_Research.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/04_Manager_App_Requirements.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/05_Modules_And_Sync_Design.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/06_Technology_And_References.md",
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/07_Repository_And_Roadmap.md"
+      ],
+      "result": "交付六份准备文档，更新 Distribution 与 Docs 入口；首版覆盖按需安装、开发回流和独立模块版本发布。",
+      "verification": [
+        "6 份新增 Markdown 本地链接 8 个均可解析，代码围栏成对，未发现尾随空白。",
+        "6 份新文档 meta 格式有效，GUID 在 Assets 内各出现一次。",
+        "2 份任务 JSON 可解析；git diff --check 通过。",
+        "仅文档和任务记录变更；未运行 Unity/App 功能测试。"
+      ]
+    },
+    {
+      "id": "WI-003",
+      "title": "WispFramework 与 AI 替代 App 评估",
+      "requirement_ids": [
+        "REQ-005"
+      ],
+      "status": "done",
+      "outputs": [
+        "Assets/Plugins/FrameWork_Ranger/Docs/03_Architecture/Distribution/08_AI_Workflow_And_Wisp_Review.md"
+      ],
+      "result": "完成 WispFramework 0.8.0 静态调研及 AI 替代 App 可行性评估，明确模块 Release 发布与 Git 源码回流的区别。推荐先验证轻量 AI 工作流，未创建正式 Skill/脚本或执行远端写入。",
+      "verification": [
+        "ASAR 元数据、安装/预览/锁定/配置保护/发布调用链只读检查。",
+        "已打开官方本地环境、非交互模式、AGENTS.md 与 Skill 文档。",
+        "本机 Git 和现有 UnityCli.ps1 可用；未验证 GitHub 写权限。",
+        "本轮修改文档的 22 个本地链接可解析，任务 JSON 可解析。"
+      ]
+    }
+  ],
+  "blockers": [],
+  "recent_notes": [
+    "最新路线评估见 08_AI_Workflow_And_Wisp_Review.md；原 App 方案保留为备选。",
+    "本轮只更新文档、meta、任务记录；未运行 Wisp GUI、同步程序或框架测试，未创建仓库、提交、推送或自动化。"
+  ]
+}
